@@ -59,6 +59,10 @@
                         'Project': 'folder-open',
                         'SecurityChallengeAnswer': 'commenting',
                         'pessoa': 'user',
+                        'personagem':'users',
+                        'veiculo': 'car',
+                        'empresa': 'building',
+                        'mgp':'balance-scale',
                         'zoomFit': 'arrows-alt',
                         'zoomIn': 'search-plus',
                         'zoomOut': 'search-minus'
@@ -92,18 +96,9 @@
                     neo4jDataUrl: '/static/json/neo4jData.json',
                     nodeRadius: 25,
                     onNodeDoubleClick: function(node) {
-                        switch(node.id) {
-                            case '25':
-                                // Google
-                                window.open(node.properties.url, '_blank');
-                                break;
-                            default:
-                                var maxNodes = 5,
-                                data = neo4jd3.randomD3Data(node, maxNodes);
-                                console.log(data)
-                                neo4jd3.updateWithD3Data(data);
-                                break;
-                        }
+                        get('api/nextNodes?node_id=' + node.id, (data) => {
+                            neo4jd3.updateWithNeo4jData(data);
+                        });                        
                     },
                     onRelationshipDoubleClick: function(relationship) {
                         console.log('double click on relationship: ' + JSON.stringify(relationship));
@@ -113,16 +108,24 @@
             }
 
             window.onload = init;
-        </script>
+            
+            function get(url, callback){
+                var xmlhttp = new XMLHttpRequest();
+                xmlhttp.open('GET', url, true);
+                xmlhttp.onreadystatechange = function() {
+                    if (xmlhttp.readyState == 4) {
+                        if(xmlhttp.status == 200) {
+                            var obj = JSON.parse(xmlhttp.responseText);
+                            console.log(obj);
+                            if (callback) {
+                                callback(obj)
+                            }
+                        }
+                    }
+                };
+                xmlhttp.send(null);
+            }
 
-        <script>
-          (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-          (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-          })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
-
-          ga('create', 'UA-430863-29', 'auto');
-          ga('send', 'pageview');
         </script>
     </body>
 </html>

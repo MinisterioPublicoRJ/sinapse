@@ -364,7 +364,7 @@ function Neo4jD3(_selector, _options) {
 
     function contains(array, id) {
         var filter = array.filter(function(elem) {
-            return elem.id === id;
+            return elem.id.toString() === id.toString();
         });
 
         return filter.length > 0;
@@ -394,7 +394,8 @@ function Neo4jD3(_selector, _options) {
 
     function dragStarted(d) {
         if (!d3.event.active) {
-            simulation.alphaTarget(0.3).restart();
+            //simulation.alphaTarget(0.3).restart();
+            simulation.alphaTarget(1).restart();
         }
 
         d.fx = d.x;
@@ -599,7 +600,7 @@ function Neo4jD3(_selector, _options) {
         data.results.forEach(function(result) {
             result.data.forEach(function(data) {
                 data.graph.nodes.forEach(function(node) {
-                    if (!contains(graph.nodes, node.id)) {
+                    if (!contains(nodes, node.id)) {
                         graph.nodes.push(node);
                     }
                 });
