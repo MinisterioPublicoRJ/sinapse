@@ -1,2 +1,2 @@
 #!/bin/bash
-waitress-serve --listen=*:8000 sinapse.start:app
+waitress-serve --listen=*:8080 sinapse.start:app
