@@ -21,7 +21,9 @@ from sinapse.buildup import (
 
 
 
-def respostajson(usuario, sessionid, response):
+def respostajson(response):
+    usuario = session.get('usuario',"dummy")
+    sessionid = request.cookies.get('session')
     _log_response(usuario, sessionid, response)
     return jsonify(response.json())
 
@@ -30,7 +32,7 @@ def _log_response(usuario, sessionid, response):
     _LOG_MONGO.insert(
         {
             'usuario': usuario,
-            'datahora': datetime.date(),
+            'datahora': datetime.now(),
             'sessionid': sessionid,
             'resposta': response.json()
         }
@@ -47,7 +49,7 @@ def api_node():
 
     query  = { "statements" : [ { "statement" : "MATCH  (n) where id(n) = "+ node_id +" return n", "resultDataContents" : [ "row", "graph" ] } ] }
     response = requests.post(_ENDERECO_NEO4J % '/db/data/transaction/commit', data=json.dumps(query), auth=_AUTH, headers=_HEADERS)
-    return respostajson()
+    return respostajson(response)
 
 
 @app.route("/api/findNodes")
@@ -58,7 +60,7 @@ def api_findNodes():
 
     query  = { "statements" : [ { "statement" : "MATCH (n:"+ label +" {"+ prop +":toUpper('"+ val +"')}) return n", "resultDataContents" : [ "row", "graph" ] } ] }
     response = requests.post(_ENDERECO_NEO4J % '/db/data/transaction/commit', data=json.dumps(query), auth=_AUTH, headers=_HEADERS)
-    return jsonify(response.json())
+    return respostajson(response)
 
 
 @app.route("/api/nextNodes")
@@ -66,7 +68,7 @@ def api_nextNodes():
     node_id = request.args.get('node_id')
     query  = { "statements" : [ { "statement" : "MATCH r = (n)-[*..1]-(x) where id(n) = "+ node_id +" return r,n,x", "resultDataContents" : [ "row", "graph" ] } ] }
     response = requests.post(_ENDERECO_NEO4J % '/db/data/transaction/commit', data=json.dumps(query), auth=_AUTH, headers=_HEADERS)
-    return jsonify(response.json())    
+    return respostajson(response)
 
 
 @app.route("/api/nodeProperties")
@@ -76,15 +78,15 @@ def api_nodeProperties():
     cypher = "MATCH (n:"+ label +")  RETURN  keys(n) limit 1"
     query = { "query" : cypher }
     response = requests.post(_ENDERECO_NEO4J % '/db/data/cypher', data=json.dumps(query), auth=_AUTH, headers=_HEADERS)
-    return jsonify(response.json())
+    return respostajson(response)
 
 @app.route("/api/labels")
 def api_labels():
     response = requests.get(_ENDERECO_NEO4J % '/db/data/labels', auth=_AUTH, headers=_HEADERS)
-    return jsonify(response.json())
+    return respostajson(response)
 
 
 @app.route("/api/relationships")
 def api_relationships():
     response = requests.get(_ENDERECO_NEO4J % '/db/data/relationship/types', auth=_AUTH, headers=_HEADERS)
-    return jsonify(response.json())
+    return respostajson(response)

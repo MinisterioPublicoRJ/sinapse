@@ -27,4 +27,4 @@ _MONGO_CLIENT = MongoClient(
     authSource=_AUTHDB_MONGO
 )
 
-_LOG_MONGO = _MONGO_CLIENT.mpmapas.log_sinapse
+_LOG_MONGO = _MONGO_CLIENT.mmps.log_sinapse
