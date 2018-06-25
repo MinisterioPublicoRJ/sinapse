@@ -52,3 +52,13 @@ def api_nodeProperties():
     response = requests.post(_ENDERECO_NEO4J % '/db/data/cypher', data=json.dumps(query), auth=_AUTH, headers=_HEADERS)
     return jsonify(response.json())
 
+@app.route("/api/labels")
+def api_labels():
+    response = requests.get(_ENDERECO_NEO4J % '/db/data/labels', auth=_AUTH, headers=_HEADERS)
+    return jsonify(response.json())
+
+
+@app.route("/api/relationships")
+def api_relationships():
+    response = requests.get(_ENDERECO_NEO4J % '/db/data/relationship/types', auth=_AUTH, headers=_HEADERS)
+    return jsonify(response.json())
