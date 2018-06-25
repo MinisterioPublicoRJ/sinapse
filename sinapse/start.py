@@ -1,14 +1,40 @@
-from flask import Flask, jsonify, request, send_from_directory, render_template
+from datetime import datetime
+from flask import (
+    Flask,
+    jsonify,
+    request,
+    send_from_directory,
+    render_template,
+    session,
+    Session
+)
 import requests
-from requests.auth import HTTPBasicAuth
 import json
-from decouple import config
+from sinapse.buildup import (
+    app,
+    _LOG_MONGO,
+    HTTPBasicAuth,
+    _ENDERECO_NEO4J,
+    _AUTH,
+    _HEADERS
+)
 
 
-app = Flask(__name__)
-_AUTH = HTTPBasicAuth(config('NEO4J_USUARIO'), config('NEO4J_SENHA'))
-_ENDERECO_NEO4J = config('NEO4J_DOMINIO') + '%s'
-_HEADERS = {'content-type': 'application/json'}
+
+def respostajson(usuario, sessionid, response):
+    _log_response(usuario, sessionid, response)
+    return jsonify(response.json())
+
+
+def _log_response(usuario, sessionid, response):
+    _LOG_MONGO.insert(
+        {
+            'usuario': usuario,
+            'datahora': datetime.date(),
+            'sessionid': sessionid,
+            'resposta': response.json()
+        }
+    )
 
 @app.route("/")
 def raiz():
@@ -21,7 +47,7 @@ def api_node():
 
     query  = { "statements" : [ { "statement" : "MATCH  (n) where id(n) = "+ node_id +" return n", "resultDataContents" : [ "row", "graph" ] } ] }
     response = requests.post(_ENDERECO_NEO4J % '/db/data/transaction/commit', data=json.dumps(query), auth=_AUTH, headers=_HEADERS)
-    return jsonify(response.json())    
+    return respostajson()
 
 
 @app.route("/api/findNodes")
