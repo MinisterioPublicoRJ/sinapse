@@ -1,12 +1,14 @@
+import requests
+import json
+
 from datetime import datetime
+
 from flask import (
     jsonify,
     request,
     render_template,
     session,
 )
-import requests
-import json
 from sinapse.buildup import (
     app,
     _LOG_MONGO,
@@ -52,6 +54,7 @@ def api_node():
         data=json.dumps(query),
         auth=_AUTH,
         headers=_HEADERS)
+
     return respostajson(response)
 
 
