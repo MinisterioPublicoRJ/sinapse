@@ -1,5 +1,6 @@
 from flask_assets import Bundle, Environment
-from .start import app
+from sinapse.buildup import app
+
 
 bundles = {
 
