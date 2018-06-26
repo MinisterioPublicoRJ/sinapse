@@ -1,20 +1,20 @@
 import requests
 import json
-
 from datetime import datetime
-
 from flask import (
     jsonify,
     request,
     render_template,
     session,
 )
+from functools import wraps
 from sinapse.buildup import (
     app,
     _LOG_MONGO,
     _ENDERECO_NEO4J,
     _AUTH,
-    _HEADERS
+    _HEADERS,
+    _AUTH_MPRJ,
 )
 
 
@@ -36,12 +36,52 @@ def _log_response(usuario, sessionid, response):
     )
 
 
+def _autenticar(usuario, senha):
+    "Autentica o usuário no SCA"
+    sessao = requests.session()
+    response = sessao.post(
+        url=_AUTH_MPRJ,
+        data={
+            'username': usuario,
+            'password': senha
+        })
+    if response.status_code == 200:
+        # TODO: implementar a restrição por grupo do SCA
+        # response = sessao.get(url=_USERINFO_MPRJ)
+        # json.loads(response.content.decode('utf-8'))
+        return usuario
+    return None
+
+
+def login_necessario(funcao):
+    @wraps(funcao)
+    def funcao_decorada(*args, **kwargs):
+        if "usuario" not in session:
+            return "Não autorizado", 403
+        return funcao(*args, **kwargs)
+    return funcao_decorada
+
+
+@app.route("/login", methods=["POST"])
+def login():
+    usuario = request.form.get("usuario")
+    senha = request.form.get("senha")
+
+    resposta = _autenticar(usuario, senha)
+    if resposta:
+        session['usuario'] = resposta
+        return "OK", 201
+
+    return "NOK", 401
+
+
 @app.route("/")
 def raiz():
     return render_template('index.html')
 
 
 @app.route("/api/node")
+@login_necessario
 def api_node():
     node_id = request.args.get('node_id')
 
@@ -59,6 +99,7 @@ def api_node():
 
 
 @app.route("/api/findNodes")
+@login_necessario
 def api_findNodes():
     label = request.args.get('label')
     prop = request.args.get('prop')
@@ -78,6 +119,7 @@ def api_findNodes():
 
 
 @app.route("/api/nextNodes")
+@login_necessario
 def api_nextNodes():
     node_id = request.args.get('node_id')
     query = {"statements": [{
@@ -94,6 +136,7 @@ def api_nextNodes():
 
 
 @app.route("/api/nodeProperties")
+@login_necessario
 def api_nodeProperties():
     label = request.args.get('label')
 
@@ -108,6 +151,7 @@ def api_nodeProperties():
 
 
 @app.route("/api/labels")
+@login_necessario
 def api_labels():
     response = requests.get(
         _ENDERECO_NEO4J % '/db/data/labels',
@@ -117,6 +161,7 @@ def api_labels():
 
 
 @app.route("/api/relationships")
+@login_necessario
 def api_relationships():
     response = requests.get(
         _ENDERECO_NEO4J % '/db/data/relationship/types',

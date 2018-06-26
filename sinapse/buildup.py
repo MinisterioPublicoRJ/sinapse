@@ -1,7 +1,5 @@
 from decouple import config
-from flask import (
-    Flask
-)
+from flask import Flask
 from pymongo import MongoClient
 from requests.auth import HTTPBasicAuth
 
@@ -28,3 +26,5 @@ _MONGO_CLIENT = MongoClient(
 )
 
 _LOG_MONGO = _MONGO_CLIENT.mmps.log_sinapse
+_AUTH_MPRJ = config('AUTH_MPRJ')
+_USERINFO_MPRJ = config('USERINFO_MPRJ')
