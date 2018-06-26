@@ -94,4 +94,4 @@ class LoginUsuario(unittest.TestCase):
 
         resposta = self.app.get("/api/node?node_id=10")
         assert resposta.get_json() == retorno_esperado
-        _log_response.assert_called_once()
+        assert _log_response.call_count == 1
