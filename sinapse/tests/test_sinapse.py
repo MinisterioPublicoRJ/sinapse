@@ -14,7 +14,6 @@ from sinapse.start import (
 
 
 class CasoGlobal(unittest.TestCase):
-
     def setUp(self):
         self.app = app.test_client()
 
@@ -66,6 +65,11 @@ class CasoGlobal(unittest.TestCase):
 
         retorno = _autenticar("usuario", "senha")
         assert retorno == "usuario"
+
+
+class LoginUsuario(unittest.TestCase):
+    def setUp(self):
+        self.app = app.test_client()
 
     @responses.activate
     @mock.patch("sinapse.start._log_response")
