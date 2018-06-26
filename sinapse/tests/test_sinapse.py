@@ -95,3 +95,25 @@ class LoginUsuario(unittest.TestCase):
         resposta = self.app.get("/api/node?node_id=10")
         assert resposta.get_json() == retorno_esperado
         assert _log_response.call_count == 1
+
+
+class LogoutUsuario(unittest.TestCase):
+    def setUp(self):
+        self.app = app.test_client()
+
+    @mock.patch("sinapse.start._autenticar")
+    def test_logout(self, _autenticar):
+        _autenticar.side_effect = ["usuario"]
+        # Loga usuario
+        self.app.post(
+            "/login",
+            data={
+                "usuario": "usuario",
+                "senha": "senha"})
+
+        retorno = self.app.post(
+            "/logout",
+        )
+
+        assert retorno.status_code == 201
+        assert retorno.data == b'OK'
