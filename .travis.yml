@@ -6,4 +6,6 @@ install:
   pip install -r dev-requirements.txt;
 script:
   - flake8 .
-  - pytest -v
+  - coverage run -m pytest -v
+after_success:
+  - codecov
