@@ -9,4 +9,4 @@ class CasoGlobal(unittest.TestCase):
 
     def test_raiz(self):
         resposta = self.app.get('/')
-        assert resposta
+        assert resposta.status_code == 200
