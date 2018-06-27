@@ -111,7 +111,7 @@ class LogoutUsuario(unittest.TestCase):
                 "usuario": "usuario",
                 "senha": "senha"})
 
-        retorno = self.app.post(
+        retorno = self.app.get(
             "/logout",
         )
 
@@ -119,7 +119,7 @@ class LogoutUsuario(unittest.TestCase):
         assert retorno.data == b'OK'
 
     def test_logout_usuario_nao_logado(self):
-        retorno = self.app.post("/logout")
+        retorno = self.app.get("/logout")
 
         assert retorno.status_code == 200
         assert retorno.data == 'Usuário não logado'.encode('utf-8')

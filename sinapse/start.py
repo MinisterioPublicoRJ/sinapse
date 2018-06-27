@@ -75,7 +75,7 @@ def login():
     return "NOK", 401
 
 
-@app.route("/logout", methods=["POST"])
+@app.route("/logout", methods=["GET", "POST"])
 def logout():
     if 'usuario' in session:
         del session['usuario']
