@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.org/MinisterioPublicoRJ/sinapse.svg?branch=master)](https://travis-ci.org/MinisterioPublicoRJ/sinapse)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/664b2e55beb940bea57b853d61fab391)](https://www.codacy.com/app/SamambaMan/sinapse?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=MinisterioPublicoRJ/sinapse&amp;utm_campaign=Badge_Grade)
 
 # Sinapse
 
