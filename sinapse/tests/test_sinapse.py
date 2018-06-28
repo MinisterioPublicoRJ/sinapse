@@ -18,8 +18,23 @@ from .fixtures import (
     request_filterNodes_ok,
     resposta_filterNodes_ok,
     request_nextNodes_ok,
-    resposta_nextNodes_ok
+    resposta_nextNodes_ok,
+    request_nodeproperties_ok,
+    resposta_nodeproperties_ok
 )
+
+
+def logresponse(funcao):
+    @mock.patch("sinapse.start._log_response")
+    @responses.activate
+    @wraps(funcao)
+    def wrapper(*args, **kwargs):
+        # remove o _log_response da lista de argumentos
+        args = list(args)
+        args.pop(-1)
+        return funcao(*args, **kwargs)
+
+    return wrapper
 
 
 @mock.patch("sinapse.start._LOG_MONGO")
@@ -129,19 +144,6 @@ class LoginUsuario(unittest.TestCase):
         assert retorno.status_code == 401
 
 
-def logresponse(funcao):
-    @mock.patch("sinapse.start._log_response")
-    @responses.activate
-    @wraps(funcao)
-    def wrapper(*args, **kwargs):
-        # remove o _log_response da lista de argumentos
-        args = list(args)
-        args.pop(-1)
-        return funcao(*args, **kwargs)
-
-    return wrapper
-
-
 class MetodosConsulta(unittest.TestCase):
     @mock.patch("sinapse.start._autenticar")
     def setUp(self, _autenticar):
@@ -211,3 +213,22 @@ class MetodosConsulta(unittest.TestCase):
         assert resposta.get_json() == resposta_nextNodes_ok
         assert json.loads(
             responses.calls[0].request.body) == request_nextNodes_ok
+
+    @logresponse
+    def test_api_nodeProperties(self):
+        responses.add(
+            responses.POST,
+            _ENDERECO_NEO4J % '/db/data/cypher',
+            json=resposta_nodeproperties_ok
+        )
+
+        resposta = self.app.get(
+            "/api/nodeProperties",
+            query_string={
+                "label": "pessoa"
+            }
+        )
+
+        assert resposta.get_json() == resposta_nodeproperties_ok
+        assert json.loads(
+            responses.calls[0].request.body) == request_nodeproperties_ok

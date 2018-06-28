@@ -263,3 +263,14 @@ resposta_nextNodes_ok = {
                          'sexo': '1',
                          'uf': 'RJ',
                          'visitado': False}]}]}]}
+
+request_nodeproperties_ok = {
+    'query': 'MATCH (n:pessoa)  RETURN  keys(n) limit 1'
+}
+
+resposta_nodeproperties_ok = {
+    'columns': ['keys(n)'],
+    'data': [
+        [['nome_mae', 'cpf', 'dt_nasc', 'sexo', 'uf', 'nome']]
+    ]
+}
