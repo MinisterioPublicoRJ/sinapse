@@ -1,13 +1,16 @@
-import requests
 import json
+import requests
+
 from datetime import datetime
+from functools import wraps
+
 from flask import (
     jsonify,
     request,
     render_template,
     session,
 )
-from functools import wraps
+
 from sinapse.buildup import (
     app,
     _LOG_MONGO,

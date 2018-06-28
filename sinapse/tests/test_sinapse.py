@@ -1,8 +1,10 @@
-from functools import wraps
 import json
-import unittest
 import responses
+import unittest
+
+from functools import wraps
 from unittest import mock
+
 from freezegun import freeze_time
 from freezegun.api import FakeDatetime
 from sinapse.start import (
@@ -12,6 +14,7 @@ from sinapse.start import (
     _ENDERECO_NEO4J,
     _log_response
 )
+
 from .fixtures import (
     request_node_ok,
     resposta_node_ok,
@@ -41,9 +44,7 @@ def logresponse(funcao):
 
 @mock.patch("sinapse.start._LOG_MONGO")
 def test_log_response(_log_mongo):
-    _log_mongo.insert = mock.Mock()
     response = mock.Mock()
-    response.json = mock.Mock()
     response.json.side_effect = ["response"]
 
     with freeze_time("2018-06-28"):
@@ -68,7 +69,7 @@ class CasoGlobal(unittest.TestCase):
 
         assert resposta.status_code == 200
 
-    def test_api_authorization(self):
+    def test_autorizacao_da_api(self):
         api_node = self.app.get('/api/node')
         api_findNodes = self.app.get('/api/findNodes')
         api_nextNodes = self.app.get('/api/nextNodes')
