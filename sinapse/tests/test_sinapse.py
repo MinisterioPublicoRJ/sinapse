@@ -3,11 +3,14 @@ import json
 import unittest
 import responses
 from unittest import mock
+from freezegun import freeze_time
+from freezegun.api import FakeDatetime
 from sinapse.start import (
     app,
     _autenticar,
     _AUTH_MPRJ,
-    _ENDERECO_NEO4J
+    _ENDERECO_NEO4J,
+    _log_response
 )
 from .fixtures import (
     request_node_ok,
@@ -15,6 +18,26 @@ from .fixtures import (
     request_filterNodes_ok,
     resposta_filterNodes_ok
 )
+
+
+@mock.patch("sinapse.start._LOG_MONGO")
+def test_log_response(_log_mongo):
+    _log_mongo.insert = mock.Mock()
+    response = mock.Mock()
+    response.json = mock.Mock()
+    response.json.side_effect = ["response"]
+
+    with freeze_time("2018-06-28"):
+        _log_response("usuario", "1234", response)
+
+    _log_mongo.insert.assert_called_once_with(
+        {
+            'usuario': 'usuario',
+            'datahora': FakeDatetime(2018, 6, 28, 0, 0),
+            'sessionid': '1234',
+            'resposta': 'response'
+        }
+    )
 
 
 class CasoGlobal(unittest.TestCase):
