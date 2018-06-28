@@ -114,6 +114,18 @@ class LoginUsuario(unittest.TestCase):
         assert resposta.get_json() == retorno_esperado
         assert _log_response.call_count == 1
 
+    @mock.patch('sinapse.start._autenticar', return_value=None)
+    def test_falha_login(self, _autenticar):
+        retorno = self.app.post(
+            "/login",
+            data={
+                "usuario": "usuario",
+                "senha": "senha"
+            }
+        )
+
+        assert retorno.status_code == 401
+
 
 def logresponse(funcao):
     @mock.patch("sinapse.start._log_response")
