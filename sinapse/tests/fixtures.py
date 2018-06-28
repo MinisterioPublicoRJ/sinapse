@@ -274,3 +274,28 @@ resposta_nodeproperties_ok = {
         [['nome_mae', 'cpf', 'dt_nasc', 'sexo', 'uf', 'nome']]
     ]
 }
+
+resposta_label_ok = [
+    'multa',
+    'veiculo',
+    'personagem',
+    'telefone',
+    'mgp',
+    'empresa',
+    'orgao',
+    'pessoa'
+]
+
+resposta_relationships_ok = [
+    'filho',
+    'proprietario',
+    'autuado',
+    'socio',
+    'membro',
+    'membro_inativo',
+    'servidor_mprj',
+    'responsavel',
+    'personagem',
+    'orgao_responsavel',
+    'telefonema'
+]

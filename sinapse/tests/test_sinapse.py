@@ -20,7 +20,9 @@ from .fixtures import (
     request_nextNodes_ok,
     resposta_nextNodes_ok,
     request_nodeproperties_ok,
-    resposta_nodeproperties_ok
+    resposta_nodeproperties_ok,
+    resposta_label_ok,
+    resposta_relationships_ok
 )
 
 
@@ -232,3 +234,37 @@ class MetodosConsulta(unittest.TestCase):
         assert resposta.get_json() == resposta_nodeproperties_ok
         assert json.loads(
             responses.calls[0].request.body) == request_nodeproperties_ok
+
+    @logresponse
+    def test_api_labels(self):
+        responses.add(
+            responses.GET,
+            _ENDERECO_NEO4J % '/db/data/labels',
+            json=resposta_label_ok
+        )
+
+        resposta = self.app.get(
+            "/api/labels",
+            query_string={
+            }
+        )
+
+        assert resposta.get_json() == resposta_label_ok
+        assert responses.calls[0].request.body is None
+
+    @logresponse
+    def test_api_relationships(self):
+        responses.add(
+            responses.GET,
+            _ENDERECO_NEO4J % '/db/data/relationship/types',
+            json=resposta_relationships_ok
+        )
+
+        resposta = self.app.get(
+            "/api/relationships",
+            query_string={
+            }
+        )
+
+        assert resposta.get_json() == resposta_relationships_ok
+        assert responses.calls[0].request.body is None
