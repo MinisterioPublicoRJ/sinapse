@@ -16,7 +16,9 @@ from .fixtures import (
     request_node_ok,
     resposta_node_ok,
     request_filterNodes_ok,
-    resposta_filterNodes_ok
+    resposta_filterNodes_ok,
+    request_nextNodes_ok,
+    resposta_nextNodes_ok
 )
 
 
@@ -160,7 +162,12 @@ class MetodosConsulta(unittest.TestCase):
             json=resposta_node_ok
         )
 
-        resposta = self.app.get("/api/node?node_id=395989945")
+        resposta = self.app.get(
+            "/api/node",
+            query_string={
+                "node_id": 395989945
+            }
+        )
 
         assert resposta.get_json() == resposta_node_ok
         assert json.loads(responses.calls[0].request.body) == request_node_ok
@@ -185,3 +192,22 @@ class MetodosConsulta(unittest.TestCase):
         assert resposta.get_json() == resposta_filterNodes_ok
         assert json.loads(
             responses.calls[0].request.body) == request_filterNodes_ok
+
+    @logresponse
+    def test_api_nextnodes(self):
+        responses.add(
+            responses.POST,
+            _ENDERECO_NEO4J % '/db/data/transaction/commit',
+            json=resposta_nextNodes_ok
+        )
+
+        resposta = self.app.get(
+            "/api/nextNodes",
+            query_string={
+                "node_id": 395989945
+            }
+        )
+
+        assert resposta.get_json() == resposta_nextNodes_ok
+        assert json.loads(
+            responses.calls[0].request.body) == request_nextNodes_ok
