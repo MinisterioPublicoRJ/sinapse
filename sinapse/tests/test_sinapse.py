@@ -1,15 +1,19 @@
+from functools import wraps
+import json
 import unittest
 import responses
 from unittest import mock
-# from sinapse.buildup import (
-#     _AUTH,
-#     _HEADERS
-# )
 from sinapse.start import (
     app,
     _autenticar,
     _AUTH_MPRJ,
     _ENDERECO_NEO4J
+)
+from .fixtures import (
+    request_node_ok,
+    resposta_node_ok,
+    request_filterNodes_ok,
+    resposta_filterNodes_ok
 )
 
 
@@ -21,15 +25,6 @@ class CasoGlobal(unittest.TestCase):
         resposta = self.app.get('/')
 
         assert resposta.status_code == 200
-
-    # def itest_api_node(self):
-    #     _post.assert_called_once_with(
-    #         'http://neo4j.cloud.mprj.mp.br/db/data/transaction/commit',
-    #         data=('{"statements": [{"statement": "MATCH  (n) where id(n) = 1'
-    #               ' return n", "resultDataContents": ["row", "graph"]}]}'),
-    #         auth=_AUTH,
-    #         headers=_HEADERS
-    #     )
 
     def test_api_authorization(self):
         api_node = self.app.get('/api/node')
@@ -95,3 +90,63 @@ class LoginUsuario(unittest.TestCase):
         resposta = self.app.get("/api/node?node_id=10")
         assert resposta.get_json() == retorno_esperado
         assert _log_response.call_count == 1
+
+
+def logresponse(funcao):
+    @mock.patch("sinapse.start._log_response")
+    @responses.activate
+    @wraps(funcao)
+    def wrapper(*args, **kwargs):
+        # remove o _log_response da lista de argumentos
+        args = list(args)
+        args.pop(-1)
+        return funcao(*args, **kwargs)
+
+    return wrapper
+
+
+class MetodosConsulta(unittest.TestCase):
+    @mock.patch("sinapse.start._autenticar")
+    def setUp(self, _autenticar):
+        self.app = app.test_client()
+        _autenticar.side_effect = ["usuario"]
+
+        self.app.post(
+            "/login",
+            data={
+                "usuario": "usuario",
+                "senha": "senha"})
+
+    @logresponse
+    def test_api_node(self):
+        responses.add(
+            responses.POST,
+            _ENDERECO_NEO4J % '/db/data/transaction/commit',
+            json=resposta_node_ok
+        )
+
+        resposta = self.app.get("/api/node?node_id=395989945")
+
+        assert resposta.get_json() == resposta_node_ok
+        assert json.loads(responses.calls[0].request.body) == request_node_ok
+
+    @logresponse
+    def test_api_findNodes(self):
+        responses.add(
+            responses.POST,
+            _ENDERECO_NEO4J % '/db/data/transaction/commit',
+            json=resposta_filterNodes_ok
+        )
+
+        resposta = self.app.get(
+            "/api/findNodes",
+            query_string={
+                'label': 'pessoa',
+                'prop': 'nome',
+                'val': 'DANIEL CARVALHO BELCHIOR'
+            }
+        )
+
+        assert resposta.get_json() == resposta_filterNodes_ok
+        assert json.loads(
+            responses.calls[0].request.body) == request_filterNodes_ok
