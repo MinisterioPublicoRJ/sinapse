@@ -150,26 +150,29 @@ class MetodosConsulta(unittest.TestCase):
     @logresponse
     def test_metodos_consulta(self):
         for caso in casos_servicos:
-            with self.subTest(caso['nome']):
-                responses.add(
-                    caso['metodo'],
-                    _ENDERECO_NEO4J % caso['endereco'],
-                    json=caso['resposta']
-                )
+            self._consultar(caso)
 
-                resposta = self.app.get(
-                    caso['servico'],
-                    query_string=caso['query_string']
-                )
+    def _consultar(self, caso):
+        with self.subTest(caso['nome']):
+            responses.add(
+                caso['metodo'],
+                _ENDERECO_NEO4J % caso['endereco'],
+                json=caso['resposta']
+            )
 
-                assert resposta.get_json() == caso['resposta']
-                if caso['query_string']:
-                    assert json.loads(
-                        responses.calls[-1].request.body) == caso['requisicao']
-                else:
-                    assert responses.calls[-1].request.body is None
+            resposta = self.app.get(
+                caso['servico'],
+                query_string=caso['query_string']
+            )
 
-                responses.remove(
-                    caso['metodo'],
-                    _ENDERECO_NEO4J % caso['endereco']
-                )
+            assert resposta.get_json() == caso['resposta']
+            if caso['query_string']:
+                assert json.loads(
+                    responses.calls[-1].request.body) == caso['requisicao']
+            else:
+                assert responses.calls[-1].request.body is None
+
+            responses.remove(
+                caso['metodo'],
+                _ENDERECO_NEO4J % caso['endereco']
+            )
