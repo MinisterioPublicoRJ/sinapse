@@ -18,6 +18,30 @@ from sinapse.start import (
 from .fixtures import casos_servicos
 
 
+@responses.activate
+def test_autenticar_invalido():
+    responses.add(
+        responses.POST,
+        _AUTH_MPRJ,
+        status=403
+    )
+
+    retorno = _autenticar("usuario", "senha")
+    assert retorno is None
+
+
+@responses.activate
+def test_autenticar():
+    responses.add(
+        responses.POST,
+        _AUTH_MPRJ,
+        status=200
+    )
+
+    retorno = _autenticar("usuario", "senha")
+    assert retorno == "usuario"
+
+
 def logresponse(funcao):
     @mock.patch("sinapse.start._log_response")
     @responses.activate
@@ -70,28 +94,6 @@ class CasoGlobal(unittest.TestCase):
         assert api_nextNodes.status_code == 403
         assert api_nodeProperties.status_code == 403
         assert api_relationships.status_code == 403
-
-    @responses.activate
-    def test_autenticar_invalido(self):
-        responses.add(
-            responses.POST,
-            _AUTH_MPRJ,
-            status=403
-        )
-
-        retorno = _autenticar("usuario", "senha")
-        assert retorno is None
-
-    @responses.activate
-    def test_autenticar(self):
-        responses.add(
-            responses.POST,
-            _AUTH_MPRJ,
-            status=200
-        )
-
-        retorno = _autenticar("usuario", "senha")
-        assert retorno == "usuario"
 
 
 class LoginUsuario(unittest.TestCase):
