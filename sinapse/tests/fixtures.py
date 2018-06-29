@@ -1,3 +1,6 @@
+import responses
+
+
 request_node_ok = {
     'statements': [
         {
@@ -298,4 +301,72 @@ resposta_relationships_ok = [
     'personagem',
     'orgao_responsavel',
     'telefonema'
+]
+
+
+casos_servicos = [
+    {
+        'nome': 'api_node',
+        'endereco': '/db/data/transaction/commit',
+        'servico': '/api/node',
+        'resposta': resposta_node_ok,
+        'requisicao': request_node_ok,
+        'query_string': {
+            "node_id": 395989945
+        },
+        'metodo': responses.POST
+    },
+    {
+        'nome': 'api_findNodes',
+        'endereco': '/db/data/transaction/commit',
+        'servico': '/api/findNodes',
+        'resposta': resposta_filterNodes_ok,
+        'requisicao': request_filterNodes_ok,
+        'query_string': {
+            'label': 'pessoa',
+            'prop': 'nome',
+            'val': 'DANIEL CARVALHO BELCHIOR'
+        },
+        'metodo': responses.POST
+    },
+    {
+        'nome': 'api_nextNodes',
+        'endereco': '/db/data/transaction/commit',
+        'servico': '/api/nextNodes',
+        'resposta': resposta_nextNodes_ok,
+        'requisicao': request_nextNodes_ok,
+        'query_string': {
+            "node_id": 395989945
+        },
+        'metodo': responses.POST
+    },
+    {
+        'nome': 'api_nodeProperties',
+        'endereco': '/db/data/cypher',
+        'servico': '/api/nodeProperties',
+        'resposta': resposta_nodeproperties_ok,
+        'requisicao': request_nodeproperties_ok,
+        'query_string': {
+            "label": "pessoa"
+        },
+        'metodo': responses.POST
+    },
+    {
+        'nome': 'api_labels',
+        'endereco': '/db/data/labels',
+        'servico': '/api/labels',
+        'resposta': resposta_label_ok,
+        'requisicao': None,
+        'query_string': {},
+        'metodo': responses.GET
+    },
+    {
+        'nome': 'api_relationships',
+        'endereco': '/db/data/relationship/types',
+        'servico': '/api/relationships',
+        'resposta': resposta_relationships_ok,
+        'requisicao': None,
+        'query_string': {},
+        'metodo': responses.GET
+    },
 ]

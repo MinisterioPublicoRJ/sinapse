@@ -15,18 +15,7 @@ from sinapse.start import (
     _log_response
 )
 
-from .fixtures import (
-    request_node_ok,
-    resposta_node_ok,
-    request_filterNodes_ok,
-    resposta_filterNodes_ok,
-    request_nextNodes_ok,
-    resposta_nextNodes_ok,
-    request_nodeproperties_ok,
-    resposta_nodeproperties_ok,
-    resposta_label_ok,
-    resposta_relationships_ok
-)
+from .fixtures import casos_servicos
 
 
 def logresponse(funcao):
@@ -160,112 +149,28 @@ class MetodosConsulta(unittest.TestCase):
                 "senha": "senha"})
 
     @logresponse
-    def test_api_node(self):
-        responses.add(
-            responses.POST,
-            _ENDERECO_NEO4J % '/db/data/transaction/commit',
-            json=resposta_node_ok
-        )
+    def test_metodos_consulta(self):
+        for caso in casos_servicos:
+            with self.subTest(caso['nome']):
+                responses.add(
+                    caso['metodo'],
+                    _ENDERECO_NEO4J % caso['endereco'],
+                    json=caso['resposta']
+                )
 
-        resposta = self.app.get(
-            "/api/node",
-            query_string={
-                "node_id": 395989945
-            }
-        )
+                resposta = self.app.get(
+                    caso['servico'],
+                    query_string=caso['query_string']
+                )
 
-        assert resposta.get_json() == resposta_node_ok
-        assert json.loads(responses.calls[0].request.body) == request_node_ok
+                assert resposta.get_json() == caso['resposta']
+                if caso['query_string']:
+                    assert json.loads(
+                        responses.calls[-1].request.body) == caso['requisicao']
+                else:
+                    assert responses.calls[-1].request.body is None
 
-    @logresponse
-    def test_api_findNodes(self):
-        responses.add(
-            responses.POST,
-            _ENDERECO_NEO4J % '/db/data/transaction/commit',
-            json=resposta_filterNodes_ok
-        )
-
-        resposta = self.app.get(
-            "/api/findNodes",
-            query_string={
-                'label': 'pessoa',
-                'prop': 'nome',
-                'val': 'DANIEL CARVALHO BELCHIOR'
-            }
-        )
-
-        assert resposta.get_json() == resposta_filterNodes_ok
-        assert json.loads(
-            responses.calls[0].request.body) == request_filterNodes_ok
-
-    @logresponse
-    def test_api_nextnodes(self):
-        responses.add(
-            responses.POST,
-            _ENDERECO_NEO4J % '/db/data/transaction/commit',
-            json=resposta_nextNodes_ok
-        )
-
-        resposta = self.app.get(
-            "/api/nextNodes",
-            query_string={
-                "node_id": 395989945
-            }
-        )
-
-        assert resposta.get_json() == resposta_nextNodes_ok
-        assert json.loads(
-            responses.calls[0].request.body) == request_nextNodes_ok
-
-    @logresponse
-    def test_api_nodeProperties(self):
-        responses.add(
-            responses.POST,
-            _ENDERECO_NEO4J % '/db/data/cypher',
-            json=resposta_nodeproperties_ok
-        )
-
-        resposta = self.app.get(
-            "/api/nodeProperties",
-            query_string={
-                "label": "pessoa"
-            }
-        )
-
-        assert resposta.get_json() == resposta_nodeproperties_ok
-        assert json.loads(
-            responses.calls[0].request.body) == request_nodeproperties_ok
-
-    @logresponse
-    def test_api_labels(self):
-        responses.add(
-            responses.GET,
-            _ENDERECO_NEO4J % '/db/data/labels',
-            json=resposta_label_ok
-        )
-
-        resposta = self.app.get(
-            "/api/labels",
-            query_string={
-            }
-        )
-
-        assert resposta.get_json() == resposta_label_ok
-        assert responses.calls[0].request.body is None
-
-    @logresponse
-    def test_api_relationships(self):
-        responses.add(
-            responses.GET,
-            _ENDERECO_NEO4J % '/db/data/relationship/types',
-            json=resposta_relationships_ok
-        )
-
-        resposta = self.app.get(
-            "/api/relationships",
-            query_string={
-            }
-        )
-
-        assert resposta.get_json() == resposta_relationships_ok
-        assert responses.calls[0].request.body is None
+                responses.remove(
+                    caso['metodo'],
+                    _ENDERECO_NEO4J % caso['endereco']
+                )
