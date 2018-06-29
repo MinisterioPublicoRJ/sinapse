@@ -137,16 +137,15 @@ class LoginUsuario(unittest.TestCase):
 
 
 class MetodosConsulta(unittest.TestCase):
-    @mock.patch("sinapse.start._autenticar")
-    def setUp(self, _autenticar):
+    def setUp(self):
         self.app = app.test_client()
-        _autenticar.side_effect = ["usuario"]
-
-        self.app.post(
-            "/login",
-            data={
-                "usuario": "usuario",
-                "senha": "senha"})
+        with mock.patch("sinapse.start._autenticar") as _autenticar:
+            _autenticar.side_effect = ["usuario"]
+            self.app.post(
+                "/login",
+                data={
+                    "usuario": "usuario",
+                    "senha": "senha"})
 
     @logresponse
     def test_metodos_consulta(self):
