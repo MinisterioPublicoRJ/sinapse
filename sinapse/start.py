@@ -1,13 +1,16 @@
-import requests
 import json
+import requests
+
 from datetime import datetime
+from functools import wraps
+
 from flask import (
     jsonify,
     request,
     render_template,
     session,
 )
-from functools import wraps
+
 from sinapse.buildup import (
     app,
     _LOG_MONGO,
@@ -89,6 +92,7 @@ def api_node():
         "statement": "MATCH  (n) where id(n) = " + node_id + " return n",
         "resultDataContents": ["row", "graph"]
     }]}
+
     response = requests.post(
         _ENDERECO_NEO4J % '/db/data/transaction/commit',
         data=json.dumps(query),
@@ -104,7 +108,7 @@ def api_findNodes():
     label = request.args.get('label')
     prop = request.args.get('prop')
     val = request.args.get('val')
-
+    # TODO: alterar para prepared statement
     query = {"statements": [{
         "statement": "MATCH (n: %s { %s:toUpper('%s')}) "
         "return n" % (label, prop, val),
