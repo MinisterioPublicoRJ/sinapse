@@ -178,3 +178,31 @@ class MetodosConsulta(unittest.TestCase):
                 caso['metodo'],
                 _ENDERECO_NEO4J % caso['endereco']
             )
+
+
+class LogoutUsuario(unittest.TestCase):
+    def setUp(self):
+        self.app = app.test_client()
+
+    @mock.patch("sinapse.start._autenticar")
+    def test_logout(self, _autenticar):
+        _autenticar.side_effect = ["usuario"]
+        # Loga usuario
+        self.app.post(
+            "/login",
+            data={
+                "usuario": "usuario",
+                "senha": "senha"})
+
+        retorno = self.app.get(
+            "/logout",
+        )
+
+        assert retorno.status_code == 201
+        assert retorno.data == b'OK'
+
+    def test_logout_usuario_nao_logado(self):
+        retorno = self.app.get("/logout")
+
+        assert retorno.status_code == 200
+        assert retorno.data == 'Usuário não logado'.encode('utf-8')

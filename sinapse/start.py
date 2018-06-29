@@ -78,6 +78,15 @@ def login():
     return "NOK", 401
 
 
+@app.route("/logout", methods=["GET", "POST"])
+def logout():
+    if 'usuario' in session:
+        del session['usuario']
+        return "OK", 201
+
+    return "Usuário não logado", 200
+
+
 @app.route("/")
 def raiz():
     return render_template('index.html')
