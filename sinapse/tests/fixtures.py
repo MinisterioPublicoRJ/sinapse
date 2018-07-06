@@ -4,7 +4,9 @@ import responses
 request_node_ok = {
     'statements': [
         {
-            'statement': 'MATCH  (n) where id(n) = 395989945 return n',
+            'statement': (
+                'MATCH  (n) where id(n) = 395989945 and'
+                ' n.sensivel is null return n'),
             'resultDataContents': [
                 'row',
                 'graph'
@@ -52,7 +54,8 @@ resposta_node_ok = {
 request_filterNodes_ok = {
     'statements': [
         {'statement': "MATCH (n: pessoa { "
-         "nome:toUpper('DANIEL CARVALHO BELCHIOR')}) return n",
+         "nome:toUpper('DANIEL CARVALHO BELCHIOR')}) where n.sensivel is"
+         " null return n",
          'resultDataContents': [
              'row',
              'graph'
