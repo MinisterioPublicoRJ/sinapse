@@ -12,10 +12,25 @@ from sinapse.start import (
     _autenticar,
     _AUTH_MPRJ,
     _ENDERECO_NEO4J,
-    _log_response
+    _log_response,
+    limpa_nos,
+    limpa_linhas,
+    remove_info_sensiveis,
+    resposta_sensivel,
+    limpa_relacoes
 )
 
-from .fixtures import casos_servicos
+from .fixtures import (
+    casos_servicos,
+    resposta_node_sensivel_ok,
+    nos_sensiveis_esp,
+    resposta_node_sensivel_esp,
+    resposta_node_ok,
+    resposta_sensivel_mista,
+    resposta_sensivel_mista_esp,
+    relacoes_sensiveis,
+    relacoes_sensiveis_esp
+)
 
 
 @responses.activate
@@ -206,3 +221,90 @@ class LogoutUsuario(unittest.TestCase):
 
         assert retorno.status_code == 200
         assert retorno.data == 'Usuário não logado'.encode('utf-8')
+
+
+class RemoveInfoSensivel(unittest.TestCase):
+    def setUp(self):
+        self.app = app.test_client()
+        with mock.patch("sinapse.start._autenticar") as _autenticar:
+            _autenticar.side_effect = ["usuario"]
+            self.app.post(
+                "/login",
+                data={
+                    "usuario": "usuario",
+                    "senha": "senha"})
+
+    def test_remove_nos_sensiveis(self):
+        nos = resposta_node_sensivel_ok['results'][0]['data'][0][
+            'graph']['nodes']
+        info = limpa_nos(nos)
+
+        self.assertNotEqual(info, nos)
+        self.assertEqual(info, nos_sensiveis_esp)
+
+    def test_remove_linhas_sensiveis(self):
+        linhas = resposta_node_sensivel_ok['results'][0]['data'][0]['row']
+        info = limpa_linhas(linhas)
+
+        self.assertNotEqual(info, linhas)
+        self.assertEqual(info, [dict()])
+
+    def test_mantem_nos_nao_sensiveis(self):
+        nos = resposta_node_ok['results'][0]['data'][0][
+            'graph']['nodes']
+        info = limpa_nos(nos)
+
+        self.assertEqual(info, nos)
+
+    def test_mantem_linhas_nao_sensiveis(self):
+        linhas = resposta_node_ok['results'][0]['data'][0]['row']
+        info = limpa_linhas(linhas)
+
+        self.assertEqual(info, linhas)
+
+    def test_remove_relacoes_sensiveis(self):
+        info = limpa_relacoes(relacoes_sensiveis)
+
+        self.assertEqual(info, relacoes_sensiveis_esp)
+
+    def test_remove_informacoes_sensiveis(self):
+        info = remove_info_sensiveis(resposta_node_sensivel_ok)
+
+        self.assertEqual(info, resposta_node_sensivel_esp)
+
+    def test_remove_informacoes_sensiveis_mistas(self):
+        self.maxDiff = None
+        info = remove_info_sensiveis(resposta_sensivel_mista)
+
+        self.assertEqual(info, resposta_sensivel_mista_esp)
+
+    # TODO: separar utils de views
+    def test_checa_se_informacao_e_sensivel(self):
+        self.assertTrue(resposta_sensivel(resposta_node_sensivel_ok))
+        self.assertFalse(resposta_sensivel(resposta_node_ok))
+
+    @mock.patch("sinapse.start._log_response")
+    @responses.activate
+    def test_request_response_com_info_sensivel(self, _log_response):
+        responses.add(
+            responses.POST,
+            _ENDERECO_NEO4J % '/db/data/transaction/commit',
+            json=resposta_node_sensivel_ok
+        )
+
+        resposta = self.app.get('/api/node?node_id=395989945')
+
+        self.assertEqual(resposta.json, resposta_node_sensivel_esp)
+
+    @mock.patch("sinapse.start._log_response")
+    @responses.activate
+    def test_request_response_com_info_nao_sensivel(self, _log_response):
+        responses.add(
+            responses.POST,
+            _ENDERECO_NEO4J % '/db/data/transaction/commit',
+            json=resposta_node_ok
+        )
+
+        resposta = self.app.get('/api/node?node_id=395989945')
+
+        self.assertEqual(resposta.json, resposta_node_ok)

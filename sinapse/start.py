@@ -1,6 +1,7 @@
 import json
 import requests
 
+from copy import deepcopy
 from datetime import datetime
 from functools import wraps
 
@@ -25,7 +26,75 @@ def respostajson(response):
     usuario = session.get('usuario', "dummy")
     sessionid = request.cookies.get('session')
     _log_response(usuario, sessionid, response)
+    dados = response.json()
+    if resposta_sensivel(dados):
+        return jsonify(remove_info_sensiveis(dados))
+
     return jsonify(response.json())
+
+
+def limpa_nos(nos):
+    copia_nos = deepcopy(nos)
+    for no in copia_nos:
+        if 'sensivel' in no['properties'].keys():
+            no['labels'] = ['sigiloso']
+            no['properties'] = dict()
+
+    return copia_nos
+
+
+def limpa_linhas(linhas):
+    copia_linhas = deepcopy(linhas)
+    novas_linhas = []
+    for linha in copia_linhas:
+        if isinstance(linha, list):
+            novas_linhas.append(limpa_linhas(linha))
+        elif isinstance(linha, dict):
+            if 'sensivel' in linha.keys():
+                novas_linhas.append(dict())
+            else:
+                novas_linhas.append(linha)
+
+    return novas_linhas
+
+
+def limpa_relacoes(relacoes):
+    copia_relacoes = deepcopy(relacoes)
+    for relacao in copia_relacoes:
+        if 'sensivel' in relacao['properties'].keys():
+            relacao['type'] = 'sigiloso'
+            relacao['properties'] = dict()
+
+    return copia_relacoes
+
+
+def remove_info_sensiveis(resposta):
+    resp = deepcopy(resposta)
+    for data in resp['results'][0]['data']:
+        data['graph']['nodes'] = limpa_nos(data['graph']['nodes'])
+        data['row'] = limpa_linhas(data['row'])
+        data['graph']['relationships'] = limpa_relacoes(
+            data['graph']['relationships'])
+
+    return resp
+
+
+def resposta_sensivel(resposta):
+    def parser_dicionario(dicionario, chave):
+        if isinstance(dicionario, dict):
+            for k, v in dicionario.items():
+                if k == chave:
+                    yield v
+                else:
+                    yield from parser_dicionario(v, chave)
+        elif isinstance(dicionario, list):
+            for item in dicionario:
+                yield from parser_dicionario(item, chave)
+
+    try:
+        return next(parser_dicionario(resposta, 'sensivel'))
+    except StopIteration:
+        return False
 
 
 def _log_response(usuario, sessionid, response):
