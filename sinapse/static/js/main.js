@@ -76,7 +76,7 @@ function init() {
         onRelationshipDoubleClick: function(relationship) {
             console.log('double click on relationship: ' + JSON.stringify(relationship));
         },
-        zoomFit: true
+        //zoomFit: true
     });
 }
 
