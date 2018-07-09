@@ -98,10 +98,7 @@ def api_node():
     node_id = request.args.get('node_id')
 
     query = {"statements": [{
-        "statement": (
-            "MATCH  (n) where id(n) = " + node_id +
-            " and n.sensivel is null return n"
-        ),
+        "statement": "MATCH  (n) where id(n) = " + node_id + " return n",
         "resultDataContents": ["row", "graph"]
     }]}
 
@@ -122,8 +119,8 @@ def api_findNodes():
     val = request.args.get('val')
     # TODO: alterar para prepared statement
     query = {"statements": [{
-        "statement": "MATCH (n: %s { %s:toUpper('%s')}) "
-        "where n.sensivel is null return n" % (label, prop, val),
+        "statement": "MATCH (n: %s { %s:toUpper('%s')})"
+        " return n" % (label, prop, val),
         "resultDataContents": ["row", "graph"]
     }]}
     response = requests.post(
@@ -139,8 +136,8 @@ def api_findNodes():
 def api_nextNodes():
     node_id = request.args.get('node_id')
     query = {"statements": [{
-        "statement": "MATCH r = (n)-[*..1]-(x) where id(n) = %s "
-        "return r,n,x" % node_id,
+        "statement": "MATCH r = (n)-[*..1]-(x) where id(n) = %s"
+        " return r,n,x" % node_id,
         "resultDataContents": ["row", "graph"]
     }]}
     response = requests.post(

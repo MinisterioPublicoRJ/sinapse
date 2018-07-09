@@ -4,9 +4,7 @@ import responses
 request_node_ok = {
     'statements': [
         {
-            'statement': (
-                'MATCH  (n) where id(n) = 395989945 and'
-                ' n.sensivel is null return n'),
+            'statement': 'MATCH  (n) where id(n) = 395989945 return n',
             'resultDataContents': [
                 'row',
                 'graph'
@@ -51,11 +49,105 @@ resposta_node_ok = {
     ]
 }
 
+resposta_node_sensivel_ok = {
+    'errors': [],
+    'results': [
+        {
+            'columns': ['n'],
+            'data': [
+                {
+                    'graph': {
+                        'nodes': [
+                            {
+                                'id': '395989945',
+                                'labels': ['personagem'],
+                                'properties': {
+                                    'cpf': '11452244740',
+                                    'nome': 'DANIEL CARVALHO BELCHIOR',
+                                    'pess_dk': 15535503,
+                                    'sensivel': True,
+                                }
+                            }],
+                        'relationships': []
+                    },
+                    'meta': [{
+                        'deleted': False,
+                        'id': 395989945,
+                        'type': 'node'
+                    }],
+                    'row': [{
+                        'cpf': '11452244740',
+                        'nome': 'DANIEL CARVALHO BELCHIOR',
+                        'pess_dk': 15535503,
+                        'sensivel': True
+                    }]
+                }
+            ]
+        }
+    ]
+}
+
+nos_sensiveis_esp = [
+        {
+            'id': '395989945',
+            'labels': ['sigiloso'],
+            'properties': {
+            }
+        }
+]
+
+
+relacoes_sensiveis = [{
+    'id': '282346165',
+    'type': 'filho',
+    'startNode': '12075099',
+    'endNode': '10844320',
+    'properties': {'sensivel': True},
+    }]
+
+relacoes_sensiveis_esp = [{
+    'id': '282346165',
+    'type': 'sigiloso',
+    'startNode': '12075099',
+    'endNode': '10844320',
+    'properties': {},
+    }]
+
+resposta_node_sensivel_esp = {
+    'errors': [],
+    'results': [
+        {
+            'columns': ['n'],
+            'data': [
+                {
+                    'graph': {
+                        'nodes': [
+                            {
+                                'id': '395989945',
+                                'labels': ['sigiloso'],
+                                'properties': {
+                                }
+                            }],
+                        'relationships': []
+                    },
+                    'meta': [{
+                        'deleted': False,
+                        'id': 395989945,
+                        'type': 'node'
+                    }],
+                    'row': [{
+                    }]
+                }
+            ]
+        }
+    ]
+}
+
+
 request_filterNodes_ok = {
     'statements': [
         {'statement': "MATCH (n: pessoa { "
-         "nome:toUpper('DANIEL CARVALHO BELCHIOR')}) where n.sensivel is"
-         " null return n",
+         "nome:toUpper('DANIEL CARVALHO BELCHIOR')}) return n",
          'resultDataContents': [
              'row',
              'graph'
