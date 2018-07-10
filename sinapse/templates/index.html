@@ -19,6 +19,16 @@
         </style>
     </head>
     <body>
+        <div class="busca">
+            <select id="selectLabel">
+                <option value="">Escolha uma opção</option>
+            </select>
+            <select id="selectProp">
+                <option value="">Escolha uma propriedade</option>
+            </select>
+            <input type="text" id="textBusca">
+            <button id="buttonBusca">Buscar</button>
+        </div>
         <div id="neo4jd3"></div>
         {% assets "js" %}
             <script type="text/javascript" src="{{ ASSET_URL }}"></script>
