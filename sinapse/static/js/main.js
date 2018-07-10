@@ -1,11 +1,13 @@
 const init = () => {
     initNeo4JD3()
     getLabels()
-    //initSearch()
+    initSearch()
 }
 
+let neo4jd3
+
 const initNeo4JD3 = () => {
-    var neo4jd3 = new Neo4jd3('#neo4jd3', {
+    neo4jd3 = new Neo4jd3('#neo4jd3', {
         highlight: [
             {
                 class: 'Project',
@@ -80,7 +82,22 @@ const getLabels = () => {
 
 const setLabels = labels => {
     let selectLabel = document.getElementById('selectLabel')
+
+    // attach onchange event
     selectLabel.onchange = updateProps
+    
+    // remove children option
+    while (selectLabel.firstChild) {
+        selectLabel.removeChild(selectLabel.firstChild);
+    }
+    
+    // add empty option
+    let emptyOption = document.createElement('option')
+    emptyOption.value = ''
+    emptyOption.innerHTML = 'Escolha um tipo'
+    selectLabel.appendChild(emptyOption)
+    
+    // add options
     labels.sort().map(label => appendOption(selectLabel, label))
 }
 
@@ -98,24 +115,55 @@ const updateProps = () => {
 
 const getNodeProperties = label => {
     get(`api/nodeProperties?label=${label}`, setProps)
+
+    // show loading
+    let selectProp = document.getElementById('selectProp')
+    while (selectProp.firstChild) {
+        selectProp.removeChild(selectProp.firstChild);
+    }
+    let emptyOption = document.createElement('option')
+    emptyOption.value = ''
+    emptyOption.innerHTML = 'Aguarde, carregando...'
+    selectProp.appendChild(emptyOption)
 }
 
 const setProps = nodeProperties => {
     let props = nodeProperties.data[0][0]
-    console.log('props', props)
+    
     let selectProp = document.getElementById('selectProp')
+    
+    // remove children option
+    while (selectProp.firstChild) {
+        selectProp.removeChild(selectProp.firstChild);
+    }
+
+    // add empty option
+    let emptyOption = document.createElement('option')
+    emptyOption.value = ''
+    emptyOption.innerHTML = 'Escolha uma propriedade'
+    selectProp.appendChild(emptyOption)
+    
+    // add options
     props.sort().map(prop => appendOption(selectProp, prop))
 }
 
-// const initSearch = () => {
-//     let tipoBusca = document.getElementById('selectBusca').value
-//     let valorBusca = document.getElementById('textBusca').value
-//     if (!tipoBusca || !valorBusca) {
-//         return alert('É preciso escolher o tipo e preencher o valor da busca')
-//     }
-// }
+const initSearch = () => {
+    document.getElementById('buttonBusca').onclick = findNodes
+}
 
-// const getBusca
+const findNodes = () => {
+    let label = document.getElementById('selectLabel').value
+    let prop = document.getElementById('selectProp').value
+    let val = document.getElementById('textVal').value
+    if (!label || !prop || !val) {
+        return alert('ERRO: É preciso escolher o tipo, a propriedade e preencher um valor para realizar uma busca.')
+    }
+    get(`/api/findNodes?label=${label}&prop=${prop}&val=${val}`, updateNodes)
+}
+
+const updateNodes = data => {
+    neo4jd3.updateWithNeo4jData(data)
+}
 
 const optionText = text => {
     switch (text) {
@@ -130,6 +178,12 @@ const optionText = text => {
     }
 }
 
+/**
+ * Make a HTTP GET call and returns the data.
+ * 
+ * @param {String} url - The URL to GET
+ * @param {Function} callback - A function to be executed with the returned data.
+ */
 const get = (url, callback) => {
     var xmlhttp = new XMLHttpRequest()
     xmlhttp.open('GET', url, true)
