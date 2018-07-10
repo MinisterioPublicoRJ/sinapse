@@ -129,7 +129,8 @@ def _autenticar(usuario, senha):
 def login_necessario(funcao):
     @wraps(funcao)
     def funcao_decorada(*args, **kwargs):
-        if "usuario" not in session and not config('DEV'):
+        if "usuario" not in session and not config(
+                'DEV', default=False, cast=bool):
             return "Não autorizado", 403
         return funcao(*args, **kwargs)
     return funcao_decorada
