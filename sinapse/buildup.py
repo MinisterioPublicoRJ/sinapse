@@ -6,7 +6,9 @@ from requests.auth import HTTPBasicAuth
 
 app = Flask("sinapse")
 app.secret_key = config('SECRET')
+app.jinja_env.auto_reload = True
 app.config['SESSION_TYPE'] = 'filesystem'
+app.config['TEMPLATES_AUTO_RELOAD'] = True
 
 _AUTH = HTTPBasicAuth(config('NEO4J_USUARIO'), config('NEO4J_SENHA'))
 _ENDERECO_NEO4J = config('NEO4J_DOMINIO') + '%s'
