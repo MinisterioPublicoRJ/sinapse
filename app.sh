@@ -1,2 +1,2 @@
 #!/bin/bash
-waitress-serve --listen=*:8080 sinapse.start:app
+gunicorn sinapse.start:app --bind=0.0.0.0:8080

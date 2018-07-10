@@ -7,7 +7,6 @@ bundles = {
     'js': Bundle(
         'js/d3.min.js',
         'js/neo4jd3.js',
-        output='js/js.js'
     ),
     'css': Bundle(
         "css/bootstrap.min.css",
