@@ -147,7 +147,7 @@ resposta_node_sensivel_esp = {
 request_filterNodes_ok = {
     'statements': [
         {'statement': "MATCH (n: pessoa { "
-         "nome:toUpper('DANIEL CARVALHO BELCHIOR')}) return n",
+         "nome:toUpper('DANIEL CARVALHO BELCHIOR')}) return n limit 100",
          'resultDataContents': [
              'row',
              'graph'
@@ -211,7 +211,7 @@ request_nextNodes_ok = {
     'statements': [
         {
             'statement': 'MATCH r = (n)-[*..1]-(x) '
-            'where id(n) = 395989945 return r,n,x',
+            'where id(n) = 395989945 return r,n,x limit 100',
             'resultDataContents': ['row', 'graph']}
     ]
 }
