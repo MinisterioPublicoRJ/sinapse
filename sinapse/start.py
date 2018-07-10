@@ -191,7 +191,7 @@ def api_findNodes():
     # TODO: alterar para prepared statement
     query = {"statements": [{
         "statement": "MATCH (n: %s { %s:toUpper('%s')})"
-        " return n limit 1000" % (label, prop, val),
+        " return n limit 100" % (label, prop, val),
         "resultDataContents": ["row", "graph"]
     }]}
     response = requests.post(
@@ -208,8 +208,8 @@ def api_nextNodes():
     node_id = request.args.get('node_id')
     query = {"statements": [{
         "statement": "MATCH r = (n)-[*..1]-(x) where id(n) = %s"
-        " return r,n,x limit 1000" % node_id,
-        "resultDataContents": ["row", "graph"] 
+        " return r,n,x limit 100" % node_id,
+        "resultDataContents": ["row", "graph"]
     }]}
     response = requests.post(
         _ENDERECO_NEO4J % '/db/data/transaction/commit',
