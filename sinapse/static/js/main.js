@@ -103,10 +103,32 @@ function get(url, callback){
     xmlhttp.send(null);
 }
 
-function populateSidebarRight(node) {
-    
+const sidebar = document.getElementById("sidebarRight")
+
+const populateSidebarRight = (node) => {
+    console.log(node)
+
+    let dataContainerDiv = document.createElement("aside")
+    let content = document.createElement("div")
+    Object.keys(node.properties).forEach(function(property) {
+        
+        let labelSpan = document.createElement("span")
+        let labelContent = document.createTextNode(property)
+        labelSpan.appendChild(labelContent)
+        content.appendChild(labelSpan)
+
+        let dataSpan = document.createElement("span")
+        let dataContent = document.createTextNode(node.properties[property])
+        dataSpan.appendChild(dataContent)
+        content.appendChild(dataSpan)
+
+
+        console.log(property, node.properties[property])
+    });
+
+    sidebar.appendChild(content)
 }
 
-function showSidebarRight() {
-    document.getElementById("sidebarRight").style.display = "block";
+const showSidebarRight = () => {
+    sidebar.style.display = "block"
 }

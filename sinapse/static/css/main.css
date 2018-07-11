@@ -3,7 +3,8 @@
   width: 25%;
   height: 100%;
   position: absolute;
-  background-color: red;
+  border-left: 1px black solid;
+  padding: 10px;
   top: 0;
   right: 0;
 }
