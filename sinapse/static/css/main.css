@@ -1,0 +1,9 @@
+#sidebarRight {
+  display: none;
+  width: 25%;
+  height: 100%;
+  position: absolute;
+  background-color: red;
+  top: 0;
+  right: 0;
+}
