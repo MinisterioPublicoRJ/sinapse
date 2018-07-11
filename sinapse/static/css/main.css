@@ -4,7 +4,11 @@
   height: 100%;
   position: absolute;
   border-left: 1px black solid;
-  padding: 10px;
   top: 0;
   right: 0;
+}
+
+#sidebarRight > div > span {
+  display: block;
+  margin: 20px;
 }

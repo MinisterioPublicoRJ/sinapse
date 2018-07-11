@@ -113,11 +113,13 @@ const populateSidebarRight = (node) => {
     Object.keys(node.properties).forEach(function(property) {
         
         let labelSpan = document.createElement("span")
+        labelSpan.className = "sidebarRight-label"
         let labelContent = document.createTextNode(property)
         labelSpan.appendChild(labelContent)
         content.appendChild(labelSpan)
 
         let dataSpan = document.createElement("span")
+        dataSpan.className = "sidebarRight-data"
         let dataContent = document.createTextNode(node.properties[property])
         dataSpan.appendChild(dataContent)
         content.appendChild(dataSpan)
