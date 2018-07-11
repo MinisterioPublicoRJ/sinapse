@@ -76,6 +76,10 @@ function init() {
         onRelationshipDoubleClick: function(relationship) {
             console.log('double click on relationship: ' + JSON.stringify(relationship));
         },
+        onNodeClick: function(node) {
+            populateSidebarRight(node);
+            showSidebarRight();
+        },
         //zoomFit: true
     });
 }
@@ -97,4 +101,12 @@ function get(url, callback){
         }
     };
     xmlhttp.send(null);
+}
+
+function populateSidebarRight(node) {
+    
+}
+
+function showSidebarRight() {
+    document.getElementById("sidebarRight").style.display = "block";
 }
