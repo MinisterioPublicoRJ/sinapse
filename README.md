@@ -29,6 +29,7 @@ MONGO_AUTHDB=(domínio de autorização)
 SECRET=(secret key única segura)  
 AUTH_MPRJ=(FQDN do autorizador web MPRJ)  
 USERINFO_MPRJ=(FQDN do sistema de roles MPRJ)  
+DEV=True/False(Em DEV não precisa de autenticação)  
 ```
 
 ## Dependências, Instalação e Execução
