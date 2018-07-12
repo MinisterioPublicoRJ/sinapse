@@ -291,6 +291,7 @@ const populateSidebarRight = (node) => {
     }
     
     let closeButton = document.createElement("button")
+    closeButton.addEventListener("click", (e) => hideSidebarRight(), false)
     closeButton.setAttribute("id", "closeSidebarRight")
     sidebarRight.appendChild(closeButton)
 
@@ -300,7 +301,7 @@ const populateSidebarRight = (node) => {
         
         let labelSpan = document.createElement("span")
         labelSpan.className = "sidebarRight-label"
-        let labelContent = document.createTextNode(optionText(property))
+        let labelContent = document.createTextNode(formatPropString(property))
         labelSpan.appendChild(labelContent)
         content.appendChild(labelSpan)
 
@@ -319,5 +320,9 @@ const populateSidebarRight = (node) => {
 
 const showSidebarRight = () => {
     sidebarRight.style.display = "block"
+}
+
+const hideSidebarRight = () => {
+    sidebarRight.style.display = "none"
 }
 window.onload = init
