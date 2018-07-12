@@ -224,16 +224,22 @@ const populateSidebarRight = (node) => {
     console.log(node)
 
     let dataContainerDiv = document.createElement("aside")
-    
-    if(sidebarRight.hasChildNodes()){
-        sidebarRight.removeChild(sidebarRight.firstChild)
+
+    while (sidebarRight.hasChildNodes()) {
+        sidebarRight.removeChild(sidebarRight.firstChild);
     }
+    
+    let closeButton = document.createElement("button")
+    closeButton.setAttribute("id", "closeSidebarRight")
+    sidebarRight.appendChild(closeButton)
+
     let content = document.createElement("div")
+    content.setAttribute("id", "content")
     Object.keys(node.properties).forEach(function(property) {
         
         let labelSpan = document.createElement("span")
         labelSpan.className = "sidebarRight-label"
-        let labelContent = document.createTextNode(property)
+        let labelContent = document.createTextNode(optionText(property))
         labelSpan.appendChild(labelContent)
         content.appendChild(labelSpan)
 
