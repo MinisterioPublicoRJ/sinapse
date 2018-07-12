@@ -121,7 +121,7 @@ const setLabels = labels => {
 const appendOption = (select, optionValue) => {
     var option = document.createElement('option')
     option.value = optionValue
-    option.innerHTML = optionText(optionValue)
+    option.innerHTML = formatPropString(optionValue)
     select.appendChild(option)
 }
 
@@ -182,16 +182,77 @@ const updateNodes = data => {
     neo4jd3.updateWithNeo4jData(data)
 }
 
-const optionText = text => {
+/**
+ * Adds diacritics (a => á) and formats props case.
+ * 
+ * @param {string} text The prop string to be formatted
+ */
+const formatPropString = text => {
     switch (text) {
+        // 1st Level
         case 'veiculo':
             return 'Veículo'
         case 'orgao':
             return 'Órgão'
         case 'mgp':
             return 'MGP'
+        // Empresa
+        case 'cnae':
+            return 'CNAE'
+        case 'cnpj':
+            return 'CNPJ'
+        case 'cpf_responsavel':
+            return 'CPF do Responsável'
+        case 'data_inicio':
+            return 'Data de Início'
+        case 'municipio':
+            return 'Município'
+        case 'nome_responsavel':
+            return 'Nome do Responsável'
+        case 'razao_social':
+            return 'Razão Social'
+        case 'uf':
+            return 'UF'
+        // MGP
+        case 'cdorgao':
+            return 'Código do Órgão'
+        case 'docu_dk':
+            return 'ID do Documento'
+        case 'dt_cadastro':
+            return 'Data do Cadastro'
+        case 'nr_ext':
+            return 'Número Externo'
+        case 'nr_mprj':
+            return 'Número MPRJ'
+        // Multa
+        case 'desc':
+            return 'Descrição'
+        // Órgão
+        case 'craai':
+            return 'CRAAI'
+        case 'dt_criacao':
+            return 'Data de Criação'
+        case 'dt_extincao':
+            return 'Data de Extinção'
+        case 'sensivel':
+            return 'Sensível'
+        case 'situacao':
+            return 'Situação'
+        // Pessoa
+        case 'cpf':
+            return 'CPF'
+        case 'dt_nasc':
+            return 'Data de Nascimento'
+        case 'nome_mae':
+            return 'Nome da Mãe'
+        // Telefone
+        case 'numero':
+            return 'Número'
+        // Veículo
+        case 'cpfcnpj':
+            return 'CPF/CNPJ'
         default:
-            return text.substr(0, 1).toUpperCase() + text.substr(1)
+            return text.split('_').map(word => word.substr(0, 1).toUpperCase() + word.substr(1)).join(' ')
     }
 }
 
