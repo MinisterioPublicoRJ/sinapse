@@ -19,6 +19,16 @@
         </style>
     </head>
     <body>
+        <div class="busca">
+            <select id="selectLabel">
+                <option value="">Aguarde...</option>
+            </select>
+            <select id="selectProp">
+                <option value="">&lt;- Escolha primeiro</option>
+            </select>
+            <input type="text" id="textVal" placeholder="Digite um valor">
+            <button id="buttonBusca">Buscar</button>
+        </div>
         <div id="neo4jd3"></div>
         <aside id="sidebarRight"></aside>
         {% assets "js" %}
