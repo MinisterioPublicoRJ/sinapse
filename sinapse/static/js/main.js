@@ -114,12 +114,16 @@ function get(url, callback){
     xmlhttp.send(null);
 }
 
-const sidebar = document.getElementById("sidebarRight")
+const sidebarRight = document.getElementById("sidebarRight")
 
 const populateSidebarRight = (node) => {
     console.log(node)
 
     let dataContainerDiv = document.createElement("aside")
+    
+    if(sidebarRight.hasChildNodes()){
+        sidebarRight.removeChild(sidebarRight.firstChild)
+    }
     let content = document.createElement("div")
     Object.keys(node.properties).forEach(function(property) {
         
@@ -139,9 +143,9 @@ const populateSidebarRight = (node) => {
         console.log(property, node.properties[property])
     });
 
-    sidebar.appendChild(content)
+    sidebarRight.appendChild(content)
 }
 
 const showSidebarRight = () => {
-    sidebar.style.display = "block"
+    sidebarRight.style.display = "block"
 }
