@@ -80,7 +80,7 @@ class CasoGlobal(unittest.TestCase):
     def test_raiz(self):
         resposta = self.app.get('/')
 
-        assert resposta.status_code == 200
+        assert resposta.status_code == 302
 
     def test_autorizacao_da_api(self):
         api_node = self.app.get('/api/node')

@@ -9,6 +9,8 @@ from flask import (
     request,
     render_template,
     session,
+    url_for,
+    redirect
 )
 
 from sinapse.buildup import (
@@ -91,8 +93,9 @@ def logout():
 
 
 @app.route("/")
-@login_necessario
 def raiz():
+    if 'usuario' not in session:
+        return redirect(url_for('login'), code=302)
     return render_template('index.html')
 
 
