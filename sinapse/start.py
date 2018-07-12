@@ -65,17 +65,20 @@ def login_necessario(funcao):
     return funcao_decorada
 
 
-@app.route("/login", methods=["POST"])
+@app.route("/login", methods=["POST", "GET"])
 def login():
-    usuario = request.form.get("usuario")
-    senha = request.form.get("senha")
+    if request.method == "GET":
+        return render_template("login.html")
+    else:
+        usuario = request.form.get("usuario")
+        senha = request.form.get("senha")
 
-    resposta = _autenticar(usuario, senha)
-    if resposta:
-        session['usuario'] = resposta
-        return "OK", 201
+        resposta = _autenticar(usuario, senha)
+        if resposta:
+            session['usuario'] = resposta
+            return "OK", 201
 
-    return "NOK", 401
+        return "NOK", 401
 
 
 @app.route("/logout", methods=["GET", "POST"])
@@ -88,6 +91,7 @@ def logout():
 
 
 @app.route("/")
+@login_necessario
 def raiz():
     return render_template('index.html')
 
