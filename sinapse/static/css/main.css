@@ -5,15 +5,15 @@
   position: absolute;
   top: 0;
   right: 0;
+  color: #848484;
 }
 
 #closeSidebarRight {
-  width: 25%;
-  height: 25%;
   top: 0;
   right: 0;
-  background-color: red;
   margin-top: 30px;
+  border: none;
+  background: none;
 }
 
 #sidebarRight > div {
@@ -29,4 +29,36 @@
 
 #sidebarRight > div > span:first-child {
   margin-top: 30px;
+}
+
+.personagem .sidebarRight-data, .personagem #closeSidebarRight {
+  color: #a176d1;
+}
+
+.pessoa .sidebarRight-data, .pessoa #closeSidebarRight {
+  color: #00d1e2;
+}
+
+.empresa .sidebarRight-data, .empresa #closeSidebarRight {
+  color: #51c881;
+}
+
+.telefone .sidebarRight-data, .telefone #closeSidebarRight {
+  color: #324eb6;
+}
+
+.multa .sidebarRight-data, .multa #closeSidebarRight {
+  color: #ff524e;
+}
+
+.veiculo .sidebarRight-data, .veiculo #closeSidebarRight {
+  color: #ff8b63;
+}
+
+.orgao .sidebarRight-data, .orgao #closeSidebarRight {
+  color: #ffb842;
+}
+
+.mgp .sidebarRight-data, .mgp #closeSidebarRight {
+  color: #ab897f;
 }

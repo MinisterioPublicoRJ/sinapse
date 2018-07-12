@@ -281,8 +281,50 @@ const get = (url, callback) => {
 
 const sidebarRight = document.getElementById("sidebarRight")
 
+/*
+    cores: 
+    pessoa: #00d1e2
+    empresas: #51c881
+    telefone: #324eb6
+    personagens: #a176d1
+    multas: #ff524e
+    veiculos: #ff8b63
+    orgãos: #ffb842
+    mgp: #ab897f
+*/
+
 const populateSidebarRight = (node) => {
     console.log(node)
+    switch (node.labels[0]) {
+        case 'personagem':
+            sidebarRight.setAttribute("class", 'personagem')
+            break
+        case 'pessoa':
+            sidebarRight.setAttribute("class", 'pessoa')
+            break
+        case 'empresa':
+            sidebarRight.setAttribute("class", 'empresa')
+            break
+        case 'telefone':
+            sidebarRight.setAttribute("class", 'telefone')
+            break
+        case 'multa':
+            sidebarRight.setAttribute("class", 'multa')
+            break
+        case 'veiculo':
+            sidebarRight.setAttribute("class", 'veiculo')
+            break
+        case 'orgao':
+            sidebarRight.setAttribute("class", 'orgao')
+            break
+        case 'mgp':
+            sidebarRight.setAttribute("class", 'mgp')
+            break
+
+        default:
+            sidebarRight.setAttribute("class", '')
+            break
+    }
 
     let dataContainerDiv = document.createElement("aside")
 
@@ -292,7 +334,9 @@ const populateSidebarRight = (node) => {
     
     let closeButton = document.createElement("button")
     closeButton.addEventListener("click", (e) => hideSidebarRight(), false)
+    let closeButtonText = document.createTextNode("X")
     closeButton.setAttribute("id", "closeSidebarRight")
+    closeButton.appendChild(closeButtonText)
     sidebarRight.appendChild(closeButton)
 
     let content = document.createElement("div")
