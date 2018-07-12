@@ -1,4 +1,6 @@
 function init() {
+    let doubleClickTime = 0;
+    const threshold = 200;
     var neo4jd3 = new Neo4jd3('#neo4jd3', {
         highlight: [
             {
@@ -69,6 +71,7 @@ function init() {
         neo4jDataUrl: '/static/json/neo4jData.json',
         nodeRadius: 25,
         onNodeDoubleClick: function(node) {
+            doubleClickTime = new Date();
             get('api/nextNodes?node_id=' + node.id, (data) => {
                 neo4jd3.updateWithNeo4jData(data);
             });                        
@@ -77,8 +80,16 @@ function init() {
             console.log('double click on relationship: ' + JSON.stringify(relationship));
         },
         onNodeClick: function(node) {
-            populateSidebarRight(node);
-            showSidebarRight();
+            let t0 = new Date();
+            if (t0 - doubleClickTime > threshold) {
+                setTimeout(function () {
+                    if (t0 - doubleClickTime > threshold) {
+                        populateSidebarRight(node);
+                        showSidebarRight();
+                    }
+                },threshold);
+            }
+            
         },
         //zoomFit: true
     });
