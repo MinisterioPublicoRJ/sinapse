@@ -295,7 +295,8 @@ const sidebarRight = document.getElementById("sidebarRight")
 
 const populateSidebarRight = (node) => {
     console.log(node)
-    switch (node.labels[0]) {
+    let label = node.labels[0]
+    switch (label) {
         case 'personagem':
             sidebarRight.setAttribute("class", 'personagem')
             break
@@ -334,6 +335,11 @@ const populateSidebarRight = (node) => {
 
     let content = document.createElement("div")
     content.setAttribute("id", "content")
+
+    let headerSidebarRight = document.createElement("div")
+    headerSidebarRight.setAttribute("class", `header ${label}`)
+    content.appendChild(headerSidebarRight)
+
     Object.keys(node.properties).forEach(function(property) {
         
         let labelSpan = document.createElement("span")
