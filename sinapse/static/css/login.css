@@ -1,0 +1,48 @@
+:root {
+    --cor-principal: #51aacc;
+    --cor-secundaria: #fff;
+}
+
+input:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0 30px white inset;
+}
+
+.login {
+    color: var(--cor-principal);
+    margin-top: 30vh;
+    text-align: center;
+}
+
+.login--logo {
+    height: 114px;
+    margin: 0 0 30px;
+    width: 93px;
+}
+
+.login--input {
+    background: 10px center no-repeat;
+    background-size: 12px 15px;
+    border: 0;
+    border-bottom: 1px solid var(--cor-principal);
+    font-size: 14pt;
+    text-align: center;
+    width: 100%;
+}
+
+.login--input__usuario {
+    background-image: url(../img/icon-usuario-03.png);
+}
+
+.login--input__senha {
+    background-image: url(../img/icon-cadeado-02.png);
+}
+
+.login--botao {
+    border: 0;
+    background: var(--cor-principal);
+    border-radius: 12px;
+    color: var(--cor-secundaria);
+    font-size: 14pt;
+    padding: 5px 0;
+    width: 100%;
+}

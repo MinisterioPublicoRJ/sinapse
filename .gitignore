@@ -103,4 +103,14 @@ venv.bak/
 # mypy
 .mypy_cache/
 
+# VS Code
+.vscode
+
+# Settings
 settings.ini
+
+# Windows stuff
+Thumbs.db
+
+# MacOS stuff
+.DS_Store

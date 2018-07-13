@@ -29,21 +29,42 @@ MONGO_AUTHDB=(domínio de autorização)
 SECRET=(secret key única segura)  
 AUTH_MPRJ=(FQDN do autorizador web MPRJ)  
 USERINFO_MPRJ=(FQDN do sistema de roles MPRJ)  
+DEV=True/False(Em DEV não precisa de autenticação)  
 ```
 
 ## Dependências, Instalação e Execução
 
 O projeto foi testado nas versões 3.5 e 3.6 do Python.
 
-Para instalação das dependências do projeto é necessário instalar os pacotes da seguinte forma:  
-`
-pip install -r requirements.txt
-`
+Para instalação das dependências do projeto é necessário instalar os pacotes da seguinte forma:
 
-Para rodar, simplesmente execute:  
-`
-$ sh app.sh
-`
+### Configurando ambiente no Linux
+
+    virtualenv venv
+    source venv/bin/activate
+    pip install -r dev-requirements.txt
+
+### Configurando ambiente no Mac
+
+    virtualenv --python=$(which python3.6) venv
+    source venv/bin/activate
+    pip install -r dev-requirements.txt
+
+### Rodando no Linux ou Mac
+
+    source venv/bin/activate
+    sh app.sh
+
+### Desenvolvendo no Windows
+
+    virtualenv venv
+    venv\bin\activate.bat
+    pip install -r dev-requirements.txt
+
+### Rodando no Windows
+
+    venv\bin\activate.bat
+    app.bat
 
 O servidor *waitress* está configurado para rodar no endereço:  
 `http://127.0.0.1:8080`

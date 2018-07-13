@@ -1,6 +1,8 @@
+import base64
 import json
 import requests
 
+from copy import deepcopy
 from datetime import datetime
 from functools import wraps
 
@@ -9,6 +11,8 @@ from flask import (
     request,
     render_template,
     session,
+    url_for,
+    redirect
 )
 
 from sinapse.buildup import (
@@ -25,7 +29,75 @@ def respostajson(response):
     usuario = session.get('usuario', "dummy")
     sessionid = request.cookies.get('session')
     _log_response(usuario, sessionid, response)
+    dados = response.json()
+    if resposta_sensivel(dados):
+        return jsonify(remove_info_sensiveis(dados))
+
     return jsonify(response.json())
+
+
+def limpa_nos(nos):
+    copia_nos = deepcopy(nos)
+    for no in copia_nos:
+        if 'sensivel' in no['properties'].keys():
+            no['labels'] = ['sigiloso']
+            no['properties'] = dict()
+
+    return copia_nos
+
+
+def limpa_linhas(linhas):
+    copia_linhas = deepcopy(linhas)
+    novas_linhas = []
+    for linha in copia_linhas:
+        if isinstance(linha, list):
+            novas_linhas.append(limpa_linhas(linha))
+        elif isinstance(linha, dict):
+            if 'sensivel' in linha.keys():
+                novas_linhas.append(dict())
+            else:
+                novas_linhas.append(linha)
+
+    return novas_linhas
+
+
+def limpa_relacoes(relacoes):
+    copia_relacoes = deepcopy(relacoes)
+    for relacao in copia_relacoes:
+        if 'sensivel' in relacao['properties'].keys():
+            relacao['type'] = 'sigiloso'
+            relacao['properties'] = dict()
+
+    return copia_relacoes
+
+
+def remove_info_sensiveis(resposta):
+    resp = deepcopy(resposta)
+    for data in resp['results'][0]['data']:
+        data['graph']['nodes'] = limpa_nos(data['graph']['nodes'])
+        data['row'] = limpa_linhas(data['row'])
+        data['graph']['relationships'] = limpa_relacoes(
+            data['graph']['relationships'])
+
+    return resp
+
+
+def resposta_sensivel(resposta):
+    def parser_dicionario(dicionario, chave):
+        if isinstance(dicionario, dict):
+            for k, v in dicionario.items():
+                if k == chave:
+                    yield v
+                else:
+                    yield from parser_dicionario(v, chave)
+        elif isinstance(dicionario, list):
+            for item in dicionario:
+                yield from parser_dicionario(item, chave)
+
+    try:
+        return next(parser_dicionario(resposta, 'sensivel'))
+    except StopIteration:
+        return False
 
 
 def _log_response(usuario, sessionid, response):
@@ -42,6 +114,7 @@ def _log_response(usuario, sessionid, response):
 def _autenticar(usuario, senha):
     "Autentica o usuário no SCA"
     sessao = requests.session()
+    senha = base64.b64encode(senha.encode('utf-8')).decode('utf-8')
     response = sessao.post(
         url=_AUTH_MPRJ,
         data={
@@ -65,30 +138,40 @@ def login_necessario(funcao):
     return funcao_decorada
 
 
-@app.route("/login", methods=["POST"])
+@app.route("/login", methods=["POST", "GET"])
 def login():
-    usuario = request.form.get("usuario")
-    senha = request.form.get("senha")
+    if request.method == "GET":
+        return render_template("login.html")
+    else:
+        usuario = request.form.get("usuario")
+        senha = request.form.get("senha")
 
-    resposta = _autenticar(usuario, senha)
-    if resposta:
-        session['usuario'] = resposta
-        return "OK", 201
+        resposta = _autenticar(usuario, senha)
+        if resposta:
+            session['usuario'] = resposta
+            return redirect(url_for(request.args.get('next', 'raiz')))
 
-    return "NOK", 401
+        session['flask_msg'] = 'Falha no login'
+        return render_template('login.html'), 401
 
 
 @app.route("/logout", methods=["GET", "POST"])
 def logout():
+    if request.headers.get('x-purpose'):
+        return "NOK", 404
+
     if 'usuario' in session:
         del session['usuario']
-        return "OK", 201
+        sucesso = 'Você foi deslogado com sucesso'
+        session['flask_msg'] = sucesso
 
-    return "Usuário não logado", 200
+    return redirect(url_for('login'), code=302)
 
 
 @app.route("/")
 def raiz():
+    if 'usuario' not in session:
+        return redirect(url_for('login', next=request.endpoint), code=302)
     return render_template('index.html')
 
 
@@ -119,8 +202,8 @@ def api_findNodes():
     val = request.args.get('val')
     # TODO: alterar para prepared statement
     query = {"statements": [{
-        "statement": "MATCH (n: %s { %s:toUpper('%s')}) "
-        "return n" % (label, prop, val),
+        "statement": "MATCH (n: %s { %s:toUpper('%s')})"
+        " return n limit 100" % (label, prop, val),
         "resultDataContents": ["row", "graph"]
     }]}
     response = requests.post(
@@ -136,8 +219,8 @@ def api_findNodes():
 def api_nextNodes():
     node_id = request.args.get('node_id')
     query = {"statements": [{
-        "statement": "MATCH r = (n)-[*..1]-(x) where id(n) = %s "
-        "return r,n,x" % node_id,
+        "statement": "MATCH r = (n)-[*..1]-(x) where id(n) = %s"
+        " return r,n,x limit 100" % node_id,
         "resultDataContents": ["row", "graph"]
     }]}
     response = requests.post(
@@ -181,3 +264,13 @@ def api_relationships():
         auth=_AUTH,
         headers=_HEADERS)
     return respostajson(response)
+
+
+@app.context_processor
+def mensagens_processor():
+    def mensagens():
+        try:
+            return session.pop('flask_msg')
+        except KeyError:
+            return ''
+    return dict(flask_msg=mensagens)
