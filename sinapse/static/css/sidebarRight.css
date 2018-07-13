@@ -1,0 +1,173 @@
+*{
+  font-family: 'Roboto', sans-serif;
+}
+
+#sidebarRight {
+  display: none;
+  height: 100%;
+  width: 15%;
+  position: absolute;
+  top: 0;
+  right: 0;
+  color: #848484;
+  box-shadow: -5px 0px 10px #f1f1f1;
+  background: white;
+}
+
+#closeSidebarRight {
+  padding: 50px;
+  font-size: 30px;
+  position: absolute;
+  bottom: 0;
+  box-sizing: border-box;
+  width: 100%;
+  right: 0;
+  border: none;
+  background: none;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+::-webkit-scrollbar {
+  -webkit-appearance: none;
+  width: 7px;
+}
+::-webkit-scrollbar-thumb {
+  border-radius: 4px;
+  background-color: rgba(0,0,0,.5);
+  -webkit-box-shadow: 0 0 1px rgba(255,255,255,.5);
+}
+
+#content {
+  height: 100%;
+}
+
+.sidebarRight-label {
+  font-size: 0.7em;
+}
+
+#valuesContainer {
+  max-height: 70%;
+  overflow-y: scroll;
+}
+
+#valuesContainer span {
+  display: block;
+  margin: 0px 20px 20px 20px;
+}
+
+.personagem .sidebarRight-data, .personagem #closeSidebarRight {
+  color: #a176d1;
+}
+
+.pessoa .sidebarRight-data, .pessoa #closeSidebarRight {
+  color: #00d1e2;
+}
+
+.empresa .sidebarRight-data, .empresa #closeSidebarRight {
+  color: #51c881;
+}
+
+.telefone .sidebarRight-data, .telefone #closeSidebarRight {
+  color: #324eb6;
+}
+
+.multa .sidebarRight-data, .multa #closeSidebarRight {
+  color: #ff524e;
+}
+
+.veiculo .sidebarRight-data, .veiculo #closeSidebarRight {
+  color: #ff8b63;
+}
+
+.orgao .sidebarRight-data, .orgao #closeSidebarRight {
+  color: #ffb842;
+}
+
+.mgp .sidebarRight-data, .mgp #closeSidebarRight {
+  color: #ab897f;
+}
+
+.header {
+  margin-bottom: 20px;
+  width: 100%;
+  height: 150px;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.personagem .header {
+  background-color: #a176d1;
+  background-image: url("/static/img/icon/personagem-fundobranco.svg")
+}
+
+.pessoa .header {
+  background-color: #00d1e2;
+  background-image: url("/static/img/icon/pessoa-fundobranco.svg")
+}
+
+.empresa .header {
+  background-color: #51c881;
+  background-image: url("/static/img/icon/empresa-fundobranco.svg")
+}
+
+.telefone .header {
+  background-color: #324eb6;
+  background-image: url("/static/img/icon/telefone-fundobranco.svg")
+}
+
+.multa .header {
+  background-color: #ff524e;
+  background-image: url("/static/img/icon/multa-fundobranco.svg")
+}
+
+.veiculo .header {
+  background-color: #ff8b63;
+  background-image: url("/static/img/icon/veiculo-fundobranco.svg")
+}
+
+.orgao .header {
+  background-color: #ffb842;
+  background-image: url("/static/img/icon/orgao-fundobranco.svg")
+}
+
+.mgp .header{
+  background-color: #ab897f;
+  background-image: url("/static/img/icon/mgp-fundobranco.svg")
+}
+
+
+
+
+
+.personagem #closeSidebarRight {
+  background-image: url("/static/img/icon/personagem-x.svg")
+}
+
+.pessoa #closeSidebarRight {
+  background-image: url("/static/img/icon/pessoa-x.svg")
+}
+
+.empresa #closeSidebarRight {
+  background-image: url("/static/img/icon/empresa-x.svg")
+}
+
+.telefone #closeSidebarRight {
+  background-image: url("/static/img/icon/telefone-x.svg")
+}
+
+.multa #closeSidebarRight {
+  background-image: url("/static/img/icon/multa-x.svg")
+}
+
+.veiculo #closeSidebarRight {
+  background-image: url("/static/img/icon/veiculo-x.svg")
+}
+
+.orgao #closeSidebarRight {
+  background-image: url("/static/img/icon/orgao-x.svg")
+}
+
+.mgp #closeSidebarRight{
+  background-image: url("/static/img/icon/mgp-x.svg")
+}

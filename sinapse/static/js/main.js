@@ -337,8 +337,11 @@ const populateSidebarRight = (node) => {
     content.setAttribute("id", "content")
 
     let headerSidebarRight = document.createElement("div")
-    headerSidebarRight.setAttribute("class", `header ${label}`)
+    headerSidebarRight.setAttribute("class", "header")
     content.appendChild(headerSidebarRight)
+
+    let valuesContainer = document.createElement("div")
+    valuesContainer.setAttribute("id", "valuesContainer")
 
     Object.keys(node.properties).forEach(function(property) {
         
@@ -346,13 +349,13 @@ const populateSidebarRight = (node) => {
         labelSpan.className = "sidebarRight-label"
         let labelContent = document.createTextNode(formatPropString(property))
         labelSpan.appendChild(labelContent)
-        content.appendChild(labelSpan)
+        valuesContainer.appendChild(labelSpan)
 
         let dataSpan = document.createElement("span")
         dataSpan.className = "sidebarRight-data"
         let dataContent = document.createTextNode(node.properties[property])
         dataSpan.appendChild(dataContent)
-        content.appendChild(dataSpan)
+        valuesContainer.appendChild(dataSpan)
 
 
         console.log(property, node.properties[property])
@@ -360,9 +363,8 @@ const populateSidebarRight = (node) => {
 
     let closeButton = document.createElement("button")
     closeButton.addEventListener("click", (e) => hideSidebarRight(), false)
-    let closeButtonText = document.createTextNode("X")
     closeButton.setAttribute("id", "closeSidebarRight")
-    closeButton.appendChild(closeButtonText)
+    content.appendChild(valuesContainer)
     content.appendChild(closeButton)
 
     sidebarRight.appendChild(content)

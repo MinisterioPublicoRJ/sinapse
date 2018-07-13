@@ -14,6 +14,7 @@ bundles = {
         "css/font-awesome.min.css",
         "css/neo4jd3.min.css",
         "css/main.css",
+        "css/sidebarRight.css",
     ),
 }
 
