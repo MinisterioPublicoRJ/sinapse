@@ -169,10 +169,6 @@ const initSearch = () => {
 }
 
 const findNodes = () => {
-    // hide form
-    document.getElementById('step1').className = 'hidden'
-    document.getElementById('step2').className = 'hidden'
-
     let label = document.getElementById('selectLabel').value
     let prop = document.getElementById('selectProp').value
     let val = document.getElementById('textVal').value
@@ -180,6 +176,9 @@ const findNodes = () => {
         return alert('ERRO: É preciso escolher o tipo, a propriedade e preencher um valor para realizar uma busca.')
     }
     get(`/api/findNodes?label=${label}&prop=${prop}&val=${val}`, updateNodes)
+    // hide form
+    document.getElementById('step1').className = 'hidden'
+    document.getElementById('step2').className = 'hidden'
 }
 
 const updateNodes = data => {
