@@ -82,7 +82,8 @@ def login():
             session['usuario'] = resposta
             return redirect(url_for(request.args.get('next', 'raiz')))
 
-        return "NOK", 401
+        session['flask_msg'] = 'Falha no login'
+        return render_template('login.html'), 401
 
 
 @app.route("/logout", methods=["GET", "POST"])

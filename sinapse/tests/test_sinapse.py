@@ -137,6 +137,7 @@ class LoginUsuario(unittest.TestCase):
         )
 
         assert retorno.status_code == 401
+        assert 'Falha no login' in retorno.data.decode('utf-8')
 
 
 class MetodosConsulta(unittest.TestCase):
@@ -195,8 +196,9 @@ class LogoutUsuarioFlask(FlaskTestCase):
                 "usuario": "usuario",
                 "senha": "senha"})
 
-        self.client.get('/logout', follow_redirects=True)
+        response = self.client.get('/logout', follow_redirects=True)
         self.assert_template_used('login.html')
+        'Você foi deslogado com sucesso' in response.data.decode('utf-8')
 
     def test_redireciona_para_login_quando_nao_logado(self):
         self.client.get('/logout', follow_redirects=True)
