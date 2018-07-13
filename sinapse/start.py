@@ -87,6 +87,9 @@ def login():
 
 @app.route("/logout", methods=["GET", "POST"])
 def logout():
+    if request.headers.get('x-purpose'):
+        return null
+
     if 'usuario' in session:
         del session['usuario']
         return redirect(url_for('login'), code=302)
