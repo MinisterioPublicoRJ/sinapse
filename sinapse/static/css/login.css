@@ -3,6 +3,10 @@
     --cor-secundaria: #fff;
 }
 
+input:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0 30px white inset;
+}
+
 .login {
     color: var(--cor-principal);
     margin-top: 30vh;
