@@ -11,7 +11,9 @@ bundles = {
     ),
     'css': Bundle(
         'css/vendor/bootstrap.min.css',
-        'css/font-awesome.min.css', # Font Awesome não pode ficar em 'vendor/' porque se referencia às fontes como '../fonts/'
+        # Font Awesome não pode ficar em 'vendor/'
+        # porque se referencia às fontes como '../fonts/'
+        'css/font-awesome.min.css',
         'css/vendor/neo4jd3.min.css',
         'css/main.css',
         'css/busca.css',

@@ -199,6 +199,7 @@ class MetodosConsulta(unittest.TestCase):
 
 class LogoutUsuarioFlask(FlaskTestCase):
     def create_app(self):
+        del self
         return app
 
     @mock.patch("sinapse.start._autenticar")
@@ -213,7 +214,7 @@ class LogoutUsuarioFlask(FlaskTestCase):
 
         response = self.client.get('/logout', follow_redirects=True)
         self.assert_template_used('login.html')
-        'Você foi deslogado com sucesso' in response.data.decode('utf-8')
+        assert 'Você foi deslogado com sucesso' in response.data.decode('utf-8')
 
     def test_redireciona_para_login_quando_nao_logado(self):
         self.client.get('/logout', follow_redirects=True)
