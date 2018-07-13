@@ -5,6 +5,7 @@ import unittest
 from functools import wraps
 from unittest import mock
 
+from flask_testing import TestCase as FlaskTestCase
 from freezegun import freeze_time
 from freezegun.api import FakeDatetime
 from sinapse.start import (
@@ -95,7 +96,7 @@ class CasoGlobal(unittest.TestCase):
     def test_raiz(self):
         resposta = self.app.get('/')
 
-        assert resposta.status_code == 200
+        assert resposta.status_code == 302
 
     def test_autorizacao_da_api(self):
         api_node = self.app.get('/api/node')
@@ -128,7 +129,7 @@ class LoginUsuario(unittest.TestCase):
                 "usuario": "usuario",
                 "senha": "senha"})
 
-        assert retorno.status_code == 201
+        assert retorno.status_code == 302
 
         responses.add(
             responses.POST,
@@ -151,6 +152,7 @@ class LoginUsuario(unittest.TestCase):
         )
 
         assert retorno.status_code == 401
+        assert 'Falha no login' in retorno.data.decode('utf-8')
 
 
 class MetodosConsulta(unittest.TestCase):
@@ -195,32 +197,36 @@ class MetodosConsulta(unittest.TestCase):
             )
 
 
-class LogoutUsuario(unittest.TestCase):
-    def setUp(self):
-        self.app = app.test_client()
+class LogoutUsuarioFlask(FlaskTestCase):
+    def create_app(self):
+        return app
 
     @mock.patch("sinapse.start._autenticar")
-    def test_logout(self, _autenticar):
+    def test_redirect_logout_follow(self, _autenticar):
         _autenticar.side_effect = ["usuario"]
         # Loga usuario
-        self.app.post(
+        self.client.post(
             "/login",
             data={
                 "usuario": "usuario",
                 "senha": "senha"})
 
-        retorno = self.app.get(
-            "/logout",
+        response = self.client.get('/logout', follow_redirects=True)
+        self.assert_template_used('login.html')
+        'Você foi deslogado com sucesso' in response.data.decode('utf-8')
+
+    def test_redireciona_para_login_quando_nao_logado(self):
+        self.client.get('/logout', follow_redirects=True)
+
+        self.assert_template_used('login.html')
+
+    def test_evita_pre_fetch(self):
+        response = self.client.get(
+            '/logout',
+            headers={'x-purpose': 'prefetch'}
         )
 
-        assert retorno.status_code == 201
-        assert retorno.data == b'OK'
-
-    def test_logout_usuario_nao_logado(self):
-        retorno = self.app.get("/logout")
-
-        assert retorno.status_code == 200
-        assert retorno.data == 'Usuário não logado'.encode('utf-8')
+        self.assertEqual(response.status_code, 404)
 
 
 class RemoveInfoSensivel(unittest.TestCase):
