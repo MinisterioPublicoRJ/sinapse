@@ -106,7 +106,11 @@ venv.bak/
 # VS Code
 .vscode
 
+# Settings
 settings.ini
 
-# System files
+# Windows stuff
+Thumbs.db
+
+# MacOS stuff
 .DS_Store
