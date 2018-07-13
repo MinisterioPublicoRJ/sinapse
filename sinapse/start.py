@@ -78,7 +78,7 @@ def login():
         resposta = _autenticar(usuario, senha)
         if resposta:
             session['usuario'] = resposta
-            return "OK", 201
+            return redirect(url_for(request.args.get('next', 'raiz')))
 
         return "NOK", 401
 
@@ -87,7 +87,7 @@ def login():
 def logout():
     if 'usuario' in session:
         del session['usuario']
-        return "OK", 201
+        return redirect(url_for('login'), code=302)
 
     return "Usuário não logado", 200
 
@@ -95,7 +95,7 @@ def logout():
 @app.route("/")
 def raiz():
     if 'usuario' not in session:
-        return redirect(url_for('login'), code=302)
+        return redirect(url_for('login', next=request.endpoint), code=302)
     return render_template('index.html')
 
 

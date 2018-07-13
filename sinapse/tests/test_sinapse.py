@@ -113,7 +113,7 @@ class LoginUsuario(unittest.TestCase):
                 "usuario": "usuario",
                 "senha": "senha"})
 
-        assert retorno.status_code == 201
+        assert retorno.status_code == 302
 
         responses.add(
             responses.POST,
@@ -198,7 +198,7 @@ class LogoutUsuario(unittest.TestCase):
             "/logout",
         )
 
-        assert retorno.status_code == 201
+        assert retorno.status_code == 302
         assert retorno.data == b'OK'
 
     def test_logout_usuario_nao_logado(self):
