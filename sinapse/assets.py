@@ -6,7 +6,7 @@ bundles = {
 
     'js': Bundle(
         'js/vendor/d3.min.js',
-        'js/vendor/neo4jd3.min.js',
+        'js/vendor/neo4jd3.js',
         'js/main.js',
     ),
     'css': Bundle(
