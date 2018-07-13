@@ -1,0 +1,298 @@
+span.tooltip {
+    display: none;
+    position: absolute;
+    width: 100px;
+    height: 15px;
+    line-height: 15px;
+    padding: 5px;
+    font-size: 12px;
+    text-align: center;
+    color: white;
+    background: black;
+    border: 0 solid white;
+    border-radius: 5px;
+    text-shadow: rgba(0, 0, 0, 0.1) 1px 1px 1px;
+    box-shadow: rgba(0, 0, 0, 0.1) 1px 1px 2px 0px;
+    z-index: 2;
+}
+
+span.tooltip:after {
+    content: "";
+    position: absolute;
+    width: 0;
+    height: 0;
+    border-width: 10px;
+    border-style: solid;
+    border-color: transparent;
+    border-bottom-color: black;
+    top: -20px;
+    left: 45px;
+}
+
+#loading {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-left: -32px;
+    margin-top: -32px;
+}
+
+.comece-aqui {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-left: -37px;
+    margin-top: -37px;
+}
+
+.busca img {
+    cursor: pointer;
+}
+
+.busca .hidden {
+    display: none;
+}
+
+.comece-aqui:hover span.tooltip,
+.empresa:hover span.tooltip,
+.mgp:hover span.tooltip,
+.multa:hover span.tooltip,
+.orgao:hover span.tooltip,
+.personagem:hover span.tooltip,
+.pessoa:hover span.tooltip,
+.telefone:hover span.tooltip,
+.veiculo:hover span.tooltip {
+    display: block;
+    margin-top: 15px;
+    margin-left: -18px;
+}
+
+.comece-aqui:hover span.tooltip {
+    background: #7bb3ff;
+}
+.comece-aqui:hover span.tooltip:after {
+    border-bottom-color: #7bb3ff;
+}
+#step2 .empresa,
+#step2 .empresa input,
+#step2 .empresa select {
+    color: #51c881;
+}
+#step2 .empresa input {
+    border-bottom-color: #51c881;
+}
+.empresa:hover span.tooltip,
+#step2 .empresa button {
+    background: #51c881;
+}
+.empresa:hover span.tooltip:after {
+    border-bottom-color: #51c881;
+}
+#step2 .mgp,
+#step2 .mgp input,
+#step2 .mgp select {
+    color: #ab897f;
+}
+#step2 .mgp input {
+    border-bottom-color: #ab897f;
+}
+.mgp:hover span.tooltip,
+#step2 .mgp button {
+    background: #ab897f;
+}
+.mgp:hover span.tooltip:after {
+    border-bottom-color: #ab897f;
+}
+#step2 .multa,
+#step2 .multa input,
+#step2 .multa select {
+    color: #ff524e;
+}
+#step2 .multa input {
+    border-bottom-color: #ff524e;
+}
+#step2 .multa button,
+.multa:hover span.tooltip {
+    background: #ff524e;
+}
+.multa:hover span.tooltip:after {
+    border-bottom-color: #ff524e;
+}
+#step2 .orgao,
+#step2 .orgao input,
+#step2 .orgao select {
+    color: #ffb842;
+}
+#step2 .orgao input {
+    border-bottom-color: #ffb842;
+}
+#step2 .orgao button,
+.orgao:hover span.tooltip {
+    background: #ffb842;
+}
+.orgao:hover span.tooltip:after {
+    border-bottom-color: #ffb842;
+}
+#step2 .personagem,
+#step2 .personagem input,
+#step2 .personagem select {
+    color: #a176d1;
+}
+#step2 .personagem input {
+    border-bottom-color: #a176d1;
+}
+#step2 .personagem button,
+.personagem:hover span.tooltip {
+    background: #a176d1;
+}
+.personagem:hover span.tooltip:after {
+    border-bottom-color: #a176d1;
+}
+#step2 .pessoa,
+#step2 .pessoa input,
+#step2 .pessoa select {
+    color: #00d1e2;
+}
+#step2 .pessoa input {
+    border-bottom-color: #00d1e2;
+}
+#step2 .pessoa button,
+.pessoa:hover span.tooltip {
+    background: #00d1e2;
+}
+.pessoa:hover span.tooltip:after {
+    border-bottom-color: #00d1e2;
+}
+#step2 .telefone,
+#step2 .telefone input,
+#step2 .telefone select {
+    color: #324eb6;
+}
+#step2 .telefone input {
+    border-bottom-color: #324eb6;
+}
+#step2 .telefone button,
+.telefone:hover span.tooltip {
+    background: #324eb6;
+}
+.telefone:hover span.tooltip:after {
+    border-bottom-color: #324eb6;
+}
+#step2 .veiculo,
+#step2 .veiculo input,
+#step2 .veiculo select {
+    color: #ff8b63;
+}
+#step2 .veiculo input {
+    border-bottom-color: #ff8b63;
+}
+#step2 .veiculo button,
+.veiculo:hover span.tooltip {
+    background: #ff8b63;
+}
+.veiculo:hover span.tooltip:after {
+    border-bottom-color: #ff8b63;
+}
+
+.opcoes div {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+}
+.opcoes .empresa {
+    margin-top: -160px; /*-128*/
+    margin-left: -32px; /*0*/
+}
+.opcoes .mgp {
+    margin-top: -123px; /*-91*/
+    margin-left: 59px; /*91*/
+}
+.opcoes .multa {
+    margin-top: -32px; /*0*/
+    margin-left: 96px; /*128*/
+}
+.opcoes .orgao {
+    margin-top: 59px; /*91*/
+    margin-left: 59px; /*91*/
+}
+.opcoes .personagem {
+    margin-top: 96px; /*128*/
+    margin-left: -32px; /*0*/
+}
+.opcoes .pessoa {
+    margin-top: 59px; /*91*/
+    margin-left: -123px; /*-91*/
+}
+.opcoes .telefone {
+    margin-top: -32px; /*0*/
+    margin-left: -160px; /*-128*/
+}
+.opcoes .veiculo {
+    margin-top: -123px; /*-91*/
+    margin-left: -123px; /*-91*/
+}
+
+#step2 {
+    position: absolute;
+    width: 500px;
+    top: 50%;
+    left: 50%;
+    margin-left: -250px;
+    margin-top: -32px;
+    text-align: center;
+}
+
+#step2 .select-wrapper {
+    background-color: #FFF;
+    display: block;
+    width: 250px;
+    position: relative;
+    margin: 0 auto;
+}
+#step2 .select-wrapper:after {
+    content:"▾";
+    position: absolute;
+    top: 5px;
+    right: 0;
+    z-index: 5;
+}
+#step2 select {
+    padding: 10px 40px 10px 10px;
+    -webkit-appearance: none;
+    -ms-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-color: transparent;
+    border-radius: 0;
+    border: 0;
+    position: relative;
+    cursor: pointer;
+    z-index: 10;
+    width: 100%;
+    font-weight: bold;
+    font-size: 14px;
+}
+#step2 #textVal {
+    border: none;
+    border-bottom-style: solid;
+    border-bottom-width: 1px;
+    font-size: 50px;
+    font-weight: bold;
+    opacity: .8;
+    text-align: center;
+    width: 100%;
+}
+#step2 select:focus,
+#step2 #textVal:focus {
+    outline: none;
+}
+#step2 #textVal::placeholder {
+    color: gray;
+    font-size: 20px;
+}
+#step2 #buttonBusca {
+    color: white;
+    padding: 0px 10px;
+    font-size: 14px;
+    margin-top: 10px;
+}

@@ -5,16 +5,15 @@ from sinapse.buildup import app
 bundles = {
 
     'js': Bundle(
-        'js/d3.min.js',
-        'js/neo4jd3.js',
+        'js/vendor/d3.min.js',
+        'js/vendor/neo4jd3.min.js',
         'js/main.js',
     ),
     'css': Bundle(
-        "css/bootstrap.min.css",
-        "css/font-awesome.min.css",
-        "css/neo4jd3.min.css",
-        "css/main.css",
-        "css/sidebarRight.css",
+        'css/vendor/neo4jd3.min.css',
+        'css/main.css',
+        'css/busca.css',
+        'css/sidebarRight.css',
     ),
 }
 
