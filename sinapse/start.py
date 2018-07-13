@@ -88,15 +88,14 @@ def login():
 @app.route("/logout", methods=["GET", "POST"])
 def logout():
     if request.headers.get('x-purpose'):
-        return null
+        return None
 
     if 'usuario' in session:
         del session['usuario']
         sucesso = 'Você foi deslogado com sucesso'
         session['flask_msg'] = sucesso
-        return redirect(url_for('login'), code=302)
 
-    return "Usuário não logado", 200
+    return redirect(url_for('login'), code=302)
 
 
 @app.route("/")
