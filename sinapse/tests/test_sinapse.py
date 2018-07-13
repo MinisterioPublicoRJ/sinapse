@@ -198,8 +198,8 @@ class MetodosConsulta(unittest.TestCase):
 
 
 class LogoutUsuarioFlask(FlaskTestCase):
-    def create_app(self):
-        del self
+    @staticmethod
+    def create_app():
         return app
 
     @mock.patch("sinapse.start._autenticar")
