@@ -12,7 +12,7 @@
 <body>
     <div class="container">
         <div class="col-md-4 col-md-offset-4 col-lg-4 col-lg-offset-4">
-            <form action="#" method="POST" class="login">
+            <form action="{{ url_for('login') }}" method="POST" class="login">
                 <img src="../static/img/logo-conexao-01.png" class="login--logo" alt="Logo do sistema Conexão. Mostra diversos pontos ligados através de linhas com um destacado no centro.">
                 <div class="form-group">
                     <input type="text" name="usuario" id="usuario" class="login--input login--input__usuario" placeholder="Login do SCA" required>
@@ -20,6 +20,7 @@
                 <div class="form-group">
                     <input type="password" name="senha" id="senha" class="login--input login--input__senha" placeholder="Senha do seu usuário" required>
                 </div>
+                {{ flask_msg() }}
                 <button type="submit" class="login--botao">Entrar</button>
             </form>
         </div>

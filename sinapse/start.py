@@ -1,3 +1,4 @@
+import base64
 import json
 import requests
 
@@ -9,6 +10,8 @@ from flask import (
     request,
     render_template,
     session,
+    url_for,
+    redirect
 )
 
 from sinapse.buildup import (
@@ -42,6 +45,7 @@ def _log_response(usuario, sessionid, response):
 def _autenticar(usuario, senha):
     "Autentica o usuário no SCA"
     sessao = requests.session()
+    senha = base64.b64encode(senha.encode('utf-8')).decode('utf-8')
     response = sessao.post(
         url=_AUTH_MPRJ,
         data={
@@ -76,23 +80,29 @@ def login():
         resposta = _autenticar(usuario, senha)
         if resposta:
             session['usuario'] = resposta
-            return "OK", 201
+            return redirect(url_for(request.args.get('next', 'raiz')))
 
-        return "NOK", 401
+        session['flask_msg'] = 'Falha no login'
+        return render_template('login.html'), 401
 
 
 @app.route("/logout", methods=["GET", "POST"])
 def logout():
+    if request.headers.get('x-purpose'):
+        return "NOK", 404
+
     if 'usuario' in session:
         del session['usuario']
-        return "OK", 201
+        sucesso = 'Você foi deslogado com sucesso'
+        session['flask_msg'] = sucesso
 
-    return "Usuário não logado", 200
+    return redirect(url_for('login'), code=302)
 
 
 @app.route("/")
-@login_necessario
 def raiz():
+    if 'usuario' not in session:
+        return redirect(url_for('login', next=request.endpoint), code=302)
     return render_template('index.html')
 
 
@@ -185,3 +195,13 @@ def api_relationships():
         auth=_AUTH,
         headers=_HEADERS)
     return respostajson(response)
+
+
+@app.context_processor
+def mensagens_processor():
+    def mensagens():
+        try:
+            return session.pop('flask_msg')
+        except KeyError:
+            return ''
+    return dict(flask_msg=mensagens)
