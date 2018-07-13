@@ -202,3 +202,11 @@ class LogoutUsuarioFlask(FlaskTestCase):
         self.client.get('/logout', follow_redirects=True)
 
         self.assert_template_used('login.html')
+
+    def test_evita_pre_fetch(self):
+        response = self.client.get(
+            '/logout',
+            headers={'x-purpose': 'prefetch'}
+        )
+
+        self.assertEqual(response.status_code, 404)

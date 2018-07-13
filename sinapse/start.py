@@ -88,7 +88,7 @@ def login():
 @app.route("/logout", methods=["GET", "POST"])
 def logout():
     if request.headers.get('x-purpose'):
-        return None
+        return "NOK", 404
 
     if 'usuario' in session:
         del session['usuario']
