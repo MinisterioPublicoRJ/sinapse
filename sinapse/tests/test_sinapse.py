@@ -207,6 +207,7 @@ class LogoutUsuario(unittest.TestCase):
         assert retorno.status_code == 200
         assert retorno.data == 'Usuário não logado'.encode('utf-8')
 
+
 class LogoutUsuarioFlask(FlaskTestCase):
     def create_app(self):
         return app
@@ -221,5 +222,5 @@ class LogoutUsuarioFlask(FlaskTestCase):
                 "usuario": "usuario",
                 "senha": "senha"})
 
-        response = self.client.get('/logout', follow_redirects=True)
+        self.client.get('/logout', follow_redirects=True)
         self.assert_template_used('login.html')
