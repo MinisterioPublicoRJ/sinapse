@@ -331,13 +331,6 @@ const populateSidebarRight = (node) => {
     while (sidebarRight.hasChildNodes()) {
         sidebarRight.removeChild(sidebarRight.firstChild);
     }
-    
-    let closeButton = document.createElement("button")
-    closeButton.addEventListener("click", (e) => hideSidebarRight(), false)
-    let closeButtonText = document.createTextNode("X")
-    closeButton.setAttribute("id", "closeSidebarRight")
-    closeButton.appendChild(closeButtonText)
-    sidebarRight.appendChild(closeButton)
 
     let content = document.createElement("div")
     content.setAttribute("id", "content")
@@ -359,7 +352,16 @@ const populateSidebarRight = (node) => {
         console.log(property, node.properties[property])
     });
 
+    let closeButton = document.createElement("button")
+    closeButton.addEventListener("click", (e) => hideSidebarRight(), false)
+    let closeButtonText = document.createTextNode("X")
+    closeButton.setAttribute("id", "closeSidebarRight")
+    closeButton.appendChild(closeButtonText)
+    content.appendChild(closeButton)
+
     sidebarRight.appendChild(content)
+
+
 }
 
 const showSidebarRight = () => {
