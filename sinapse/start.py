@@ -92,6 +92,8 @@ def logout():
 
     if 'usuario' in session:
         del session['usuario']
+        sucesso = 'Você foi deslogado com sucesso'
+        session['flask_msg'] = sucesso
         return redirect(url_for('login'), code=302)
 
     return "Usuário não logado", 200
@@ -193,3 +195,13 @@ def api_relationships():
         auth=_AUTH,
         headers=_HEADERS)
     return respostajson(response)
+
+
+@app.context_processor
+def mensagens_processor():
+    def mensagens():
+        try:
+            return session.pop('flask_msg')
+        except KeyError:
+            return ''
+    return dict(flask_msg=mensagens)
