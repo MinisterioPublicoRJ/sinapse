@@ -82,8 +82,10 @@ const initNeo4JD3 = () => {
             if (t0 - doubleClickTime > threshold) {
                 setTimeout(function () {
                     if (t0 - doubleClickTime > threshold) {
-                        populateSidebarRight(node);
-                        showSidebarRight();
+                        if(node.labels[0] !== 'sigiloso'){
+                            populateSidebarRight(node);
+                            showSidebarRight();
+                        }
                     }
                 },threshold);
             }
