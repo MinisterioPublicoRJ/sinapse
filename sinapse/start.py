@@ -1,3 +1,4 @@
+import base64
 import json
 import requests
 
@@ -44,6 +45,7 @@ def _log_response(usuario, sessionid, response):
 def _autenticar(usuario, senha):
     "Autentica o usuário no SCA"
     sessao = requests.session()
+    senha = base64.b64encode(senha.encode('utf-8')).decode('utf-8')
     response = sessao.post(
         url=_AUTH_MPRJ,
         data={
