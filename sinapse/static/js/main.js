@@ -63,7 +63,7 @@ const initNeo4JD3 = () => {
             'User': 'img/twemoji/1f600.svg'
         },
         minCollision: 60,
-        neo4jDataUrl: '/static/json/neo4jData.json',
+        neo4jDataUrl: '/static/json/neo4jData_vazio.json',
         nodeRadius: 25,
         onNodeDoubleClick: function(node) {
             get('api/nextNodes?node_id=' + node.id, (data) => {
@@ -81,24 +81,56 @@ const getLabels = () => {
 }
 
 const setLabels = labels => {
-    let selectLabel = document.getElementById('selectLabel')
-
-    // attach onchange event
-    selectLabel.onchange = updateProps
-    
-    // remove children option
-    while (selectLabel.firstChild) {
-        selectLabel.removeChild(selectLabel.firstChild);
+    document.getElementById('loading').className = 'hidden'
+    document.getElementById('step1').className = ''
+    let labelsMenu = document.getElementById('opcoes')
+    labels.sort().map(label => {
+        if (label !== 'teste') {
+            // <span>
+            let labelTooltipEl = document.createElement('span')
+            let labelTooltipStr = document.createTextNode(formatPropString(label))
+            labelTooltipEl.appendChild(labelTooltipStr)
+            labelTooltipEl.className = 'tooltip'
+            // <img>
+            let labelImg = document.createElement('img')
+            labelImg.setAttribute('src', `/static/img/icon/${label}.svg`)
+            labelImg.dataset.label = label
+            // <div>
+            //   <img>
+            //   <span/>
+            // </div>
+            let labelEl = document.createElement('div')
+            labelEl.appendChild(labelImg)
+            labelEl.appendChild(labelTooltipEl)
+            labelEl.className = label
+            labelEl.onclick = getNodeProperties
+            // append to DOM
+            labelsMenu.appendChild(labelEl)
+        }
+    })
+    // init comece-aqui button
+    let comeceAquiEl = document.getElementById('comece-aqui')
+    let opcoesEl = document.getElementById('opcoes')
+    comeceAquiEl.onclick = () => {
+        if (opcoesEl.className === 'opcoes') {
+            opcoesEl.className = 'opcoes hidden'
+        } else {
+            opcoesEl.className = 'opcoes'
+        }
     }
-    
-    // add empty option
-    let emptyOption = document.createElement('option')
-    emptyOption.value = ''
-    emptyOption.innerHTML = 'Escolha um tipo'
-    selectLabel.appendChild(emptyOption)
-    
-    // add options
-    labels.sort().map(label => appendOption(selectLabel, label))
+    // step2 back button
+    document.getElementById('step2img').onclick = e => {
+        document.getElementById('step1').className = ''
+        document.getElementById('step2').className = 'hidden'
+    }
+}
+
+const getNodeProperties = e => {
+    let label = e.target.dataset.label
+    document.getElementById('step2img').setAttribute('src', `/static/img/icon/${label}.svg`)
+    document.getElementById('selectLabel').value = label
+    document.getElementById('form-step2').className = label
+    get(`api/nodeProperties?label=${label}`, setProps)
 }
 
 const appendOption = (select, optionValue) => {
@@ -108,26 +140,11 @@ const appendOption = (select, optionValue) => {
     select.appendChild(option)
 }
 
-const updateProps = () => {
-    let label = document.getElementById('selectLabel').value
-    getNodeProperties(label)
-}
-
-const getNodeProperties = label => {
-    get(`api/nodeProperties?label=${label}`, setProps)
-
-    // show loading
-    let selectProp = document.getElementById('selectProp')
-    while (selectProp.firstChild) {
-        selectProp.removeChild(selectProp.firstChild);
-    }
-    let emptyOption = document.createElement('option')
-    emptyOption.value = ''
-    emptyOption.innerHTML = 'Aguarde, carregando...'
-    selectProp.appendChild(emptyOption)
-}
-
 const setProps = nodeProperties => {
+    // hide step1, show step2
+    document.getElementById('step1').className = 'hidden'
+    document.getElementById('step2').className = ''
+
     let props = nodeProperties.data[0][0]
     
     let selectProp = document.getElementById('selectProp')
@@ -140,7 +157,7 @@ const setProps = nodeProperties => {
     // add empty option
     let emptyOption = document.createElement('option')
     emptyOption.value = ''
-    emptyOption.innerHTML = 'Escolha uma propriedade'
+    emptyOption.innerHTML = 'Refinar a busca'
     selectProp.appendChild(emptyOption)
     
     // add options
@@ -152,6 +169,10 @@ const initSearch = () => {
 }
 
 const findNodes = () => {
+    // hide form
+    document.getElementById('step1').className = 'hidden'
+    document.getElementById('step2').className = 'hidden'
+
     let label = document.getElementById('selectLabel').value
     let prop = document.getElementById('selectProp').value
     let val = document.getElementById('textVal').value
