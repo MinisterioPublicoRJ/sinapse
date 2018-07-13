@@ -12,6 +12,7 @@ bundles = {
         "css/bootstrap.min.css",
         "css/font-awesome.min.css",
         "css/neo4jd3.min.css",
+        "css/login.css"
     ),
 }
 
