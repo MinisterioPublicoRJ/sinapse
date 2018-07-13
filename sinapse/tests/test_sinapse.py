@@ -5,6 +5,7 @@ import unittest
 from functools import wraps
 from unittest import mock
 
+from flask_testing import TestCase as FlaskTestCase
 from freezegun import freeze_time
 from freezegun.api import FakeDatetime
 from sinapse.start import (
@@ -199,10 +200,26 @@ class LogoutUsuario(unittest.TestCase):
         )
 
         assert retorno.status_code == 302
-        assert retorno.data == b'OK'
 
     def test_logout_usuario_nao_logado(self):
         retorno = self.app.get("/logout")
 
         assert retorno.status_code == 200
         assert retorno.data == 'Usuário não logado'.encode('utf-8')
+
+class LogoutUsuarioFlask(FlaskTestCase):
+    def create_app(self):
+        return app
+
+    @mock.patch("sinapse.start._autenticar")
+    def test_redirect_logout_follow(self, _autenticar):
+        _autenticar.side_effect = ["usuario"]
+        # Loga usuario
+        self.client.post(
+            "/login",
+            data={
+                "usuario": "usuario",
+                "senha": "senha"})
+
+        response = self.client.get('/logout', follow_redirects=True)
+        self.assert_template_used('login.html')
