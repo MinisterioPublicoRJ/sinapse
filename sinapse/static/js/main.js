@@ -6,6 +6,9 @@ const init = () => {
 
 let neo4jd3
 
+let doubleClickTime = 0;
+const threshold = 200;
+
 const initNeo4JD3 = () => {
     neo4jd3 = new Neo4jd3('#neo4jd3', {
         icons: {
@@ -24,6 +27,7 @@ const initNeo4JD3 = () => {
         neo4jDataUrl: '/static/json/neo4jData_vazio.json',
         nodeRadius: 25,
         onNodeDoubleClick: function(node) {
+            doubleClickTime = new Date();
             get('api/nextNodes?node_id=' + node.id, (data) => {
                 neo4jd3.updateWithNeo4jData(data)
             });
@@ -31,6 +35,21 @@ const initNeo4JD3 = () => {
         onRelationshipDoubleClick: function(relationship) {
             console.log('double click on relationship: ' + JSON.stringify(relationship))
         },
+        onNodeClick: function(node) {
+            let t0 = new Date();
+            if (t0 - doubleClickTime > threshold) {
+                setTimeout(function () {
+                    if (t0 - doubleClickTime > threshold) {
+                        if(node.labels[0] !== 'sigiloso'){
+                            populateSidebarRight(node);
+                            showSidebarRight();
+                        }
+                    }
+                },threshold);
+            }
+            
+        },
+        //zoomFit: true
     })
 }
 
@@ -236,8 +255,108 @@ const get = (url, callback) => {
                 }
             }
         }
-    }
-    xmlhttp.send(null)
+    };
+    xmlhttp.send(null);
 }
 
+const sidebarRight = document.getElementById("sidebarRight")
+
+/*
+    cores: 
+    pessoa: #00d1e2
+    empresas: #51c881
+    telefone: #324eb6
+    personagens: #a176d1
+    multas: #ff524e
+    veiculos: #ff8b63
+    orgãos: #ffb842
+    mgp: #ab897f
+*/
+
+const populateSidebarRight = (node) => {
+    console.log(node)
+    let label = node.labels[0]
+    switch (label) {
+        case 'personagem':
+            sidebarRight.setAttribute("class", 'personagem')
+            break
+        case 'pessoa':
+            sidebarRight.setAttribute("class", 'pessoa')
+            break
+        case 'empresa':
+            sidebarRight.setAttribute("class", 'empresa')
+            break
+        case 'telefone':
+            sidebarRight.setAttribute("class", 'telefone')
+            break
+        case 'multa':
+            sidebarRight.setAttribute("class", 'multa')
+            break
+        case 'veiculo':
+            sidebarRight.setAttribute("class", 'veiculo')
+            break
+        case 'orgao':
+            sidebarRight.setAttribute("class", 'orgao')
+            break
+        case 'mgp':
+            sidebarRight.setAttribute("class", 'mgp')
+            break
+
+        default:
+            sidebarRight.setAttribute("class", '')
+            break
+    }
+
+    let dataContainerDiv = document.createElement("aside")
+
+    while (sidebarRight.hasChildNodes()) {
+        sidebarRight.removeChild(sidebarRight.firstChild);
+    }
+
+    let content = document.createElement("div")
+    content.setAttribute("id", "content")
+
+    let headerSidebarRight = document.createElement("div")
+    headerSidebarRight.setAttribute("class", "header")
+    content.appendChild(headerSidebarRight)
+
+    let valuesContainer = document.createElement("div")
+    valuesContainer.setAttribute("id", "valuesContainer")
+
+    Object.keys(node.properties).forEach(function(property) {
+        
+        let labelSpan = document.createElement("span")
+        labelSpan.className = "sidebarRight-label"
+        let labelContent = document.createTextNode(formatPropString(property))
+        labelSpan.appendChild(labelContent)
+        valuesContainer.appendChild(labelSpan)
+
+        let dataSpan = document.createElement("span")
+        dataSpan.className = "sidebarRight-data"
+        let dataContent = document.createTextNode(node.properties[property])
+        dataSpan.appendChild(dataContent)
+        valuesContainer.appendChild(dataSpan)
+
+
+        console.log(property, node.properties[property])
+    });
+
+    let closeButton = document.createElement("button")
+    closeButton.addEventListener("click", (e) => hideSidebarRight(), false)
+    closeButton.setAttribute("id", "closeSidebarRight")
+    content.appendChild(valuesContainer)
+    content.appendChild(closeButton)
+
+    sidebarRight.appendChild(content)
+
+
+}
+
+const showSidebarRight = () => {
+    sidebarRight.style.display = "block"
+}
+
+const hideSidebarRight = () => {
+    sidebarRight.style.display = "none"
+}
 window.onload = init

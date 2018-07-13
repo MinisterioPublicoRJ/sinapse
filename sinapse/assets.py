@@ -14,6 +14,7 @@ bundles = {
         'css/vendor/neo4jd3.min.css',
         'css/main.css',
         'css/busca.css',
+        'css/sidebarRight.css',
     ),
 }
 
