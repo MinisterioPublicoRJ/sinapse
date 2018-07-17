@@ -47,7 +47,6 @@ const initNeo4JD3 = () => {
                     }
                 },threshold);
             }
-            
         },
         //zoomFit: true
     })
@@ -142,7 +141,18 @@ const setProps = nodeProperties => {
 }
 
 const initSearch = () => {
+    // Step 1 Search button
     document.getElementById('buttonBusca').onclick = findNodes
+    // Step 3 Clear Search button
+    document.getElementById('clear').onclick = e => {
+        // clear graph
+        neo4jd3.updateWithNeo4jData({"errors":[],"results":[{"columns":["n"],"data":[]}]})
+        // show search form
+        document.getElementById('step1').className = ''
+        document.getElementById('step3').className = 'hidden'
+        // hide sidebar
+        sidebarRight.style.display = "none"
+    }
 }
 
 const findNodes = () => {
@@ -159,7 +169,11 @@ const findNodes = () => {
 }
 
 const updateNodes = data => {
+    // update graph
     neo4jd3.updateWithNeo4jData(data)
+
+    // show back button
+    document.getElementById('step3').className = ''
 }
 
 /**
