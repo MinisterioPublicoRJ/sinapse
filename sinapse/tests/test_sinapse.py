@@ -18,7 +18,8 @@ from sinapse.start import (
     limpa_linhas,
     remove_info_sensiveis,
     resposta_sensivel,
-    limpa_relacoes
+    limpa_relacoes,
+    conta_nos
 )
 
 from .fixtures import (
@@ -195,6 +196,23 @@ class MetodosConsulta(unittest.TestCase):
                 caso['metodo'],
                 _ENDERECO_NEO4J % caso['endereco']
             )
+
+    @responses.activate
+    def test_conta_numero_de_nos(self):
+        resp_esperada = {
+            'results': [
+                {'columns': ['COUNT(p)'],
+                 'data': [{'row': [3], 'meta': [None]}]}], 'errors': []
+        }
+        responses.add(
+            responses.POST,
+            _ENDERECO_NEO4J % '/db/data/transaction/commit',
+            json=resp_esperada
+        )
+
+        numero_nos = conta_nos(label='pessoa', prop='nome', val='Qualque')
+
+        self.assertEqual(numero_nos, 3)
 
 
 class LogoutUsuarioFlask(FlaskTestCase):

@@ -82,6 +82,22 @@ def remove_info_sensiveis(resposta):
     return resp
 
 
+def conta_nos(label, prop, val):
+    query = {"statements": [{
+        "statement": "MATCH (n: %s { %s:toUpper('%s')})"
+        " return count(n)" % (label, prop, val),
+        "resultDataContents": ["row", "graph"]
+    }]}
+
+    response = requests.post(
+        _ENDERECO_NEO4J % '/db/data/transaction/commit',
+        data=json.dumps(query),
+        auth=_AUTH,
+        headers=_HEADERS)
+
+    return response.json()['results'][0]['data'][0]['row'][0]
+
+
 def resposta_sensivel(resposta):
     def parser_dicionario(dicionario, chave):
         if isinstance(dicionario, dict):
