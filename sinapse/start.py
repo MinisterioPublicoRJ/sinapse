@@ -25,15 +25,18 @@ from sinapse.buildup import (
 )
 
 
-def respostajson(response):
+def respostajson(response, **kwargs):
     usuario = session.get('usuario', "dummy")
     sessionid = request.cookies.get('session')
     _log_response(usuario, sessionid, response)
     dados = response.json()
+    if isinstance(dados, dict):
+        dados.update(kwargs)
+
     if resposta_sensivel(dados):
         return jsonify(remove_info_sensiveis(dados))
 
-    return jsonify(response.json())
+    return jsonify(dados)
 
 
 def limpa_nos(nos):
@@ -222,12 +225,16 @@ def api_findNodes():
         " return n limit 100" % (label, prop, val),
         "resultDataContents": ["row", "graph"]
     }]}
+
     response = requests.post(
         _ENDERECO_NEO4J % '/db/data/transaction/commit',
         data=json.dumps(query),
         auth=_AUTH,
         headers=_HEADERS)
-    return respostajson(response)
+
+    numero_de_nos = conta_nos(label, prop, val)
+
+    return respostajson(response, numero_de_nos=numero_de_nos)
 
 
 @app.route("/api/nextNodes")
