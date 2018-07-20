@@ -890,30 +890,6 @@ casos_servicos = [
         'metodo': responses.POST
     },
     {
-        'nome': 'api_findNodes',
-        'endereco': '/db/data/transaction/commit',
-        'servico': '/api/findNodes',
-        'resposta': resposta_filterNodes_ok,
-        'requisicao': request_filterNodes_ok,
-        'query_string': {
-            'label': 'pessoa',
-            'prop': 'nome',
-            'val': 'DANIEL CARVALHO BELCHIOR'
-        },
-        'metodo': responses.POST
-    },
-    {
-        'nome': 'api_nextNodes',
-        'endereco': '/db/data/transaction/commit',
-        'servico': '/api/nextNodes',
-        'resposta': resposta_nextNodes_ok,
-        'requisicao': request_nextNodes_ok,
-        'query_string': {
-            "node_id": 395989945
-        },
-        'metodo': responses.POST
-    },
-    {
         'nome': 'api_nodeProperties',
         'endereco': '/db/data/cypher',
         'servico': '/api/nodeProperties',

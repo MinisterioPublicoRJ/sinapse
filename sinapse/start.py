@@ -25,15 +25,18 @@ from sinapse.buildup import (
 )
 
 
-def respostajson(response):
+def respostajson(response, **kwargs):
     usuario = session.get('usuario', "dummy")
     sessionid = request.cookies.get('session')
     _log_response(usuario, sessionid, response)
     dados = response.json()
+    if isinstance(dados, dict):
+        dados.update(kwargs)
+
     if resposta_sensivel(dados):
         return jsonify(remove_info_sensiveis(dados))
 
-    return jsonify(response.json())
+    return jsonify(dados)
 
 
 def limpa_nos(nos):
@@ -80,6 +83,37 @@ def remove_info_sensiveis(resposta):
             data['graph']['relationships'])
 
     return resp
+
+
+def conta_nos(label, prop, val):
+    query = {"statements": [{
+        "statement": "MATCH (n: %s { %s:toUpper('%s')})"
+        " return count(n)" % (label, prop, val),
+        "resultDataContents": ["row", "graph"]
+    }]}
+
+    response = requests.post(
+        _ENDERECO_NEO4J % '/db/data/transaction/commit',
+        data=json.dumps(query),
+        auth=_AUTH,
+        headers=_HEADERS)
+
+    return response.json()['results'][0]['data'][0]['row'][0]
+
+
+def conta_expansoes(n_id):
+    query = {"statements": [{
+        "statement": "MATCH r = (n)-[*..1]-(x) where id(n) = %s"
+        " return count(r), count(n), count(x)" % n_id,
+    }]}
+
+    response = requests.post(
+        _ENDERECO_NEO4J % '/db/data/transaction/commit',
+        data=json.dumps(query),
+        auth=_AUTH,
+        headers=_HEADERS)
+
+    return response.json()['results'][0]['data'][0]['row']
 
 
 def resposta_sensivel(resposta):
@@ -206,12 +240,16 @@ def api_findNodes():
         " return n limit 100" % (label, prop, val),
         "resultDataContents": ["row", "graph"]
     }]}
+
     response = requests.post(
         _ENDERECO_NEO4J % '/db/data/transaction/commit',
         data=json.dumps(query),
         auth=_AUTH,
         headers=_HEADERS)
-    return respostajson(response)
+
+    numero_de_nos = conta_nos(label, prop, val)
+
+    return respostajson(response, numero_de_nos=numero_de_nos)
 
 
 @app.route("/api/nextNodes")
@@ -228,7 +266,10 @@ def api_nextNodes():
         data=json.dumps(query),
         auth=_AUTH,
         headers=_HEADERS)
-    return respostajson(response)
+
+    numero_expansoes = conta_expansoes(node_id)
+
+    return respostajson(response, numero_de_expansoes=numero_expansoes)
 
 
 @app.route("/api/nodeProperties")
