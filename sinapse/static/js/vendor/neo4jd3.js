@@ -905,7 +905,7 @@
   
       function updateNodes(n) {
           Array.prototype.push.apply(nodes, n);
-  
+
           node = svgNodes.selectAll('.node')
                          .data(nodes, function(d) { return d.id; });
           var nodeEnter = appendNodeToGraph();
@@ -918,6 +918,7 @@
   
           simulation.nodes(nodes);
           simulation.force('link').links(relationships);
+          simulation.restart();
       }
   
       function updateRelationships(r) {
