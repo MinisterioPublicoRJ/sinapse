@@ -2,6 +2,7 @@ import json
 import responses
 import unittest
 
+from copy import deepcopy
 from functools import wraps
 from unittest import mock
 
@@ -31,7 +32,9 @@ from .fixtures import (
     resposta_sensivel_mista,
     resposta_sensivel_mista_esp,
     relacoes_sensiveis,
-    relacoes_sensiveis_esp
+    relacoes_sensiveis_esp,
+    resposta_filterNodes_ok,
+    request_filterNodes_ok
 )
 
 
@@ -198,6 +201,38 @@ class MetodosConsulta(unittest.TestCase):
             )
 
     @responses.activate
+    def test_resposta_nos(self):
+        responses.add(
+            responses.POST,
+            _ENDERECO_NEO4J % '/db/data/transaction/commit',
+            json=resposta_filterNodes_ok
+        )
+        resposta_count = {
+            'results': [{'data': [{'row': [1]}]}]
+        }
+
+        responses.add(
+            responses.POST,
+            _ENDERECO_NEO4J % '/db/data/transaction/commit',
+            json=resposta_count
+        )
+
+        query_string = {
+            'label': 'pessoa',
+            'prop': 'nome',
+            'val': 'DANIEL CARVALHO BELCHIOR'
+        }
+
+        resposta = self.app.get(
+            '/api/findNodes',
+            query_string=query_string
+        )
+        resposta_esperada = deepcopy(resposta_filterNodes_ok)
+        resposta_esperada['numero_de_nos'] = 1
+
+        self.assertEqual(resposta.get_json(), resposta_esperada)
+
+    @responses.activate
     def test_conta_numero_de_nos(self):
         resp_esperada = {
             'results': [
@@ -213,6 +248,38 @@ class MetodosConsulta(unittest.TestCase):
         numero_nos = conta_nos(label='pessoa', prop='nome', val='Qualque')
 
         self.assertEqual(numero_nos, 3)
+
+    @mock.patch('sinapse.start.conta_nos', return_value=101)
+    @responses.activate
+    def test_conta_numero_de_nos_antes_da_busca(self, _conta_nos):
+        mock_resposta = mock.MagicMock()
+        responses.add(
+            responses.POST,
+            _ENDERECO_NEO4J % '/db/data/transaction/commit',
+            json={}
+        )
+        responses.add(
+            responses.POST,
+            _ENDERECO_NEO4J % '/db/data/transaction/commit',
+            json=resposta_filterNodes_ok
+        )
+        query_string = {
+            'label': 'pessoa',
+            'prop': 'nome',
+            'val': 'Qualquer'
+        }
+
+        resposta_espereda = deepcopy(resposta_filterNodes_ok)
+        resposta_espereda['numero_de_nos'] = 101
+        mock_resposta.json.return_value = resposta_espereda
+
+        resposta = self.app.get(
+            '/api/findNodes',
+            query_string=query_string
+        )
+
+        _conta_nos.assert_called_once_with('pessoa', 'nome', 'Qualquer')
+        self.assertEqual(resposta.json['numero_de_nos'], 101)
 
 
 class LogoutUsuarioFlask(FlaskTestCase):
