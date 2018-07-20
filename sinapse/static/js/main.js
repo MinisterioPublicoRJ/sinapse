@@ -30,6 +30,7 @@ const initNeo4JD3 = () => {
             doubleClickTime = new Date();
             get('api/nextNodes?node_id=' + node.id, (data) => {
                 neo4jd3.updateWithNeo4jData(data)
+                updateNodeSize()
             });
         },
         onRelationshipDoubleClick: function(relationship) {
@@ -158,8 +159,18 @@ const findNodes = () => {
     document.getElementById('step2').className = 'hidden'
 }
 
+const updateNodeSize = () => {
+    d3.select('svg').selectAll('circle').attr('r', (d) => {
+        if ((d.labels[0] === "pessoa") || (d.labels[0] === "empresa")){
+            return 50
+        }
+        return 20
+    })
+}
+
 const updateNodes = data => {
     neo4jd3.updateWithNeo4jData(data)
+    updateNodeSize()
 }
 
 /**
