@@ -35,6 +35,7 @@ from .fixtures import (
     relacoes_sensiveis,
     relacoes_sensiveis_esp,
     resposta_filterNodes_ok,
+    resposta_nextNodes_ok
 )
 
 
@@ -249,7 +250,6 @@ class MetodosConsulta(unittest.TestCase):
 
         self.assertEqual(numero_nos, 3)
 
-
     @mock.patch('sinapse.start.conta_nos', return_value=101)
     @responses.activate
     def test_conta_numero_de_nos_antes_da_busca(self, _conta_nos):
@@ -283,6 +283,38 @@ class MetodosConsulta(unittest.TestCase):
         self.assertEqual(resposta.json['numero_de_nos'], 101)
 
     @responses.activate
+    def test_resposta_expansoes(self):
+        responses.add(
+            responses.POST,
+            _ENDERECO_NEO4J % '/db/data/transaction/commit',
+            json=resposta_nextNodes_ok
+        )
+        resposta_count = {
+            'results': [
+                {'columns': ['COUNT(r)', 'COUNT(n)', 'COUNT(x)'],
+                 'data': [{'row': [72, 72, 72], 'meta': [None, None, None]}]}],
+            'errors': []}
+
+        responses.add(
+            responses.POST,
+            _ENDERECO_NEO4J % '/db/data/transaction/commit',
+            json=resposta_count
+        )
+
+        query_string = {
+            'node_id': 1234
+        }
+
+        resposta = self.app.get(
+            '/api/nextNodes',
+            query_string=query_string
+        )
+        resposta_esperada = deepcopy(resposta_nextNodes_ok)
+        resposta_esperada['numero_de_expansoes'] = [72, 72, 72]
+
+        self.assertEqual(resposta.get_json(), resposta_esperada)
+
+    @responses.activate
     def test_conta_numero_de_expansao_de_nos(self):
         resp_esperada = {
             'results': [
@@ -302,6 +334,36 @@ class MetodosConsulta(unittest.TestCase):
                          '{"statements": [{"statement": "MATCH r ='
                          ' (n)-[*..1]-(x) where id(n) = 1234 return count(r),'
                          ' count(n), count(x)"}]}')
+
+    @mock.patch('sinapse.start.conta_expansoes', return_value=[1, 1, 1])
+    @responses.activate
+    def test_conta_numero_de_expansoes_antes_da_busca(self, _conta_nos):
+        mock_resposta = mock.MagicMock()
+        responses.add(
+            responses.POST,
+            _ENDERECO_NEO4J % '/db/data/transaction/commit',
+            json={}
+        )
+        responses.add(
+            responses.POST,
+            _ENDERECO_NEO4J % '/db/data/transaction/commit',
+            json=resposta_filterNodes_ok
+        )
+        query_string = {
+            'node_id': 1234
+        }
+
+        resposta_espereda = deepcopy(resposta_filterNodes_ok)
+        resposta_espereda['numero_de_nos'] = [1, 1, 1]
+        mock_resposta.json.return_value = resposta_espereda
+
+        resposta = self.app.get(
+            '/api/nextNodes',
+            query_string=query_string
+        )
+
+        _conta_nos.assert_called_once_with('1234')
+        self.assertEqual(resposta.json['numero_de_expansoes'], [1, 1, 1])
 
 
 class LogoutUsuarioFlask(FlaskTestCase):

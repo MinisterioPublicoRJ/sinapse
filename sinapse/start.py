@@ -266,7 +266,10 @@ def api_nextNodes():
         data=json.dumps(query),
         auth=_AUTH,
         headers=_HEADERS)
-    return respostajson(response)
+
+    numero_expansoes = conta_expansoes(node_id)
+
+    return respostajson(response, numero_de_expansoes=numero_expansoes)
 
 
 @app.route("/api/nodeProperties")
