@@ -20,7 +20,8 @@ from sinapse.start import (
     remove_info_sensiveis,
     resposta_sensivel,
     limpa_relacoes,
-    conta_nos
+    conta_nos,
+    conta_expansoes
 )
 
 from .fixtures import (
@@ -34,7 +35,6 @@ from .fixtures import (
     relacoes_sensiveis,
     relacoes_sensiveis_esp,
     resposta_filterNodes_ok,
-    request_filterNodes_ok
 )
 
 
@@ -249,6 +249,7 @@ class MetodosConsulta(unittest.TestCase):
 
         self.assertEqual(numero_nos, 3)
 
+
     @mock.patch('sinapse.start.conta_nos', return_value=101)
     @responses.activate
     def test_conta_numero_de_nos_antes_da_busca(self, _conta_nos):
@@ -280,6 +281,27 @@ class MetodosConsulta(unittest.TestCase):
 
         _conta_nos.assert_called_once_with('pessoa', 'nome', 'Qualquer')
         self.assertEqual(resposta.json['numero_de_nos'], 101)
+
+    @responses.activate
+    def test_conta_numero_de_expansao_de_nos(self):
+        resp_esperada = {
+            'results': [
+                {'columns': ['COUNT(r)', 'COUNT(n)', 'COUNT(x)'],
+                 'data': [{'row': [72, 72, 72], 'meta': [None, None, None]}]}],
+            'errors': []}
+        responses.add(
+            responses.POST,
+            _ENDERECO_NEO4J % '/db/data/transaction/commit',
+            json=resp_esperada
+        )
+
+        expansoes = conta_expansoes(n_id=1234)
+
+        self.assertEqual(expansoes, [72, 72, 72])
+        self.assertEqual(responses.calls[-1].request.body,
+                         '{"statements": [{"statement": "MATCH r ='
+                         ' (n)-[*..1]-(x) where id(n) = 1234 return count(r),'
+                         ' count(n), count(x)"}]}')
 
 
 class LogoutUsuarioFlask(FlaskTestCase):

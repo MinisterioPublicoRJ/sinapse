@@ -101,6 +101,21 @@ def conta_nos(label, prop, val):
     return response.json()['results'][0]['data'][0]['row'][0]
 
 
+def conta_expansoes(n_id):
+    query = {"statements": [{
+        "statement": "MATCH r = (n)-[*..1]-(x) where id(n) = %s"
+        " return count(r), count(n), count(x)" % n_id,
+    }]}
+
+    response = requests.post(
+        _ENDERECO_NEO4J % '/db/data/transaction/commit',
+        data=json.dumps(query),
+        auth=_AUTH,
+        headers=_HEADERS)
+
+    return response.json()['results'][0]['data'][0]['row']
+
+
 def resposta_sensivel(resposta):
     def parser_dicionario(dicionario, chave):
         if isinstance(dicionario, dict):
