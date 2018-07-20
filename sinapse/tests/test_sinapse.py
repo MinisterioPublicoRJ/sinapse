@@ -70,7 +70,9 @@ def logresponse(funcao):
     def wrapper(*args, **kwargs):
         # remove o _log_response da lista de argumentos
         args = list(args)
-        args.pop(-1)
+        for arg in list(args):
+            if arg.__dict__.get('_mock_name', '') == '_log_response':
+                args.remove(arg)
         return funcao(*args, **kwargs)
 
     return wrapper
@@ -201,7 +203,7 @@ class MetodosConsulta(unittest.TestCase):
                 _ENDERECO_NEO4J % caso['endereco']
             )
 
-    @responses.activate
+    @logresponse
     def test_resposta_nos(self):
         responses.add(
             responses.POST,
@@ -251,7 +253,7 @@ class MetodosConsulta(unittest.TestCase):
         self.assertEqual(numero_nos, 3)
 
     @mock.patch('sinapse.start.conta_nos', return_value=101)
-    @responses.activate
+    @logresponse
     def test_conta_numero_de_nos_antes_da_busca(self, _conta_nos):
         mock_resposta = mock.MagicMock()
         responses.add(
@@ -282,7 +284,7 @@ class MetodosConsulta(unittest.TestCase):
         _conta_nos.assert_called_once_with('pessoa', 'nome', 'Qualquer')
         self.assertEqual(resposta.json['numero_de_nos'], 101)
 
-    @responses.activate
+    @logresponse
     def test_resposta_expansoes(self):
         responses.add(
             responses.POST,
@@ -336,7 +338,7 @@ class MetodosConsulta(unittest.TestCase):
                          ' count(n), count(x)"}]}')
 
     @mock.patch('sinapse.start.conta_expansoes', return_value=[1, 1, 1])
-    @responses.activate
+    @logresponse
     def test_conta_numero_de_expansoes_antes_da_busca(self, _conta_nos):
         mock_resposta = mock.MagicMock()
         responses.add(
