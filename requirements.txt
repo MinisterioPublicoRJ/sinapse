@@ -8,6 +8,8 @@ idna==2.7
 itsdangerous==0.24
 Jinja2==2.10
 MarkupSafe==1.0
+newrelic==3.2.2.94
+PyJWT==1.6.4
 pymongo==3.6.1
 python-decouple==3.1
 requests==2.19.1
@@ -15,4 +17,3 @@ urllib3==1.23
 waitress==1.1.0
 webassets==0.12.1
 Werkzeug==0.14.1
-newrelic==3.2.2.94
