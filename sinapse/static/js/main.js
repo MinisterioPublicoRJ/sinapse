@@ -146,12 +146,12 @@ const initSearch = () => {
     // Step 3 Clear Search button
     document.getElementById('clear').onclick = e => {
         // clear graph
-        neo4jd3.updateWithNeo4jData({"errors":[],"results":[{"columns":["n"],"data":[]}]})
+        neo4jd3.clearNodes()
         // show search form
         document.getElementById('step1').className = ''
         document.getElementById('step3').className = 'hidden'
         // hide sidebar
-        sidebarRight.style.display = "none"
+        hideSidebarRight()
     }
 }
 
@@ -368,9 +368,12 @@ const populateSidebarRight = (node) => {
 
 const showSidebarRight = () => {
     sidebarRight.style.display = "block"
+    document.getElementsByTagName('body')[0].className = 'showingSidebarRight'
+
 }
 
 const hideSidebarRight = () => {
     sidebarRight.style.display = "none"
+    document.getElementsByTagName('body')[0].className = ''
 }
 window.onload = init
