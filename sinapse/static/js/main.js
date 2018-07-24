@@ -161,11 +161,26 @@ const findNodes = () => {
 
 const updateNodeSize = () => {
     d3.select('svg').selectAll('circle').attr('r', (d) => {
-        if ((d.labels[0] === "pessoa") || (d.labels[0] === "empresa")){
+        let nodeType = getNodeType(d)
+        if ((nodeType === "pessoa") || (nodeType === "empresa")){
             return 50
         }
         return 20
     })
+
+    d3.select('svg').selectAll('.relationship path').attr('fill', (d) => {
+        console.log(d)
+        let nodeType = getNodeType(d.target)
+
+        if ((nodeType === "pessoa") || (nodeType === "empresa")){
+            return "#000000"
+        }
+        return "#ededed"
+    })
+}
+
+const getNodeType = (node) => {
+    return node.labels[0]
 }
 
 const updateNodes = data => {
@@ -260,7 +275,6 @@ const get = (url, callback) => {
         if (xmlhttp.readyState == 4) {
             if(xmlhttp.status == 200) {
                 var obj = JSON.parse(xmlhttp.responseText)
-                console.log(obj)
                 if (callback) {
                     callback(obj)
                 }
@@ -285,7 +299,6 @@ const sidebarRight = document.getElementById("sidebarRight")
 */
 
 const populateSidebarRight = (node) => {
-    console.log(node)
     let label = node.labels[0]
     switch (label) {
         case 'personagem':
