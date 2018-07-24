@@ -92,7 +92,7 @@ def conta_nos(opcoes, letras):
     query = {'statements': [{
         'statement': (
             ' '.join(opcoes) +
-            ' return %s' % count_letras,
+            ' return %s' % count_letras
             ),
         'resultDataContents': ['row', 'graph']
     }]}
