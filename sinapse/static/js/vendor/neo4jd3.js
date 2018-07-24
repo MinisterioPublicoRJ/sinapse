@@ -394,8 +394,7 @@
   
       function dragStarted(d) {
           if (!d3.event.active) {
-              //simulation.alphaTarget(0.3).restart();
-              simulation.alphaTarget(1).restart();
+              simulation.alphaTarget(0.1).restart();
           }
   
           d.fx = d.x;
