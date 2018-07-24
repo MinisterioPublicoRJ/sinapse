@@ -922,5 +922,5 @@ casos_servicos = [
 
 query_dinamica = [
     {'statement': "optional match (a:pessoa {nome:toUpper('DANIEL CARVALHO BELCHIOR')}) "
-                  "optional match (b:personagem {pess_dk:24728287}) return a,b limit 100", 
+                  "optional match (b:personagem {pess_dk:24728287}) return a,b limit 100",
                   'resultDataContents': ['row', 'graph']}]
