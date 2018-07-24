@@ -299,6 +299,12 @@ const sidebarRight = document.getElementById("sidebarRight")
 */
 
 const populateSidebarRight = (node) => {
+
+    //Deleting fields from object to not shown to user
+    delete node.properties['filho_rel_status']
+    delete node.properties['filho_rel_status_pai']
+    node.properties['sexo'] = node.properties['sexo'] == 1 ? 'Masculino' : 'Feminino'
+
     let label = node.labels[0]
     switch (label) {
         case 'personagem':
@@ -348,7 +354,7 @@ const populateSidebarRight = (node) => {
     valuesContainer.setAttribute("id", "valuesContainer")
 
     Object.keys(node.properties).forEach(function(property) {
-        
+
         let labelSpan = document.createElement("span")
         labelSpan.className = "sidebarRight-label"
         let labelContent = document.createTextNode(formatPropString(property))
@@ -358,9 +364,9 @@ const populateSidebarRight = (node) => {
         let dataSpan = document.createElement("span")
         dataSpan.className = "sidebarRight-data"
         let dataContent = document.createTextNode(node.properties[property])
+
         dataSpan.appendChild(dataContent)
         valuesContainer.appendChild(dataSpan)
-
 
         console.log(property, node.properties[property])
     });

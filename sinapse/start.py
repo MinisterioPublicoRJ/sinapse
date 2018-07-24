@@ -1,6 +1,7 @@
 import base64
 import json
 import requests
+from string import ascii_letters as abc
 
 from copy import deepcopy
 from datetime import datetime
@@ -25,15 +26,18 @@ from sinapse.buildup import (
 )
 
 
-def respostajson(response):
+def respostajson(response, **kwargs):
     usuario = session.get('usuario', "dummy")
     sessionid = request.cookies.get('session')
     _log_response(usuario, sessionid, response)
     dados = response.json()
+    if isinstance(dados, dict):
+        dados.update(kwargs)
+
     if resposta_sensivel(dados):
         return jsonify(remove_info_sensiveis(dados))
 
-    return jsonify(response.json())
+    return jsonify(dados)
 
 
 def limpa_nos(nos):
@@ -80,6 +84,41 @@ def remove_info_sensiveis(resposta):
             data['graph']['relationships'])
 
     return resp
+
+
+def conta_nos(opcoes, letras):
+    count_letras = ['count(%s)' % letra for letra in letras]
+    count_letras = ' + '.join(count_letras)
+    query = {'statements': [{
+        'statement': (
+            ' '.join(opcoes) +
+            ' return %s' % count_letras
+            ),
+        'resultDataContents': ['row', 'graph']
+    }]}
+
+    response = requests.post(
+        _ENDERECO_NEO4J % '/db/data/transaction/commit',
+        data=json.dumps(query),
+        auth=_AUTH,
+        headers=_HEADERS)
+
+    return response.json()['results'][0]['data'][0]['row'][0]
+
+
+def conta_expansoes(n_id):
+    query = {"statements": [{
+        "statement": "MATCH r = (n)-[*..1]-(x) where id(n) = %s"
+        " return count(r), count(n), count(x)" % n_id,
+    }]}
+
+    response = requests.post(
+        _ENDERECO_NEO4J % '/db/data/transaction/commit',
+        data=json.dumps(query),
+        auth=_AUTH,
+        headers=_HEADERS)
+
+    return response.json()['results'][0]['data'][0]['row']
 
 
 def resposta_sensivel(resposta):
@@ -194,24 +233,65 @@ def api_node():
     return respostajson(response)
 
 
+def _monta_query_filtro_opcional(label, prop, val, letra):
+    if prop == 'pess_dk':
+        return "optional match (%s:%s {%s:%s})" % (
+            letra,
+            label,
+            prop,
+            val
+        )
+
+    return "optional match (%s:%s {%s:toUpper('%s')})" % (
+        letra,
+        label,
+        prop,
+        val
+    )
+
+
 @app.route("/api/findNodes")
 @login_necessario
 def api_findNodes():
-    label = request.args.get('label')
-    prop = request.args.get('prop')
-    val = request.args.get('val')
+    plabel = request.args.get('label').split(',')
+    pprop = request.args.get('prop').split(',')
+    pval = request.args.get('val').split(',')
     # TODO: alterar para prepared statement
-    query = {"statements": [{
-        "statement": "MATCH (n: %s { %s:toUpper('%s')})"
-        " return n limit 100" % (label, prop, val),
-        "resultDataContents": ["row", "graph"]
+
+    letras = abc[0:len(plabel)]
+
+    opcoes = []
+
+    for label, prop, val, letra in zip(plabel,
+                                       pprop,
+                                       pval,
+                                       letras):
+        opcoes.append(
+            _monta_query_filtro_opcional(
+                label,
+                prop,
+                val,
+                letra
+            )
+        )
+
+    query = {'statements': [{
+        'statement': (
+            ' '.join(opcoes) +
+            ' return %s limit 100' % (','.join(letras))
+            ),
+        'resultDataContents': ['row', 'graph']
     }]}
+
     response = requests.post(
         _ENDERECO_NEO4J % '/db/data/transaction/commit',
         data=json.dumps(query),
         auth=_AUTH,
         headers=_HEADERS)
-    return respostajson(response)
+
+    numero_de_nos = conta_nos(opcoes, letras)
+
+    return respostajson(response, numero_de_nos=numero_de_nos)
 
 
 @app.route("/api/nextNodes")
@@ -228,7 +308,10 @@ def api_nextNodes():
         data=json.dumps(query),
         auth=_AUTH,
         headers=_HEADERS)
-    return respostajson(response)
+
+    numero_expansoes = conta_expansoes(node_id)
+
+    return respostajson(response, numero_de_expansoes=numero_expansoes)
 
 
 @app.route("/api/nodeProperties")
