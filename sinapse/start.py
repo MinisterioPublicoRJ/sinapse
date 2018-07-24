@@ -1,6 +1,7 @@
 import base64
 import json
 import requests
+from string import ascii_letters as abc
 
 from copy import deepcopy
 from datetime import datetime
@@ -85,11 +86,15 @@ def remove_info_sensiveis(resposta):
     return resp
 
 
-def conta_nos(label, prop, val):
-    query = {"statements": [{
-        "statement": "MATCH (n: %s { %s:toUpper('%s')})"
-        " return count(n)" % (label, prop, val),
-        "resultDataContents": ["row", "graph"]
+def conta_nos(opcoes, letras):
+    count_letras = ['count(%s)' % letra for letra in letras]
+    count_letras = ' + '.join(count_letras)
+    query = {'statements': [{
+        'statement': (
+            ' '.join(opcoes) +
+            ' return %s' % count_letras
+            ),
+        'resultDataContents': ['row', 'graph']
     }]}
 
     response = requests.post(
@@ -228,17 +233,54 @@ def api_node():
     return respostajson(response)
 
 
+def _monta_query_filtro_opcional(label, prop, val, letra):
+    if prop == 'pess_dk':
+        return "optional match (%s:%s {%s:%s})" % (
+            letra,
+            label,
+            prop,
+            val
+        )
+
+    return "optional match (%s:%s {%s:toUpper('%s')})" % (
+        letra,
+        label,
+        prop,
+        val
+    )
+
+
 @app.route("/api/findNodes")
 @login_necessario
 def api_findNodes():
-    label = request.args.get('label')
-    prop = request.args.get('prop')
-    val = request.args.get('val')
+    plabel = request.args.get('label').split(',')
+    pprop = request.args.get('prop').split(',')
+    pval = request.args.get('val').split(',')
     # TODO: alterar para prepared statement
-    query = {"statements": [{
-        "statement": "MATCH (n: %s { %s:toUpper('%s')})"
-        " return n limit 100" % (label, prop, val),
-        "resultDataContents": ["row", "graph"]
+
+    letras = abc[0:len(plabel)]
+
+    opcoes = []
+
+    for label, prop, val, letra in zip(plabel,
+                                       pprop,
+                                       pval,
+                                       letras):
+        opcoes.append(
+            _monta_query_filtro_opcional(
+                label,
+                prop,
+                val,
+                letra
+            )
+        )
+
+    query = {'statements': [{
+        'statement': (
+            ' '.join(opcoes) +
+            ' return %s limit 100' % (','.join(letras))
+            ),
+        'resultDataContents': ['row', 'graph']
     }]}
 
     response = requests.post(
@@ -247,7 +289,7 @@ def api_findNodes():
         auth=_AUTH,
         headers=_HEADERS)
 
-    numero_de_nos = conta_nos(label, prop, val)
+    numero_de_nos = conta_nos(opcoes, letras)
 
     return respostajson(response, numero_de_nos=numero_de_nos)
 
