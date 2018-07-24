@@ -23,7 +23,7 @@ const initNeo4JD3 = () => {
         }, 
         images: {},
         infoPanel: false,
-        minCollision: 60,
+        minCollision: 80,
         neo4jDataUrl: '/static/json/neo4jData_vazio.json',
         nodeRadius: 25,
         onNodeDoubleClick: function(node) {
