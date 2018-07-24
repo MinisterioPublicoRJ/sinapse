@@ -23,13 +23,14 @@ const initNeo4JD3 = () => {
         }, 
         images: {},
         infoPanel: false,
-        minCollision: 60,
+        minCollision: 80,
         neo4jDataUrl: '/static/json/neo4jData_vazio.json',
         nodeRadius: 25,
         onNodeDoubleClick: function(node) {
             doubleClickTime = new Date();
             get('api/nextNodes?node_id=' + node.id, (data) => {
                 neo4jd3.updateWithNeo4jData(data)
+                updateNodeSize()
             });
         },
         onRelationshipDoubleClick: function(relationship) {
@@ -168,9 +169,34 @@ const findNodes = () => {
     document.getElementById('step2').className = 'hidden'
 }
 
+const updateNodeSize = () => {
+    d3.select('svg').selectAll('circle').attr('r', (d) => {
+        let nodeType = getNodeType(d)
+        if ((nodeType === "pessoa") || (nodeType === "empresa")){
+            return 50
+        }
+        return 20
+    })
+
+    d3.select('svg').selectAll('.relationship path').attr('fill', (d) => {
+        console.log(d)
+        let nodeType = getNodeType(d.target)
+
+        if ((nodeType === "pessoa") || (nodeType === "empresa")){
+            return "#000000"
+        }
+        return "#ededed"
+    })
+}
+
+const getNodeType = (node) => {
+    return node.labels[0]
+}
+
 const updateNodes = data => {
     // update graph
     neo4jd3.updateWithNeo4jData(data)
+    updateNodeSize()
 
     // show back button
     document.getElementById('step3').className = ''
@@ -263,7 +289,6 @@ const get = (url, callback) => {
         if (xmlhttp.readyState == 4) {
             if(xmlhttp.status == 200) {
                 var obj = JSON.parse(xmlhttp.responseText)
-                console.log(obj)
                 if (callback) {
                     callback(obj)
                 }
@@ -288,7 +313,12 @@ const sidebarRight = document.getElementById("sidebarRight")
 */
 
 const populateSidebarRight = (node) => {
-    console.log(node)
+
+    //Deleting fields from object to not shown to user
+    delete node.properties['filho_rel_status']
+    delete node.properties['filho_rel_status_pai']
+    node.properties['sexo'] = node.properties['sexo'] == 1 ? 'Masculino' : 'Feminino'
+
     let label = node.labels[0]
     switch (label) {
         case 'personagem':
@@ -338,7 +368,7 @@ const populateSidebarRight = (node) => {
     valuesContainer.setAttribute("id", "valuesContainer")
 
     Object.keys(node.properties).forEach(function(property) {
-        
+
         let labelSpan = document.createElement("span")
         labelSpan.className = "sidebarRight-label"
         let labelContent = document.createTextNode(formatPropString(property))
@@ -348,9 +378,9 @@ const populateSidebarRight = (node) => {
         let dataSpan = document.createElement("span")
         dataSpan.className = "sidebarRight-data"
         let dataContent = document.createTextNode(node.properties[property])
+
         dataSpan.appendChild(dataContent)
         valuesContainer.appendChild(dataSpan)
-
 
         console.log(property, node.properties[property])
     });
