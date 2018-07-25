@@ -939,6 +939,15 @@
           relationshipText = svg.selectAll('.relationship .text');
           relationshipText = relationshipEnter.text.merge(relationshipText);
       }
+
+      function clearNodes() {
+          nodes = [];
+          document.querySelectorAll(".node").forEach(
+              function(e) {
+                  e.parentNode.removeChild(e);
+              }
+          );
+      }
   
       function version() {
           return VERSION;
@@ -969,6 +978,7 @@
   
       return {
           appendRandomDataToNode: appendRandomDataToNode,
+          clearNodes: clearNodes,
           neo4jDataToD3Data: neo4jDataToD3Data,
           randomD3Data: randomD3Data,
           size: size,
