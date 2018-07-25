@@ -59,5 +59,22 @@
         {% assets "js" %}
             <script type="text/javascript" src="{{ ASSET_URL }}"></script>
         {% endassets %}
+        {% if filtroinicial is defined %}
+            <script>
+                window.filtroInicial = {
+                    label: '{{ filtroinicial.label }}',
+                    prop: '{{ filtroinicial.prop }}',
+                    val: '{{ filtroinicial.val }}'
+                }
+                
+                document.getElementById('loading').className = 'hidden'
+                
+                _findNodes(
+                    filtroInicial.label,
+                    filtroInicial.prop,
+                    filtroInicial.val
+                )
+            </script>
+        {% endif %}
     </body>
 </html>
