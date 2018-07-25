@@ -17,6 +17,18 @@ from sinapse.buildup import (
 )
 
 
+def _gerarjwt(usuario):
+    validade = datetime.utcnow() + timedelta(seconds=60)
+
+    return jwt.encode(
+        {
+            'usuario': usuario,
+            'exp': validade
+        },
+        app.secret_key
+    )
+
+
 def autenticadorjwt(funcao):
     @wraps(funcao)
     def funcao_decorada(*args, **kwargs):
@@ -47,14 +59,4 @@ def autorizar():
     if sistema not in app.config['SISTEMAS']:
         return '', 403
 
-    validade = datetime.utcnow() + timedelta(seconds=60)
-
-    saida = jwt.encode(
-        {
-            'usuario': usuario,
-            'exp': validade
-        },
-        app.secret_key
-    )
-
-    return saida, 200
+    return _gerarjwt(usuario), 200
