@@ -48,7 +48,6 @@ const initNeo4JD3 = () => {
                     }
                 },threshold);
             }
-            
         },
         //zoomFit: true
     })
@@ -143,13 +142,25 @@ const setProps = nodeProperties => {
 }
 
 const initSearch = () => {
+    // Step 1 Search button
     document.getElementById('buttonBusca').onclick = findNodes
+    // Step 2 Input Search Enter Event
     document.getElementById('textVal').addEventListener('keypress', (e) => {
         let key = e.keyCode
         if (key === 13) { // 13 is enter
             findNodes()
         }
     })
+    // Step 3 Clear Search button
+    document.getElementById('clear').onclick = e => {
+        // clear graph
+        neo4jd3.clearNodes()
+        // show search form
+        document.getElementById('step1').className = ''
+        document.getElementById('step3').className = 'hidden'
+        // hide sidebar
+        hideSidebarRight()
+    }
 }
 
 const findNodes = () => {
@@ -190,8 +201,12 @@ const getNodeType = (node) => {
 }
 
 const updateNodes = data => {
+    // update graph
     neo4jd3.updateWithNeo4jData(data)
     updateNodeSize()
+
+    // show back button
+    document.getElementById('step3').className = ''
 }
 
 /**
@@ -390,9 +405,12 @@ const populateSidebarRight = (node) => {
 
 const showSidebarRight = () => {
     sidebarRight.style.display = "block"
+    document.getElementsByTagName('body')[0].className = 'showingSidebarRight'
+
 }
 
 const hideSidebarRight = () => {
     sidebarRight.style.display = "none"
+    document.getElementsByTagName('body')[0].className = ''
 }
 window.onload = init
