@@ -6,8 +6,20 @@ const init = () => {
 
 let neo4jd3
 
-let doubleClickTime = 0;
-const threshold = 200;
+let doubleClickTime = 0
+const threshold = 200
+
+const clickedNodes = []
+
+const checkNodeWasClicked = (node) => {
+    for(nodeIndex in clickedNodes){
+        let clickedNode = clickedNodes[nodeIndex]
+        if(clickedNode.id === node.id){
+            return true
+        }
+    }
+    return false
+}
 
 const initNeo4JD3 = () => {
     neo4jd3 = new Neo4jd3('#neo4jd3', {
@@ -28,6 +40,10 @@ const initNeo4JD3 = () => {
         nodeRadius: 25,
         onNodeDoubleClick: function(node) {
             doubleClickTime = new Date();
+            if(checkNodeWasClicked(node)){
+                return false
+            }
+            clickedNodes.push(node)
             get('api/nextNodes?node_id=' + node.id, (data) => {
                 neo4jd3.updateWithNeo4jData(data)
                 updateNodeSize()
@@ -175,7 +191,6 @@ const updateNodeSize = () => {
     })
 
     d3.select('svg').selectAll('.relationship path').attr('fill', (d) => {
-        console.log(d)
         let nodeType = getNodeType(d.target)
 
         if ((nodeType === "pessoa") || (nodeType === "empresa")){
