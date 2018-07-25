@@ -12,6 +12,17 @@ let neo4jd3
 let doubleClickTime = 0
 const threshold = 200
 const sidebarRight = document.getElementById("sidebarRight")
+const clickedNodes = []
+
+const checkNodeWasClicked = node => {
+    for (nodeIndex in clickedNodes) {
+        let clickedNode = clickedNodes[nodeIndex]
+        if (clickedNode.id === node.id) {
+            return true
+        }
+    }
+    return false
+}
 
 /**
  * Inits the Neo4JD3 graph.
@@ -35,6 +46,11 @@ const initNeo4JD3 = () => {
         nodeRadius: 25,
         onNodeDoubleClick: node => {
             doubleClickTime = new Date();
+
+            if(checkNodeWasClicked(node)){
+                return false
+            }
+            clickedNodes.push(node)
             get('api/nextNodes?node_id=' + node.id, data => {
                 neo4jd3.updateWithNeo4jData(data)
                 updateNodeSize()
