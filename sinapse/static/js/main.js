@@ -144,6 +144,12 @@ const setProps = nodeProperties => {
 
 const initSearch = () => {
     document.getElementById('buttonBusca').onclick = findNodes
+    document.getElementById('textVal').addEventListener('keypress', (e) => {
+        let key = e.keyCode
+        if (key === 13) { // 13 is enter
+            findNodes()
+        }
+    })
 }
 
 const findNodes = () => {
