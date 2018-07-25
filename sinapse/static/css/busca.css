@@ -45,12 +45,13 @@ span.tooltip:after {
     margin-top: -37px;
 }
 
-.busca img {
-    cursor: pointer;
+.comece-aqui img {
+    width: 72px;
+    height: 72px;
 }
 
-.busca .hidden {
-    display: none;
+.busca img {
+    cursor: pointer;
 }
 
 .comece-aqui:hover span.tooltip,
@@ -198,38 +199,88 @@ span.tooltip:after {
     position: absolute;
     top: 50%;
     left: 50%;
+    margin-top: -32px;
+    margin-left: -32px;
+}
+@keyframes empresa {
+    to {
+        margin-top: -160px;
+        margin-left: -32px;
+    }
 }
 .opcoes .empresa {
-    margin-top: -160px; /*-128*/
-    margin-left: -32px; /*0*/
+    animation: empresa .5s 0s 1 ease forwards;
+    z-index: 9;
+}
+@keyframes mgp {
+    to {
+        margin-top: -123px;
+        margin-left: 59px;
+    }
 }
 .opcoes .mgp {
-    margin-top: -123px; /*-91*/
-    margin-left: 59px; /*91*/
+    animation: mgp .5s .05s 1 ease forwards;
+    z-index: 8;
+}
+@keyframes multa {
+    to {
+        margin-top: -32px;
+        margin-left: 96px;
+    }
 }
 .opcoes .multa {
-    margin-top: -32px; /*0*/
-    margin-left: 96px; /*128*/
+    animation: multa .5s .1s 1 ease forwards;
+    z-index: 7;
+}
+@keyframes orgao {
+    to {
+        margin-top: 59px;
+        margin-left: 59px;
+    }
 }
 .opcoes .orgao {
-    margin-top: 59px; /*91*/
-    margin-left: 59px; /*91*/
+    animation: orgao .5s .15s 1 ease forwards;
+    z-index: 6;
+}
+@keyframes personagem {
+    to {
+        margin-top: 96px;
+        margin-left: -32px;
+    }
 }
 .opcoes .personagem {
-    margin-top: 96px; /*128*/
-    margin-left: -32px; /*0*/
+    animation: personagem .5s .2s 1 ease forwards;
+    z-index: 5;
+}
+@keyframes pessoa {
+    to {
+        margin-top: 59px;
+        margin-left: -123px;
+    }
 }
 .opcoes .pessoa {
-    margin-top: 59px; /*91*/
-    margin-left: -123px; /*-91*/
+    animation: pessoa .5s .25s 1 ease forwards;
+    z-index: 4;
+}
+@keyframes telefone {
+    to {
+        margin-top: -32px;
+        margin-left: -160px;
+    }
 }
 .opcoes .telefone {
-    margin-top: -32px; /*0*/
-    margin-left: -160px; /*-128*/
+    animation: telefone .5s .3s 1 ease forwards;
+    z-index: 3;
+}
+@keyframes veiculo {
+    to {
+        margin-top: -123px;
+        margin-left: -123px;
+    }
 }
 .opcoes .veiculo {
-    margin-top: -123px; /*-91*/
-    margin-left: -123px; /*-91*/
+    animation: veiculo .5s .35s 1 ease forwards;
+    z-index: 2;
 }
 
 #step2 {
@@ -295,4 +346,25 @@ span.tooltip:after {
     padding: 0px 10px;
     font-size: 14px;
     margin-top: 10px;
+}
+
+#step3 {
+    padding-top: 20px;
+    padding-right: 20px;
+    text-align: right;
+}
+
+.showingSidebarRight #step3 {
+    margin-right: 15%;
+}
+
+#step3 #clear {
+    width: 64px;
+    height: 64px;
+    background: url('/static/img/icon/menu.svg') no-repeat;
+    border: none;
+}
+
+#step3 #clear span {
+    display: none;
 }

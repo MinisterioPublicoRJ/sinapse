@@ -1,4 +1,9 @@
 from .buildup import app
+
+from .api import (
+    api_filtrar
+)
+
 from .start import (
     api_relationships,
     api_labels,
@@ -15,6 +20,7 @@ from .auth import (
     autorizar
 )
 
+
 __all__ = [
     'app',
     'api_relationships',
@@ -26,5 +32,6 @@ __all__ = [
     'raiz',
     'logout',
     'login',
-    'autorizar'
+    'autorizar',
+    'api_filtrar'
 ]

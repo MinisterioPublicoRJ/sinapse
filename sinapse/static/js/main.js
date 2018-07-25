@@ -55,7 +55,6 @@ const initNeo4JD3 = () => {
                     }
                 }, threshold)
             }
-            
         },
     })
 }
@@ -74,7 +73,9 @@ const getLabels = () => {
  */
 const setLabels = labels => {
     document.getElementById('loading').className = 'hidden'
-    document.getElementById('step1').className = ''
+    if (!window.filtroInicial) {
+        document.getElementById('step1').className = ''
+    }
     let labelsMenu = document.getElementById('opcoes')
     labels.sort().map(label => {
         if (label !== 'teste') {
@@ -176,13 +177,25 @@ const setProps = nodeProperties => {
  * Adds the events to initialize search: button click and Enter keypress.
  */
 const initSearch = () => {
+    // Step 1 Search button
     document.getElementById('buttonBusca').onclick = findNodes
+    // Step 2 Input Search Enter Event
     document.getElementById('textVal').addEventListener('keypress', e => {
         let key = e.keyCode
         if (key === 13) { // 13 is enter
             findNodes()
         }
     })
+    // Step 3 Clear Search button
+    document.getElementById('clear').onclick = e => {
+        // clear graph
+        neo4jd3.clearNodes()
+        // show search form
+        document.getElementById('step1').className = ''
+        document.getElementById('step3').className = 'hidden'
+        // hide sidebar
+        hideSidebarRight()
+    }
 }
 
 /**
@@ -193,6 +206,17 @@ const findNodes = () => {
     let prop = document.getElementById('selectProp').value
     let val = document.getElementById('textVal').value
 
+    _findNodes(label, prop, val)
+}
+
+/**
+ * Gets from API the nodes that match the given label, prop and val.
+ *
+ * @param {string} label
+ * @param {string} prop
+ * @param {string} val
+ */
+const _findNodes = (label, prop, val) => {
     if (!label || !prop || !val) {
         return alert('ERRO: É preciso escolher o tipo, a propriedade e preencher um valor para realizar uma busca.')
     }
@@ -240,8 +264,12 @@ const getNodeType = node => {
  * @param {*} data Data from Neo4J database.
  */
 const updateNodes = data => {
+    // update graph
     neo4jd3.updateWithNeo4jData(data)
     updateNodeSize()
+
+    // show back button
+    document.getElementById('step3').className = ''
 }
 
 /**
@@ -430,11 +458,14 @@ const populateSidebarRight = node => {
  */
 const showSidebarRight = () => {
     sidebarRight.style.display = "block"
+    document.getElementsByTagName('body')[0].className = 'showingSidebarRight'
+
 }
 
 /** Hides the Right Sidebar. */
 const hideSidebarRight = () => {
     sidebarRight.style.display = "none"
+    document.getElementsByTagName('body')[0].className = ''
 }
 
 // Finally, declare init function to run when the page loads.
