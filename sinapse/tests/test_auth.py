@@ -98,12 +98,12 @@ class Autorizacao(unittest.TestCase):
         _session.__setitem__.side_effect = setitem
 
         assert metodo_decorado() is True
-        assert _session['usuario'] == 'ministerio.publico'
+        self.assertEqual(_session['usuario'], 'ministerio.publico')
 
     @mock.patch('sinapse.auth.request')
     def test_autenticadorjwt_embranco(self, _request):
         _request.headers.get.return_value = None
-        assert metodo_decorado() == ('', 403)
+        self.assertEqual(metodo_decorado(), ('', 403))
         _request.headers.get.assert_called_once_with('authorization')
 
     @mock.patch('sinapse.auth.request')
@@ -113,7 +113,7 @@ class Autorizacao(unittest.TestCase):
             'authorization': ' JWT %s' % token.decode('utf-8') + 'abc'
         }
 
-        assert metodo_decorado() == ('Erro de Assinatura', 403)
+        self.assertEqual(metodo_decorado(), ('Erro de Assinatura', 403))
 
     @mock.patch('sinapse.auth.request')
     def test_autenticadorjwt_expirado(self, _request):
@@ -125,4 +125,4 @@ class Autorizacao(unittest.TestCase):
         }
 
         with freeze_time("2018-07-24 14:32:00"):
-            assert metodo_decorado() == ('Expirado', 401)
+            self.assertEqual(metodo_decorado(), ('Expirado', 401))
