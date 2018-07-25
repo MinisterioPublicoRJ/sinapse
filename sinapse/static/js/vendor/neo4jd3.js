@@ -942,7 +942,8 @@
 
       function clearNodes() {
           nodes = [];
-          document.querySelectorAll(".node").forEach(
+          relationships = [];
+          document.querySelectorAll(".node, .relationship").forEach(
               function(e) {
                   e.parentNode.removeChild(e);
               }
