@@ -209,6 +209,7 @@ span.tooltip:after {
 }
 .opcoes .empresa {
     animation: empresa .5s 0s 1 ease forwards;
+    z-index: 9;
 }
 @keyframes mgp {
     to {
@@ -218,6 +219,7 @@ span.tooltip:after {
 }
 .opcoes .mgp {
     animation: mgp .5s .05s 1 ease forwards;
+    z-index: 8;
 }
 @keyframes multa {
     to {
@@ -227,6 +229,7 @@ span.tooltip:after {
 }
 .opcoes .multa {
     animation: multa .5s .1s 1 ease forwards;
+    z-index: 7;
 }
 @keyframes orgao {
     to {
@@ -236,6 +239,7 @@ span.tooltip:after {
 }
 .opcoes .orgao {
     animation: orgao .5s .15s 1 ease forwards;
+    z-index: 6;
 }
 @keyframes personagem {
     to {
@@ -245,6 +249,7 @@ span.tooltip:after {
 }
 .opcoes .personagem {
     animation: personagem .5s .2s 1 ease forwards;
+    z-index: 5;
 }
 @keyframes pessoa {
     to {
@@ -254,6 +259,7 @@ span.tooltip:after {
 }
 .opcoes .pessoa {
     animation: pessoa .5s .25s 1 ease forwards;
+    z-index: 4;
 }
 @keyframes telefone {
     to {
@@ -263,6 +269,7 @@ span.tooltip:after {
 }
 .opcoes .telefone {
     animation: telefone .5s .3s 1 ease forwards;
+    z-index: 3;
 }
 @keyframes veiculo {
     to {
@@ -272,6 +279,7 @@ span.tooltip:after {
 }
 .opcoes .veiculo {
     animation: veiculo .5s .35s 1 ease forwards;
+    z-index: 2;
 }
 
 #step2 {
