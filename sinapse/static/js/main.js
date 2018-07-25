@@ -23,13 +23,14 @@ const initNeo4JD3 = () => {
         }, 
         images: {},
         infoPanel: false,
-        minCollision: 60,
+        minCollision: 80,
         neo4jDataUrl: '/static/json/neo4jData_vazio.json',
         nodeRadius: 25,
         onNodeDoubleClick: function(node) {
             doubleClickTime = new Date();
             get('api/nextNodes?node_id=' + node.id, (data) => {
                 neo4jd3.updateWithNeo4jData(data)
+                updateNodeSize()
             });
         },
         onRelationshipDoubleClick: function(relationship) {
@@ -145,6 +146,12 @@ const setProps = nodeProperties => {
 
 const initSearch = () => {
     document.getElementById('buttonBusca').onclick = findNodes
+    document.getElementById('textVal').addEventListener('keypress', (e) => {
+        let key = e.keyCode
+        if (key === 13) { // 13 is enter
+            findNodes()
+        }
+    })
 }
 
 const findNodes = () => {
@@ -165,8 +172,33 @@ const _findNodes = (label, prop, val) => {
     document.getElementById('step2').className = 'hidden'
 }
 
+const updateNodeSize = () => {
+    d3.select('svg').selectAll('circle').attr('r', (d) => {
+        let nodeType = getNodeType(d)
+        if ((nodeType === "pessoa") || (nodeType === "empresa")){
+            return 50
+        }
+        return 20
+    })
+
+    d3.select('svg').selectAll('.relationship path').attr('fill', (d) => {
+        console.log(d)
+        let nodeType = getNodeType(d.target)
+
+        if ((nodeType === "pessoa") || (nodeType === "empresa")){
+            return "#000000"
+        }
+        return "#ededed"
+    })
+}
+
+const getNodeType = (node) => {
+    return node.labels[0]
+}
+
 const updateNodes = data => {
     neo4jd3.updateWithNeo4jData(data)
+    updateNodeSize()
 }
 
 /**
@@ -256,7 +288,6 @@ const get = (url, callback) => {
         if (xmlhttp.readyState == 4) {
             if(xmlhttp.status == 200) {
                 var obj = JSON.parse(xmlhttp.responseText)
-                console.log(obj)
                 if (callback) {
                     callback(obj)
                 }
