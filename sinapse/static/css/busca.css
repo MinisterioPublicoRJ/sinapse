@@ -45,12 +45,13 @@ span.tooltip:after {
     margin-top: -37px;
 }
 
-.busca img {
-    cursor: pointer;
+.comece-aqui img {
+    width: 72px;
+    height: 72px;
 }
 
-.busca .hidden {
-    display: none;
+.busca img {
+    cursor: pointer;
 }
 
 .comece-aqui:hover span.tooltip,
@@ -345,4 +346,25 @@ span.tooltip:after {
     padding: 0px 10px;
     font-size: 14px;
     margin-top: 10px;
+}
+
+#step3 {
+    padding-top: 20px;
+    padding-right: 20px;
+    text-align: right;
+}
+
+.showingSidebarRight #step3 {
+    margin-right: 15%;
+}
+
+#step3 #clear {
+    width: 64px;
+    height: 64px;
+    background: url('/static/img/icon/menu.svg') no-repeat;
+    border: none;
+}
+
+#step3 #clear span {
+    display: none;
 }
