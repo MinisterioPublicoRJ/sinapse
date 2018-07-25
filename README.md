@@ -19,17 +19,18 @@ As buscas podem ser relacionadas a parentesco, relação societária, propriedad
 O projeto utiliza decouple para variáveis de configuração e ambiente, é necessário utilizar um arquivo *settings.ini* ou exportar no ambiente as seguintes variáveis:
 
 ```
-NEO4J_USUARIO=(usuário do banco Neo4J)  
-NEO4J_SENHA=(senha do usuário)  
-NEO4J_DOMINIO=(FQDN do banco Neo4J)  
-MONGO_USUARIO=(usuário do banco MongoDB para log de acesso)  
-MONGO_SENHA=(senha do usuário MongoDB)  
-MONGO_HOST=(host do MongoDB)  
-MONGO_AUTHDB=(domínio de autorização)  
-SECRET=(secret key única segura)  
-AUTH_MPRJ=(FQDN do autorizador web MPRJ)  
-USERINFO_MPRJ=(FQDN do sistema de roles MPRJ)  
-DEV=True/False(Em DEV não precisa de autenticação)  
+NEO4J_USUARIO=(usuário do banco Neo4J)
+NEO4J_SENHA=(senha do usuário)
+NEO4J_DOMINIO=(FQDN do banco Neo4J)
+MONGO_USUARIO=(usuário do banco MongoDB para log de acesso)
+MONGO_SENHA=(senha do usuário MongoDB)
+MONGO_HOST=(host do MongoDB)
+MONGO_AUTHDB=(domínio de autorização)
+SECRET=(secret key única segura)
+AUTH_MPRJ=(FQDN do autorizador web MPRJ)
+USERINFO_MPRJ=(FQDN do sistema de roles MPRJ)
+DEV=True/False(Em DEV não precisa de autenticação)
+SISTEMAS=???
 ```
 
 ## Dependências, Instalação e Execução

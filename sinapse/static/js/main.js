@@ -144,6 +144,13 @@ const setProps = nodeProperties => {
 const initSearch = () => {
     // Step 1 Search button
     document.getElementById('buttonBusca').onclick = findNodes
+    // Step 2 Input Search Enter Event
+    document.getElementById('textVal').addEventListener('keypress', (e) => {
+        let key = e.keyCode
+        if (key === 13) { // 13 is enter
+            findNodes()
+        }
+    })
     // Step 3 Clear Search button
     document.getElementById('clear').onclick = e => {
         // clear graph
