@@ -59,7 +59,9 @@ const getLabels = () => {
 
 const setLabels = labels => {
     document.getElementById('loading').className = 'hidden'
-    document.getElementById('step1').className = ''
+    if (!window.filtroInicial) {
+        document.getElementById('step1').className = ''
+    }
     let labelsMenu = document.getElementById('opcoes')
     labels.sort().map(label => {
         if (label !== 'teste') {
@@ -149,6 +151,11 @@ const findNodes = () => {
     let label = document.getElementById('selectLabel').value
     let prop = document.getElementById('selectProp').value
     let val = document.getElementById('textVal').value
+
+    _findNodes(label, prop, val)
+}
+
+const _findNodes = (label, prop, val) => {
     if (!label || !prop || !val) {
         return alert('ERRO: É preciso escolher o tipo, a propriedade e preencher um valor para realizar uma busca.')
     }
