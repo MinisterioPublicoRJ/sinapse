@@ -6,12 +6,12 @@ from .auth import autenticadorjwt
 from .buildup import app
 
 
+@app.route("/api/filtroinicial", methods=['GET'])
 @autenticadorjwt
-@app.route("/api/filtrar", methods=['POST'])
-def api_filtrar():
-    label = request.form.get('label')
-    prop = request.form.get('prop')
-    val = request.form.get('val')
+def filtro_inicial():
+    label = request.args.get('label')
+    prop = request.args.get('prop')
+    val = request.args.get('val')
 
     return render_template(
         'index.html',

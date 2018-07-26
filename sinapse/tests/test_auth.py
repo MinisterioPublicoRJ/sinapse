@@ -65,19 +65,16 @@ class Autorizacao(unittest.TestCase):
 
         assert resposta.status_code == 403
 
-    @freeze_time("2018-07-24 14:30:00")
     def test_api_filtra(self):
         token = _gerarjwt('ministerio.publico')
 
-        resposta = self.app.post(
-            '/api/filtrar',
-            data={
+        resposta = self.app.get(
+            '/api/filtroinicial',
+            query_string={
+                'authorization': token,
                 'label': 'pessoa',
                 'prop': 'nome',
                 'val': 'DANIEL CARVALHO BELCHIOR'
-            },
-            headers={
-                'Authorization': ' JWT %s' % token.decode('utf-8')
             }
         )
 
@@ -90,8 +87,8 @@ class Autorizacao(unittest.TestCase):
     @mock.patch('sinapse.auth.request')
     def test_autenticadorjwt(self, _request, _session):
         token = _gerarjwt('ministerio.publico')
-        _request.headers = {
-            'authorization': ' JWT %s' % token.decode('utf-8')
+        _request.args = {
+            'authorization': token.decode('utf-8')
         }
 
         _session.__getitem__.side_effect = getitem
@@ -102,9 +99,9 @@ class Autorizacao(unittest.TestCase):
 
     @mock.patch('sinapse.auth.request')
     def test_autenticadorjwt_embranco(self, _request):
-        _request.headers.get.return_value = None
+        _request.args.get.return_value = None
         self.assertEqual(metodo_decorado(), ('', 403))
-        _request.headers.get.assert_called_once_with('authorization')
+        _request.args.get.assert_called_once_with('authorization')
 
     @mock.patch('sinapse.auth.request')
     def test_autenticadorjwt_temperado(self, _request):
@@ -120,8 +117,8 @@ class Autorizacao(unittest.TestCase):
         with freeze_time("2018-07-24 14:30:00"):
             token = _gerarjwt('ministerio.publico')
 
-        _request.headers = {
-            'authorization': ' JWT %s' % token.decode('utf-8')
+        _request.args = {
+            'authorization': token.decode('utf-8')
         }
 
         with freeze_time("2018-07-24 14:32:00"):
