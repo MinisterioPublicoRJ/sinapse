@@ -32,11 +32,10 @@ def _gerarjwt(usuario):
 def autenticadorjwt(funcao):
     @wraps(funcao)
     def funcao_decorada(*args, **kwargs):
-        token_jwt = request.headers.get('authorization')
+        token_jwt = request.args.get('authorization')
         if not token_jwt:
             return '', 403
         try:
-            token_jwt = token_jwt.split(' JWT ')[1]
             mensagem = jwt.decode(
                 token_jwt,
                 app.secret_key)

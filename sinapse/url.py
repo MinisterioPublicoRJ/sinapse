@@ -1,7 +1,7 @@
 from .buildup import app
 
 from .api import (
-    api_filtrar
+    filtro_inicial
 )
 
 from .start import (
@@ -33,5 +33,5 @@ __all__ = [
     'logout',
     'login',
     'autorizar',
-    'api_filtrar'
+    'filtro_inicial'
 ]
