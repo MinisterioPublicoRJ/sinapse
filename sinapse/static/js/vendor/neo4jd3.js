@@ -421,7 +421,7 @@
       function icon(d) {
           var code;
   
-          if (options.iconMap && options.showIcons && options.iconsFA) {
+          if (options.iconMap && options.showIconsFA && options.iconsFA) {
               if (options.iconsFA[d.labels[0]] && options.iconMap[options.iconsFA[d.labels[0]]]) {
                   code = options.iconMap[options.iconsFA[d.labels[0]]];
               } else if (options.iconMap[d.labels[0]]) {
@@ -478,7 +478,7 @@
           merge(options, _options);
   
           if (options.iconsFA) {
-              options.showIcons = true;
+              options.showIconsFA = true;
           }
   
           if (!options.minCollision) {

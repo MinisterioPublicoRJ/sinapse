@@ -38,7 +38,7 @@ const initNeo4JD3 = () => {
             'personagem':'users',
             'telefone':'phone',
             'veiculo': 'car',
-        }, 
+        },
         images: {},
         infoPanel: false,
         minCollision: 80,
