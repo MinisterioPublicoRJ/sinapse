@@ -19,6 +19,7 @@ bundles = {
         'css/busca.css',
         'css/login.css',
         'css/sidebarRight.css',
+        'css/graph.css',
     ),
 }
 

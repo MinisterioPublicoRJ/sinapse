@@ -24,22 +24,23 @@ const checkNodeWasClicked = node => {
     return false
 }
 
+const baseIconsPath = '/static/img/icon/graph/'
+
 /**
  * Inits the Neo4JD3 graph.
  */
 const initNeo4JD3 = () => {
     neo4jd3 = new Neo4jd3('#neo4jd3', {
-        iconsFA: {
-            'empresa': 'building',
-            'mgp':'balance-scale',
-            'multa':'money',
-            'orgao':'suitcase',
-            'pessoa': 'user',
-            'personagem':'users',
-            'telefone':'phone',
-            'veiculo': 'car',
+        iconsPaths: {
+            'empresa': baseIconsPath+'empresa.svg',
+            'mgp':baseIconsPath+'mgp.svg',
+            'multa':baseIconsPath+'multa.svg',
+            'orgao':baseIconsPath+'orgao.svg',
+            'pessoa': baseIconsPath+'pessoa.svg',
+            'personagem':baseIconsPath+'personagem.svg',
+            'telefone':baseIconsPath+'telefone.svg',
+            'veiculo': baseIconsPath+'veiculo.svg',
         },
-        images: {},
         infoPanel: false,
         minCollision: 80,
         neo4jDataUrl: '/static/json/neo4jData_vazio.json',

@@ -20,7 +20,8 @@
               colors: colors(),
               highlight: undefined,
               iconMap: fontAwesomeIcons(),
-              icons: undefined,
+              iconsFA: undefined,
+              iconsPaths: undefined,
               imageMap: {},
               images: undefined,
               infoPanel: true,
@@ -68,21 +69,21 @@
   
       function appendImageToNode(node) {
           return node.append('image')
-                     .attr('height', function(d) {
-                         return icon(d) ? '24px': '30px';
-                     })
-                     .attr('x', function(d) {
-                         return icon(d) ? '5px': '-15px';
-                     })
-                     .attr('xlink:href', function(d) {
-                         return image(d);
-                     })
-                     .attr('y', function(d) {
-                         return icon(d) ? '5px': '-16px';
-                     })
-                     .attr('width', function(d) {
-                         return icon(d) ? '24px': '30px';
-                     });
+            .attr('height', function(d) {
+                return icon(d) ? '24px': '30px';
+            })
+            .attr('x', function(d) {
+                return icon(d) ? '5px': '-15px';
+            })
+            .attr('xlink:href', function(d) {
+                return image(d);
+            })
+            .attr('y', function(d) {
+                return icon(d) ? '5px': '-16px';
+            })
+            .attr('width', function(d) {
+                return icon(d) ? '24px': '30px';
+            });
       }
   
       function appendInfoPanel(container) {
@@ -198,6 +199,10 @@
           if (options.iconsFA) {
               appendTextToNode(n);
           }
+
+          if (options.iconsPaths) {
+            appendIconImageToNode(n);
+        }
   
           if (options.images) {
               appendImageToNode(n);
@@ -248,6 +253,25 @@
                          var _icon = icon(d);
                          return _icon ? '&#x' + _icon : d.id;
                      });
+      }
+
+      function appendIconImageToNode(node) {
+          return node.append('image')
+            .attr('height', function(d) {
+                return '100px';
+            })
+            .attr('x', function(d) {
+                return '-50px';
+            })
+            .attr('xlink:href', function(d) {
+                return options.iconsPaths[d.labels[0]];
+            })
+            .attr('y', function(d) {
+                return '-50px';
+            })
+            .attr('width', function(d) {
+                return '100px';
+            });
       }
   
       function appendRandomDataToNode(d, maxNodesToGenerate) {
