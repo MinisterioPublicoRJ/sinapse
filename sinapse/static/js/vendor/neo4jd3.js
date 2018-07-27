@@ -195,7 +195,7 @@
           appendRingToNode(n);
           appendOutlineToNode(n);
   
-          if (options.icons) {
+          if (options.iconsFA) {
               appendTextToNode(n);
           }
   
@@ -421,13 +421,13 @@
       function icon(d) {
           var code;
   
-          if (options.iconMap && options.showIcons && options.icons) {
-              if (options.icons[d.labels[0]] && options.iconMap[options.icons[d.labels[0]]]) {
-                  code = options.iconMap[options.icons[d.labels[0]]];
+          if (options.iconMap && options.showIcons && options.iconsFA) {
+              if (options.iconsFA[d.labels[0]] && options.iconMap[options.iconsFA[d.labels[0]]]) {
+                  code = options.iconMap[options.iconsFA[d.labels[0]]];
               } else if (options.iconMap[d.labels[0]]) {
                   code = options.iconMap[d.labels[0]];
-              } else if (options.icons[d.labels[0]]) {
-                  code = options.icons[d.labels[0]];
+              } else if (options.iconsFA[d.labels[0]]) {
+                  code = options.iconsFA[d.labels[0]];
               }
           }
   
@@ -477,7 +477,7 @@
   
           merge(options, _options);
   
-          if (options.icons) {
+          if (options.iconsFA) {
               options.showIcons = true;
           }
   

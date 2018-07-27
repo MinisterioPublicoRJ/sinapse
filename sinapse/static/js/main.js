@@ -29,7 +29,7 @@ const checkNodeWasClicked = node => {
  */
 const initNeo4JD3 = () => {
     neo4jd3 = new Neo4jd3('#neo4jd3', {
-        icons: {
+        iconsFA: {
             'empresa': 'building',
             'mgp':'balance-scale',
             'multa':'money',
