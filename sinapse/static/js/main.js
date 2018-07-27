@@ -248,12 +248,14 @@ const _findNodes = (label, prop, val) => {
  * Updates Neo4JD3 created nodes' circles with different sizes for each node type.
  */
 const updateNodeSize = () => {
+    const largeRadius = 50
+    const smallRadius = 20
     d3.select('svg').selectAll('circle').attr('r', d => {
         let nodeType = getNodeType(d)
         if (nodeType === "pessoa" || nodeType === "empresa") {
-            return 50
+            return largeRadius
         }
-        return 20
+        return smallRadius
     })
 
     d3.select('svg').selectAll('.relationship path').attr('fill', (d) => {
@@ -264,6 +266,36 @@ const updateNodeSize = () => {
         }
         return "#ededed"
     })
+
+    d3.select('svg').selectAll('image')
+        .attr('height', d => {
+            let nodeType = getNodeType(d)
+            if (nodeType === "pessoa" || nodeType === "empresa") {
+                return largeRadius*2
+            }
+            return smallRadius*2
+        })
+        .attr('width', d => {
+            let nodeType = getNodeType(d)
+            if (nodeType === "pessoa" || nodeType === "empresa") {
+                return largeRadius*2
+            }
+            return smallRadius*2
+        })
+        .attr('x', function(d) {
+            let nodeType = getNodeType(d)
+            if (nodeType === "pessoa" || nodeType === "empresa") {
+                return `-${largeRadius}px`
+            }
+            return `-${smallRadius}px`
+        })
+        .attr('y', function(d) {
+            let nodeType = getNodeType(d)
+            if (nodeType === "pessoa" || nodeType === "empresa") {
+                return `-${largeRadius}px`
+            }
+            return `-${smallRadius}px`
+        })
 }
 
 /**
