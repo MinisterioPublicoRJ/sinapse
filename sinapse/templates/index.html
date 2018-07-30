@@ -23,6 +23,7 @@
         </style>
     </head>
     <body>
+        <div class="logo"></div>
         <div class="busca">
             <div id="loading">
                 <img src="/static/img/icon/Loading_icon.gif">
@@ -57,6 +58,51 @@
         </div>
         <div id="neo4jd3"></div>
         <aside id="sidebarRight"></aside>
+        <div class="footer">
+            <div class="legend">
+                <div class="hidden" id="legend-expanded">
+                    <div class="empresa">
+                        <span class="ball"></span>
+                        <span class="text">Empresa Lorem ipsum</span>
+                    </div>
+                    <div class="mgp">
+                        <span class="ball"></span>
+                        <span class="text">MGP Lorem ipsum</span>
+                    </div>
+                    <div class="multa">
+                        <span class="ball"></span>
+                        <span class="text">Multa Lorem ipsum</span>
+                    </div>
+                    <div class="orgao">
+                        <span class="ball"></span>
+                        <span class="text">Órgão Lorem ipsum</span>
+                    </div>
+                    <div class="personagem">
+                        <span class="ball"></span>
+                        <span class="text">Personagem Lorem ipsum</span>
+                    </div>
+                    <div class="pessoa">
+                        <span class="ball"></span>
+                        <span class="text">Pessoa Lorem ipsum</span>
+                    </div>
+                    <div class="telefone">
+                        <span class="ball"></span>
+                        <span class="text">Telefone Lorem ipsum</span>
+                    </div>
+                    <div class="veiculo">
+                        <span class="ball"></span>
+                        <span class="text">Veículo Lorem ipsum</span>
+                    </div>
+                </div>
+                <div id="legend-call">
+                    <span class="ball"></span>
+                    <span class="text">Clique para mais detalhes</span>
+                </div>
+            </div>
+            <a href="http://apps.mprj.mp.br/sistema/cadg/" class="mprj">
+                <span><abbr title="Ministério Público">MP</abbr> em Mapas</span>
+            </a>
+        </div>
         {% assets "js" %}
             <script type="text/javascript" src="{{ ASSET_URL }}"></script>
         {% endassets %}
