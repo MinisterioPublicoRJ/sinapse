@@ -1,3 +1,33 @@
 .neo4jd3-graph {
     border: none !important;
 }
+
+.logo {
+    background-color: white;
+    background-image: url('/static/img/logo-conexao.svg');
+    background-position: top center;
+    background-repeat: no-repeat;
+    border-radius: 50px;
+    position: absolute;
+    left: 50%;
+    top: 20px;
+    width: 200px;
+    height: 64px;
+    margin-left: -100px;
+}
+
+.mprj {
+    background-color: white;
+    background-image: url('/static/img/Logo-mpemmapas.svg');
+    background-position: top center;
+    background-repeat: no-repeat;
+    border-radius: 36px;
+    position: absolute;
+    width: 140px;
+    height: 72px;
+    bottom: 20px;
+    right: 20px;
+}
+.mprj span {
+    display: none;
+}

@@ -43,6 +43,7 @@ span.tooltip:after {
     left: 50%;
     margin-left: -37px;
     margin-top: -37px;
+    z-index: 10;
 }
 
 .comece-aqui img {
