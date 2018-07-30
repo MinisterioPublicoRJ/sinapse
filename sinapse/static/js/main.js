@@ -5,6 +5,7 @@ const init = () => {
     initNeo4JD3()
     getLabels()
     initSearch()
+    initFooter()
 }
 
 // Initial vars
@@ -515,6 +516,20 @@ const showSidebarRight = () => {
 const hideSidebarRight = () => {
     sidebarRight.style.display = "none"
     document.getElementsByTagName('body')[0].className = ''
+}
+
+/**
+ * Initialize the footer click event.
+ */
+const initFooter = () => {
+    const legendExpanded = document.getElementById('legend-expanded')
+    document.getElementById('legend-call').onclick = e => {
+        if (legendExpanded.className) {
+            legendExpanded.className = ''
+        } else {
+            legendExpanded.className = 'hidden'
+        }
+    }
 }
 
 // Finally, declare init function to run when the page loads.
