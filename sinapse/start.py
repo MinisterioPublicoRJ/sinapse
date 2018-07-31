@@ -26,6 +26,12 @@ from sinapse.buildup import (
 )
 
 
+def redirecionar(url, code=301):
+    retorno = redirect(url, code=code) 
+    retorno.autocorrect_location_header = False
+    return retorno
+
+
 def respostajson(response, **kwargs):
     usuario = session.get('usuario', "dummy")
     sessionid = request.cookies.get('session')
@@ -188,7 +194,7 @@ def login():
         resposta = _autenticar(usuario, senha)
         if resposta:
             session['usuario'] = resposta
-            return redirect(url_for(request.args.get('next', 'raiz')))
+            return redirecionar(url_for(request.args.get('next', 'raiz')))
 
         session['flask_msg'] = 'Falha no login'
         return render_template('login.html'), 401
@@ -204,13 +210,15 @@ def logout():
         sucesso = 'Você foi deslogado com sucesso'
         session['flask_msg'] = sucesso
 
-    return redirect(url_for('login'), code=302)
+    return redirecionar(url_for('login'), code=302)
 
 
 @app.route("/")
 def raiz():
     if 'usuario' not in session:
-        return redirect(url_for('login', next=request.endpoint), code=302)
+        retorno = redirecionar(url_for('login', next=request.endpoint), code=302) 
+        retorno.autocorrect_location_header = False
+        return retorno
     return render_template('index.html')
 
 
