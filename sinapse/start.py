@@ -26,8 +26,8 @@ from sinapse.buildup import (
 )
 
 
-def redirecionar(url, code=301):
-    retorno = redirect(url, code=code) 
+def redirecionar(url, code=302):
+    retorno = redirect(url, code=code)
     retorno.autocorrect_location_header = False
     return retorno
 
@@ -216,7 +216,9 @@ def logout():
 @app.route("/")
 def raiz():
     if 'usuario' not in session:
-        retorno = redirecionar(url_for('login', next=request.endpoint), code=302) 
+        retorno = redirecionar(
+            url_for('login', next=request.endpoint),
+            code=302)
         retorno.autocorrect_location_header = False
         return retorno
     return render_template('index.html')
