@@ -26,7 +26,12 @@
     width: 140px;
     height: 72px;
     bottom: 20px;
-    right: 20px;
+    right: 0;
+    margin-right: 20px;
+    transition: right .2s ease-in-out;
+}
+.showingSidebarRight .mprj {
+    right: 15%;
 }
 .mprj span {
     display: none;
