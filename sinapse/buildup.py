@@ -1,5 +1,6 @@
-from decouple import config
+from decouple import config, Csv
 from flask import Flask
+from flask_cors import CORS
 from pymongo import MongoClient
 from requests.auth import HTTPBasicAuth
 
@@ -9,6 +10,9 @@ app.secret_key = config('SECRET')
 app.jinja_env.auto_reload = True
 app.config['SESSION_TYPE'] = 'filesystem'
 app.config['TEMPLATES_AUTO_RELOAD'] = True
+app.config['SISTEMAS'] = config('SISTEMAS', cast=Csv(str))
+
+CORS(app)
 
 _AUTH = HTTPBasicAuth(config('NEO4J_USUARIO'), config('NEO4J_SENHA'))
 _ENDERECO_NEO4J = config('NEO4J_DOMINIO') + '%s'

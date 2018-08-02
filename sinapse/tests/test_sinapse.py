@@ -21,7 +21,8 @@ from sinapse.start import (
     resposta_sensivel,
     limpa_relacoes,
     conta_nos,
-    conta_expansoes
+    conta_expansoes,
+    _monta_query_filtro_opcional
 )
 
 from .fixtures import (
@@ -35,8 +36,31 @@ from .fixtures import (
     relacoes_sensiveis,
     relacoes_sensiveis_esp,
     resposta_filterNodes_ok,
-    resposta_nextNodes_ok
+    resposta_nextNodes_ok,
+    query_dinamica
 )
+
+
+def test_monta_query_filtro_opcional():
+    saida = _monta_query_filtro_opcional(
+        'label',
+        'prop',
+        'val',
+        'a'
+    )
+
+    assert saida == "optional match (a:label {prop:toUpper('val')})"
+
+
+def test_monta_query_filtro_opcional_pessdk():
+    saida = _monta_query_filtro_opcional(
+        'label',
+        'pess_dk',
+        'val',
+        'a'
+    )
+
+    assert saida == "optional match (a:label {pess_dk:val})"
 
 
 @responses.activate
@@ -174,6 +198,30 @@ class MetodosConsulta(unittest.TestCase):
                     "senha": "senha"})
 
     @logresponse
+    def test_monta_query_dinamica(self):
+        query_string = {
+            'label': 'pessoa,personagem',
+            'prop': 'nome,pess_dk',
+            'val': 'DANIEL CARVALHO BELCHIOR,24728287'
+        }
+
+        responses.add(
+            responses.POST,
+            _ENDERECO_NEO4J % '/db/data/transaction/commit',
+            json=resposta_sensivel_mista_esp
+        )
+
+        resposta = self.app.get(
+            '/api/findNodes',
+            query_string=query_string
+        )
+
+        assert resposta.status_code == 200
+
+        statements = json.loads(responses.calls[0].request.body)
+        assert statements['statements'] == query_dinamica
+
+    @logresponse
     def test_metodos_consulta(self):
         for caso in casos_servicos:
             self._consultar(caso)
@@ -248,7 +296,15 @@ class MetodosConsulta(unittest.TestCase):
             json=resp_esperada
         )
 
-        numero_nos = conta_nos(label='pessoa', prop='nome', val='Qualque')
+        numero_nos = conta_nos(
+            _monta_query_filtro_opcional(
+                'pessoa',
+                'nome',
+                'Qualque',
+                'a'
+            ),
+            'a'
+        )
 
         self.assertEqual(numero_nos, 3)
 
@@ -281,7 +337,10 @@ class MetodosConsulta(unittest.TestCase):
             query_string=query_string
         )
 
-        _conta_nos.assert_called_once_with('pessoa', 'nome', 'Qualquer')
+        _conta_nos.assert_called_once_with(
+            ["optional match (a:pessoa {nome:toUpper('Qualquer')})"],
+            'a'
+        )
         self.assertEqual(resposta.json['numero_de_nos'], 101)
 
     @logresponse

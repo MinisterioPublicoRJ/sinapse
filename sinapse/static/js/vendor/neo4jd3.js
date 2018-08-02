@@ -20,7 +20,8 @@
               colors: colors(),
               highlight: undefined,
               iconMap: fontAwesomeIcons(),
-              icons: undefined,
+              iconsFA: undefined,
+              iconsPaths: undefined,
               imageMap: {},
               images: undefined,
               infoPanel: true,
@@ -68,21 +69,21 @@
   
       function appendImageToNode(node) {
           return node.append('image')
-                     .attr('height', function(d) {
-                         return icon(d) ? '24px': '30px';
-                     })
-                     .attr('x', function(d) {
-                         return icon(d) ? '5px': '-15px';
-                     })
-                     .attr('xlink:href', function(d) {
-                         return image(d);
-                     })
-                     .attr('y', function(d) {
-                         return icon(d) ? '5px': '-16px';
-                     })
-                     .attr('width', function(d) {
-                         return icon(d) ? '24px': '30px';
-                     });
+            .attr('height', function(d) {
+                return icon(d) ? '24px': '30px';
+            })
+            .attr('x', function(d) {
+                return icon(d) ? '5px': '-15px';
+            })
+            .attr('xlink:href', function(d) {
+                return image(d);
+            })
+            .attr('y', function(d) {
+                return icon(d) ? '5px': '-16px';
+            })
+            .attr('width', function(d) {
+                return icon(d) ? '24px': '30px';
+            });
       }
   
       function appendInfoPanel(container) {
@@ -195,9 +196,13 @@
           appendRingToNode(n);
           appendOutlineToNode(n);
   
-          if (options.icons) {
+          if (options.iconsFA) {
               appendTextToNode(n);
           }
+
+          if (options.iconsPaths) {
+            appendIconImageToNode(n);
+        }
   
           if (options.images) {
               appendImageToNode(n);
@@ -248,6 +253,25 @@
                          var _icon = icon(d);
                          return _icon ? '&#x' + _icon : d.id;
                      });
+      }
+
+      function appendIconImageToNode(node) {
+          return node.append('image')
+            .attr('height', function(d) {
+                return '100px';
+            })
+            .attr('x', function(d) {
+                return '-50px';
+            })
+            .attr('xlink:href', function(d) {
+                return options.iconsPaths[d.labels[0]];
+            })
+            .attr('y', function(d) {
+                return '-50px';
+            })
+            .attr('width', function(d) {
+                return '100px';
+            });
       }
   
       function appendRandomDataToNode(d, maxNodesToGenerate) {
@@ -394,8 +418,7 @@
   
       function dragStarted(d) {
           if (!d3.event.active) {
-              //simulation.alphaTarget(0.3).restart();
-              simulation.alphaTarget(1).restart();
+              simulation.alphaTarget(0.2).restart();
           }
   
           d.fx = d.x;
@@ -422,13 +445,13 @@
       function icon(d) {
           var code;
   
-          if (options.iconMap && options.showIcons && options.icons) {
-              if (options.icons[d.labels[0]] && options.iconMap[options.icons[d.labels[0]]]) {
-                  code = options.iconMap[options.icons[d.labels[0]]];
+          if (options.iconMap && options.showIconsFA && options.iconsFA) {
+              if (options.iconsFA[d.labels[0]] && options.iconMap[options.iconsFA[d.labels[0]]]) {
+                  code = options.iconMap[options.iconsFA[d.labels[0]]];
               } else if (options.iconMap[d.labels[0]]) {
                   code = options.iconMap[d.labels[0]];
-              } else if (options.icons[d.labels[0]]) {
-                  code = options.icons[d.labels[0]];
+              } else if (options.iconsFA[d.labels[0]]) {
+                  code = options.iconsFA[d.labels[0]];
               }
           }
   
@@ -478,8 +501,8 @@
   
           merge(options, _options);
   
-          if (options.icons) {
-              options.showIcons = true;
+          if (options.iconsFA) {
+              options.showIconsFA = true;
           }
   
           if (!options.minCollision) {
@@ -940,6 +963,16 @@
           relationshipText = svg.selectAll('.relationship .text');
           relationshipText = relationshipEnter.text.merge(relationshipText);
       }
+
+      function clearNodes() {
+          nodes = [];
+          relationships = [];
+          document.querySelectorAll(".node, .relationship").forEach(
+              function(e) {
+                  e.parentNode.removeChild(e);
+              }
+          );
+      }
   
       function version() {
           return VERSION;
@@ -970,6 +1003,7 @@
   
       return {
           appendRandomDataToNode: appendRandomDataToNode,
+          clearNodes: clearNodes,
           neo4jDataToD3Data: neo4jDataToD3Data,
           randomD3Data: randomD3Data,
           size: size,
