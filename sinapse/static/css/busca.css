@@ -51,6 +51,14 @@ span.tooltip:after {
     height: 72px;
 }
 
+.busca .hidden {
+    display: none;   
+}
+
+#textBusca {
+    display: none;
+}
+
 .busca img {
     cursor: pointer;
 }
@@ -192,6 +200,7 @@ span.tooltip:after {
 .veiculo:hover span.tooltip {
     background: #ff8b63;
 }
+
 .veiculo:hover span.tooltip:after {
     border-bottom-color: #ff8b63;
 }
@@ -349,6 +358,368 @@ span.tooltip:after {
     margin-top: 10px;
 }
 
+/** Botoes dinamicos **/
+/** style button initial **/
+#step2 .empresa .btnRadio {
+  background-color: transparent;
+  border: 1px solid #cccccc;
+  border-radius: 50px;
+  transition: all .05s ease-in-out;
+  color: #cccccc;
+  width: auto;
+  margin-top: 5px;
+}
+
+#step2 .empresa .btnRadio:hover {
+    cursor: pointer;
+}
+
+/* show SVG */
+#step2 .empresa .badge2 {
+    background-color: transparent;
+    color:transparent;
+    border-radius: 100%;
+    height: 15px;
+    width: 15px;
+    margin-top: 3px;
+    margin-right: 3px;
+    fill: #cccccc;
+}
+
+/* style button */
+#step2 .empresa .badgebox:checked + .btnRadio {
+    border: 3px solid #51c881;
+    border-radius: 50px;
+    -webkit-transition: all .15s ease-in-out;
+    transition: all .15s ease-in-out;
+    color: #51c881;
+    margin: 5px;
+}
+
+/* style SVG */
+#step2 .empresa .badgebox:checked + label .cls {
+    fill: #51c881;
+    fill-opacity: 1;
+}
+
+/** style button initial **/
+#step2 .mgp .btnRadio {
+  background-color: transparent;
+  border: 1px solid #cccccc;
+  border-radius: 50px;
+  transition: all .05s ease-in-out;
+  color: #cccccc;
+  width: auto;
+  margin-top: 5px;
+}
+
+#step2 .mgp .btnRadio:hover {
+    cursor: pointer;
+}
+
+/* show SVG */
+#step2 .mgp .badge2 {
+    background-color: transparent;
+    color:transparent;
+    border-radius: 100%;
+    height: 15px;
+    width: 15px;
+    margin-top: 3px;
+    margin-right: 3px;
+    fill: #cccccc;
+}
+
+/* style button */
+#step2 .mgp .badgebox:checked + .btnRadio {
+    border: 3px solid #ab897f;
+    border-radius: 50px;
+    -webkit-transition: all .15s ease-in-out;
+    transition: all .15s ease-in-out;
+    color: #ab897f;
+    margin: 5px;
+}
+
+/* style SVG */
+#step2 .mgp .badgebox:checked + label .cls {
+    fill: #ab897f;
+    fill-opacity: 1;
+}
+
+/** style button initial **/
+#step2 .multa .btnRadio {
+  background-color: transparent;
+  border: 1px solid #cccccc;
+  border-radius: 50px;
+  transition: all .05s ease-in-out;
+  color: #cccccc;
+  width: auto;
+  margin-top: 5px;
+}
+
+#step2 .multa .btnRadio:hover {
+    cursor: pointer;
+}
+
+/* show SVG */
+#step2 .multa .badge2 {
+    background-color: transparent;
+    color:transparent;
+    border-radius: 100%;
+    height: 15px;
+    width: 15px;
+    margin-top: 3px;
+    margin-right: 3px;
+    fill: #cccccc;
+}
+
+/* style button */
+#step2 .multa .badgebox:checked + .btnRadio {
+    border: 3px solid #ff524e;
+    border-radius: 50px;
+    -webkit-transition: all .15s ease-in-out;
+    transition: all .15s ease-in-out;
+    color: #ff524e;
+    margin: 5px;
+}
+
+/* style SVG */
+#step2 .multa .badgebox:checked + label .cls {
+    fill: #ff524e;
+    fill-opacity: 1;
+}
+
+/** style button initial **/
+#step2 .orgao .btnRadio {
+  background-color: transparent;
+  border: 1px solid #cccccc;
+  border-radius: 50px;
+  transition: all .05s ease-in-out;
+  color: #cccccc;
+  width: auto;
+  margin-top: 5px;
+}
+
+#step2 .orgao .btnRadio:hover {
+    cursor: pointer;
+}
+
+/* show SVG */
+#step2 .orgao .badge2 {
+    background-color: transparent;
+    color:transparent;
+    border-radius: 100%;
+    height: 15px;
+    width: 15px;
+    margin-top: 3px;
+    margin-right: 3px;
+    fill: #cccccc;
+}
+
+/* style button */
+#step2 .orgao .badgebox:checked + .btnRadio {
+    border: 3px solid #ffb842;
+    border-radius: 50px;
+    -webkit-transition: all .15s ease-in-out;
+    transition: all .15s ease-in-out;
+    color: #ffb842;
+    margin: 5px;
+}
+
+/* style SVG */
+#step2 .orgao .badgebox:checked + label .cls {
+    fill: #ffb842;
+    fill-opacity: 1;
+}
+
+/** style button initial **/
+#step2 .personagem .btnRadio {
+  background-color: transparent;
+  border: 1px solid #cccccc;
+  border-radius: 50px;
+  transition: all .05s ease-in-out;
+  color: #cccccc;
+  width: auto;
+  margin-top: 5px;
+}
+
+#step2 .personagem .btnRadio:hover {
+    cursor: pointer;
+}
+
+/* show SVG */
+#step2 .personagem .badge2 {
+    background-color: transparent;
+    color:transparent;
+    border-radius: 100%;
+    height: 15px;
+    width: 15px;
+    margin-top: 3px;
+    margin-right: 3px;
+    fill: #cccccc;
+}
+
+/* style button */
+#step2 .personagem .badgebox:checked + .btnRadio {
+    border: 3px solid #a176d1;
+    border-radius: 50px;
+    -webkit-transition: all .15s ease-in-out;
+    transition: all .15s ease-in-out;
+    color: #a176d1;
+    margin: 5px;
+}
+
+/* style SVG */
+#step2 .personagem .badgebox:checked + label .cls {
+    fill: #a176d1;
+    fill-opacity: 1;
+}
+
+/** style button initial **/
+#step2 .pessoa .btnRadio {
+  background-color: transparent;
+  border: 1px solid #cccccc;
+  border-radius: 50px;
+  transition: all .05s ease-in-out;
+  color: #cccccc;
+  width: auto;
+  margin-top: 5px;
+}
+
+#step2 .pessoa .btnRadio:hover {
+    cursor: pointer;
+}
+
+/* show SVG */
+#step2 .pessoa .badge2 {
+    background-color: transparent;
+    color:transparent;
+    border-radius: 100%;
+    height: 15px;
+    width: 15px;
+    margin-top: 3px;
+    margin-right: 3px;
+    fill: #cccccc;
+}
+
+/* style button */
+#step2 .pessoa .badgebox:checked + .btnRadio {
+    border: 3px solid #00d1e2;
+    border-radius: 50px;
+    -webkit-transition: all .15s ease-in-out;
+    transition: all .15s ease-in-out;
+    color: #00d1e2;
+    margin: 5px;
+}
+
+/* style SVG */
+#step2 .pessoa .badgebox:checked + label .cls {
+    fill: #00d1e2;
+    fill-opacity: 1;
+}
+
+/** style button initial **/
+#step2 .telefone .btnRadio {
+  background-color: transparent;
+  border: 1px solid #cccccc;
+  border-radius: 50px;
+  transition: all .05s ease-in-out;
+  color: #cccccc;
+  width: auto;
+  margin-top: 5px;
+}
+
+#step2 .telefone .btnRadio:hover {
+    cursor: pointer;
+}
+
+/* show SVG */
+#step2 .telefone .badge2 {
+    background-color: transparent;
+    color:transparent;
+    border-radius: 100%;
+    height: 15px;
+    width: 15px;
+    margin-top: 3px;
+    margin-right: 3px;
+    fill: #cccccc;
+}
+
+/* style button */
+#step2 .telefone .badgebox:checked + .btnRadio {
+    border: 3px solid #324eb6;
+    border-radius: 50px;
+    -webkit-transition: all .15s ease-in-out;
+    transition: all .15s ease-in-out;
+    color: #324eb6;
+    margin: 5px;
+}
+
+/* style SVG */
+#step2 .telefone .badgebox:checked + label .cls {
+    fill: #324eb6;
+    fill-opacity: 1;
+}
+
+/** style button initial **/
+#step2 .veiculo .btnRadio {
+  background-color: transparent;
+  border: 1px solid #cccccc;
+  border-radius: 50px;
+  transition: all .05s ease-in-out;
+  color: #cccccc;
+  width: auto;
+  margin-top: 5px;
+}
+
+#step2 .veiculo .btnRadio:hover {
+    cursor: pointer;
+}
+
+/* show SVG */
+#step2 .veiculo .badge2 {
+    background-color: transparent;
+    color:transparent;
+    border-radius: 100%;
+    height: 15px;
+    width: 15px;
+    margin-top: 3px;
+    margin-right: 3px;
+    fill: #cccccc;
+}
+
+/* style button */
+#step2 .veiculo .badgebox:checked + .btnRadio {
+    border: 3px solid #ff8b63;
+    border-radius: 50px;
+    -webkit-transition: all .15s ease-in-out;
+    transition: all .15s ease-in-out;
+    color: #ff8b63;
+    margin: 5px;
+}
+
+/* style SVG */
+#step2 .veiculo .badgebox:checked + label .cls {
+    fill: #ff8b63;
+    fill-opacity: 1;
+}
+
+.txtButton {
+    margin-left: 10px;
+}
+
+.badgebox {
+    opacity: 0;
+    border-radius: 50%;
+}
+
+.badgebox + .badge2 {
+    width: 20px;
+    height: 20px;
+    margin-right: 5px;
+    margin-top: 4px;
+    background-color: #fff;
+}
+
 #step3 {
     padding-top: 20px;
     position: absolute;
@@ -370,3 +741,4 @@ span.tooltip:after {
 #step3 #clear span {
     display: none;
 }
+

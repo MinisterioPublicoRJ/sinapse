@@ -90,6 +90,7 @@ const getLabels = () => {
  * @param {Array.<string>} labels An array of labels as strings.
  */
 const setLabels = labels => {
+
     document.getElementById('loading').className = 'hidden'
     if (!window.filtroInicial) {
         document.getElementById('step1').className = ''
@@ -133,6 +134,7 @@ const setLabels = labels => {
     document.getElementById('step2img').onclick = e => {
         document.getElementById('step1').className = ''
         document.getElementById('step2').className = 'hidden'
+        document.getElementById('textBusca').style = 'hidden'
     }
 }
 
@@ -156,10 +158,18 @@ const getNodeProperties = e => {
  * @param {string} optionValue The <option> value and innerHTML.
  */
 const appendOption = (select, optionValue) => {
-    var option = document.createElement('option')
-    option.value = optionValue
-    option.innerHTML = formatPropString(optionValue)
-    select.appendChild(option)
+
+    var mylist = document.getElementById('selectProp');
+    mylist.insertAdjacentHTML('beforeend', `
+        <input type="radio" class="badgebox" name="test" id="` + optionValue + `" value="` + optionValue + `" onclick="checkRadio()">
+        <label for="` + optionValue + `" class="btnRadio">
+            <span class="txtButton">` + formatPropString(optionValue) + `</span>
+            <label class="badge2">            
+                <svg xmlns="http://www.w3.org/2000/svg"  class="cls" viewBox="0 0 18.91 18.91">
+                    <path d="M17.64,4.71A9.31,9.31,0,0,0,14.2,1.27,9.21,9.21,0,0,0,9.45,0,9.2,9.2,0,0,0,4.71,1.27,9.31,9.31,0,0,0,1.27,4.71,9.2,9.2,0,0,0,0,9.45,9.21,9.21,0,0,0,1.27,14.2a9.31,9.31,0,0,0,3.44,3.44,9.2,9.2,0,0,0,4.74,1.27,9.21,9.21,0,0,0,4.75-1.27,9.31,9.31,0,0,0,3.44-3.44,9.21,9.21,0,0,0,1.27-4.75,9.2,9.2,0,0,0-1.27-4.74ZM15.59,8,8.9,14.7a.79.79,0,0,1-.57.23.78.78,0,0,1-.55-.23L3.32,10.24a.78.78,0,0,1-.22-.55.81.81,0,0,1,.22-.57L4.44,8A.79.79,0,0,1,5,7.78.76.76,0,0,1,5.55,8L8.33,10.8l5-5a.74.74,0,0,1,.55-.24.77.77,0,0,1,.56.24l1.12,1.1a.81.81,0,0,1,.22.57.76.76,0,0,1-.22.55Z"/>
+                </svg>                        
+            </label>
+        </label>`);
 }
 
 /**
@@ -168,11 +178,15 @@ const appendOption = (select, optionValue) => {
  * @param {Array.<string>} nodeProperties
  */
 const setProps = nodeProperties => {
+    
     // hide step1, show step2
     document.getElementById('step1').className = 'hidden'
     document.getElementById('step2').className = ''
 
     let props = nodeProperties.data[0][0]
+    //Deleting fields from object to not shown to user
+    delete props[4]
+    delete props[6]
     
     let selectProp = document.getElementById('selectProp')
     
@@ -181,12 +195,6 @@ const setProps = nodeProperties => {
         selectProp.removeChild(selectProp.firstChild);
     }
 
-    // add empty option
-    let emptyOption = document.createElement('option')
-    emptyOption.value = ''
-    emptyOption.innerHTML = 'Refinar a busca'
-    selectProp.appendChild(emptyOption)
-    
     // add options
     props.sort().map(prop => appendOption(selectProp, prop))
 }
@@ -216,12 +224,17 @@ const initSearch = () => {
     }
 }
 
+const checkRadio = () => {
+    document.getElementById('textBusca').style.display = 'block'
+}
+
 /**
  * Gets from API the nodes that match the given label, prop and val.
  */
 const findNodes = () => {
     let label = document.getElementById('selectLabel').value
-    let prop = document.getElementById('selectProp').value
+    let prop = document.querySelector('input[name="test"]:checked').value
+
     let val = document.getElementById('textVal').value
 
     _findNodes(label, prop, val)
