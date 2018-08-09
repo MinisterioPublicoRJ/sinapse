@@ -6,7 +6,7 @@ bundles = {
 
     'js': Bundle(
         'js/vendor/d3.min.js',
-        'js/vendor/neo4jd3.js',
+        'js/vendor/force-graph-d3-wrapper.js',
         'js/main.js',
     ),
     'css': Bundle(
@@ -14,7 +14,7 @@ bundles = {
         # Font Awesome não pode ficar em 'vendor/'
         # porque se referencia às fontes como '../fonts/'
         'css/font-awesome.min.css',
-        'css/vendor/neo4jd3.min.css',
+        'css/vendor/force-graph-d3-wrapper.css',
         'css/main.css',
         'css/busca.css',
         'css/login.css',

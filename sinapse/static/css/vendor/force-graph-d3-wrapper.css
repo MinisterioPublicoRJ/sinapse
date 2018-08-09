@@ -1,0 +1,29 @@
+svg {
+  cursor: pointer;
+}
+
+.selector {
+  height: 600px;
+}
+
+.relationships line {
+  stroke: #999;
+  stroke-opacity: 0.6;
+}
+
+
+.relationships line:hover {
+  stroke: rgb(0, 0, 0);
+  stroke-opacity: 1;
+}
+
+.nodes circle {
+  stroke: black;
+  stroke-width: 1.5px;
+  fill: white;
+}
+
+.nodes circle:hover {
+  stroke: blue;
+  stroke-width: 1.5px;
+}

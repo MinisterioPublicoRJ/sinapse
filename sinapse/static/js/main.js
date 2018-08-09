@@ -2,7 +2,7 @@
  * Init function called on window.onload.
  */
 const init = () => {
-    initNeo4JD3()
+    //initNeo4JD3()
     getLabels()
     initSearch()
     initFooter()
@@ -30,8 +30,8 @@ const baseIconsPath = '/static/img/icon/graph/'
 /**
  * Inits the Neo4JD3 graph.
  */
-const initNeo4JD3 = () => {
-    neo4jd3 = new Neo4jd3('#neo4jd3', {
+/*const initNeo4JD3 = () => {
+    neo4jd3 = new neo4jd3('#neo4jd3', {
         iconsPaths: {
             'empresa': baseIconsPath+'empresa.svg',
             'mgp':baseIconsPath+'mgp.svg',
@@ -76,7 +76,7 @@ const initNeo4JD3 = () => {
         },
     })
 }
-
+*/
 /**
  * Gets labels from the API.
  */
@@ -328,8 +328,24 @@ const getNodeType = node => {
  */
 const updateNodes = data => {
     // update graph
-    neo4jd3.updateWithNeo4jData(data)
-    updateNodeSize()
+    //neo4jd3.updateWithNeo4jData(data)
+    const forceGraphWrapper = new forceGraphD3Wrapper('#neo4jd3', data, {
+        "specificNodeRadius": {
+          "pessoa": 50,
+          "empresa": 50,
+        },
+        "generalNodeRadius": 25,
+        "onNodeClick": node => {
+          console.log(node)
+        },
+        "onNodeDoubleClick": node => {
+            get('api/nextNodes?node_id=' + node.id, data => {
+                updateNodes(data)
+            });
+        },
+      })
+      console.log(forceGraphWrapper)
+    //updateNodeSize()
 
     // show back button
     document.getElementById('step3').className = ''
