@@ -182,6 +182,7 @@ const setProps = nodeProperties => {
     // hide step1, show step2
     document.getElementById('step1').className = 'hidden'
     document.getElementById('step2').className = ''
+    document.getElementById('textVal').value = null
 
     let props = nodeProperties.data[0][0]
     //Deleting fields from object to not shown to user
@@ -225,7 +226,9 @@ const initSearch = () => {
 }
 
 const checkRadio = () => {
+    document.getElementById('textVal').value = null
     document.getElementById('textBusca').style.display = 'block'
+    document.getElementById("textVal").focus()
 }
 
 /**
