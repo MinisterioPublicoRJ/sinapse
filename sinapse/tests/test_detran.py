@@ -5,6 +5,7 @@ import responses
 from decouple import config
 
 from sinapse.detran.client import send_rg_query, get_processed_rg
+from sinapse.detran.utils import parse_content
 from sinapse.tests.fixtures import response_rg, response_processado_rg
 
 
@@ -42,6 +43,12 @@ class Photo(unittest.TestCase):
         self.assertEqual(status, 200)
         self.assertEqual(content, response_processado_rg)
         self.assertIn(b'fotoCivil', content)
+
+    def test_paser_xml_content(self):
+        foto_civil = parse_content(response_processado_rg)
+        expected = 'abcd'
+
+        self.assertEqual(foto_civil, expected)
 
 
 if __name__ == "__main__":
