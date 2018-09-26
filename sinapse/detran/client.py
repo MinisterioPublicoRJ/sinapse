@@ -1,0 +1,45 @@
+import requests
+
+from decouple import config
+
+
+RG_BODY = """<?xml version="1.0" encoding="utf-8"?>
+<soap12:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+xmlns:soap12="http://www.w3.org/2003/05/soap-envelope">
+  <soap12:Body>
+    <consultarRG xmlns="http://www.detran.rj.gov.br">
+      <CNPJ>{cnpj}</CNPJ>
+      <chave>{chave}</chave>
+      <perfil>{perfil}</perfil>
+      <IDCidadao>{idcidadao}</IDCidadao>
+      <RG>{rg}</RG>
+      <CPF>{cpf}</CPF>
+    </consultarRG>
+  </soap12:Body>
+</soap12:Envelope>"""
+
+
+def send_rg_query(rg):
+    body = RG_BODY.format(
+        cnpj=config('CNPJ'),
+        chave=config('CHAVE'),
+        perfil=config('PERFIL'),
+        idcidadao=rg,
+        rg=rg.zfill(10),
+        cpf=config('CPF')
+    )
+    body = body.encode('utf-8')
+
+    headers = {
+        'Content-Type': 'application/soap+xml; charset=utf-8',
+        'Content-Length': str(len(body))
+    }
+
+    response = requests.post(
+        config('URL_CONSULTA_RG'),
+        data=body,
+        headers=headers
+    )
+
+    return response.status_code, response.content
