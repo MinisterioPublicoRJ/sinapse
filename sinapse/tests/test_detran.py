@@ -5,11 +5,15 @@ import responses
 from decouple import config
 
 from sinapse.detran.client import send_rg_query, get_processed_rg
-from sinapse.detran.utils import parse_content, get_node_id
+from sinapse.detran.utils import (
+    parse_content,
+    get_node_id,
+    find_relations_info)
 from sinapse.tests.fixtures import (
     response_rg,
     response_processado_rg,
-    resposta_node_ok)
+    resposta_node_ok,
+    response_persons)
 
 
 class Photo(unittest.TestCase):
@@ -60,6 +64,15 @@ class Utils(unittest.TestCase):
         expected = 395989945
 
         self.assertEqual(node_id, expected)
+
+    def test_find_relations_info(self):
+        info = find_relations_info(response_persons)
+        expected = [
+            {'node_id': '205537878', 'rg': '123456'},
+            {'node_id': '205176041', 'rg': '654321'}
+        ]
+
+        self.assertEqual(info, expected)
 
 
 if __name__ == "__main__":

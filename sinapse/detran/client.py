@@ -1,6 +1,14 @@
+import json
+
 import requests
 
 from decouple import config
+
+from sinapse.buildup import (
+    _ENDERECO_NEO4J,
+    _HEADERS,
+    _AUTH,
+)
 
 
 RG_BODY = """<?xml version="1.0" encoding="utf-8"?>
@@ -79,3 +87,17 @@ def get_processed_rg(rg):
     )
 
     return response.status_code, response.content
+
+
+def find_persons(node_id):
+    query = {"statements": [{
+        "statement": "MATCH (p1:pessoa) WHERE id(p1) = " + node_id +
+        " WITH p1 match (p2:pessoa) match r = (p1)-[*..1]-(p2) return p2",
+        "resultDataContents": ["row", "graph"]
+    }]}
+
+    return requests.post(
+        _ENDERECO_NEO4J % '/db/data/transaction/commit',
+        data=json.dumps(query),
+        auth=_AUTH,
+        headers=_HEADERS).json()
