@@ -13,12 +13,12 @@ def get_node_id(response_json):
 
 def find_relations_info(response_json):
     info = []
-    for row in response_json['results'][0]['data']:
-        info.append(
-            {
-                'node_id': row['graph']['nodes'][0]['id'],
-                'rg': row['graph']['nodes'][0]['properties']['rg']
-             }
-        )
+    for data in response_json['results'][0]['data']:
+        for node in data['graph']['nodes']:
+            if node['labels'] == ['pessoa']:
+                info.append(
+                    (node['properties']['rg'],
+                     node['properties']['nome'])
+                )
 
-    return info
+    return list(set(info))

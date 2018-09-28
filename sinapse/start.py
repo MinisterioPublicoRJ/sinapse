@@ -308,6 +308,7 @@ def api_findNodes():
 @login_necessario
 def api_nextNodes():
     node_id = request.args.get('node_id')
+   
     query = {"statements": [{
         "statement": "MATCH r = (n)-[*..1]-(x) where id(n) = %s"
         " return r,n,x limit 100" % node_id,
