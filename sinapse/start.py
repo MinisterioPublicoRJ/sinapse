@@ -24,6 +24,7 @@ from sinapse.buildup import (
     _HEADERS,
     _AUTH_MPRJ,
 )
+from sinapse.queries import find_next_nodes
 
 
 def redirecionar(url, code=302):
@@ -308,16 +309,8 @@ def api_findNodes():
 @login_necessario
 def api_nextNodes():
     node_id = request.args.get('node_id')
-    query = {"statements": [{
-        "statement": "MATCH r = (n)-[*..1]-(x) where id(n) = %s"
-        " return r,n,x limit 100" % node_id,
-        "resultDataContents": ["row", "graph"]
-    }]}
-    response = requests.post(
-        _ENDERECO_NEO4J % '/db/data/transaction/commit',
-        data=json.dumps(query),
-        auth=_AUTH,
-        headers=_HEADERS)
+
+    response = find_next_nodes(node_id)
 
     numero_expansoes = conta_expansoes(node_id)
 
