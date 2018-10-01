@@ -1,11 +1,13 @@
-import time
-
 import requests
 
 from decouple import config
 
+from sinapse.buildup import _MONGO_CLIENT
 from sinapse.detran.utils import find_relations_info, parse_content
 from sinapse.queries import find_next_nodes
+
+
+COLLECTION_FOTOS = _MONGO_CLIENT.mmps.fotos
 
 
 RG_BODY = """<?xml version="1.0" encoding="utf-8"?>
@@ -89,21 +91,24 @@ def get_processed_rg(rg):
 def get_photos(node_id):
     next_nodes = find_next_nodes(node_id)
     infos = find_relations_info(next_nodes.json())
-    successes = []
-    import ipdb; ipdb.set_trace()
-    for info in infos:
-        # Checa se usuario ja possui foto no banco
-        status, content = send_rg_query(info.rg)
-        if b'sucesso' in content.lower():
-            successes.append(info)
 
-    photos = []
+    successes = []
+    for info in infos:
+        photo_document = COLLECTION_FOTOS.find_one(
+            {'rg': info.rg,
+             'foto': {'$exists': True}}
+        )
+        if photo_document is None:
+            status, content = send_rg_query(info.rg)
+            if b'sucesso' in content.lower()\
+                    or b'foi finalizada' in content.lower():
+                successes.append(info)
+
     for success in successes:
         status, content = get_processed_rg(success.rg)
         photo = parse_content(content)
-        photos.append(
-            {'rg': success.rg,
-             'photo': photo}
-        )
-
-    return photos
+        if photo is not None:
+            COLLECTION_FOTOS.insert_one(
+                {'rg': success.rg,
+                 'foto': photo}
+            )
