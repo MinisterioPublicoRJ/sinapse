@@ -1,7 +1,7 @@
 from flask import request, jsonify
 
 from sinapse.buildup import app, _MONGO_CLIENT
-from sinapse.start import login_necessario, respostajson
+from sinapse.start import login_necessario
 
 COLLECTION_FOTOS = _MONGO_CLIENT.mmps.fotos
 
