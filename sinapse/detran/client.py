@@ -69,8 +69,8 @@ def send_rg_query(rg):
 def get_processed_rg(rg):
     body = RG_PROCESSED_BODY.format(
         cnpj=config('CNPJ'),
-        chave=config('chave'),
-        perfil=config('perfil'),
+        chave=config('CHAVE'),
+        perfil=config('PERFIL'),
         idcidadao=rg
     )
 
