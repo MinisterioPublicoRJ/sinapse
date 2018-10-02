@@ -308,9 +308,10 @@ class MetodosConsulta(unittest.TestCase):
 
         self.assertEqual(numero_nos, 3)
 
+    @mock.patch('sinapse.start.get_node_id', return_value=12345)
     @mock.patch('sinapse.start.conta_nos', return_value=101)
     @logresponse
-    def test_conta_numero_de_nos_antes_da_busca(self, _conta_nos):
+    def test_conta_numero_de_nos_antes_da_busca(self, _conta_nos, _gni):
         mock_resposta = mock.MagicMock()
         responses.add(
             responses.POST,
