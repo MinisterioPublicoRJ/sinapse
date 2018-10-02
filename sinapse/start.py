@@ -24,6 +24,8 @@ from sinapse.buildup import (
     _HEADERS,
     _AUTH_MPRJ,
 )
+from sinapse.detran.tasks import get_photos_asynch
+from sinapse.detran.utils import get_node_id
 from sinapse.queries import find_next_nodes
 
 
@@ -302,6 +304,10 @@ def api_findNodes():
 
     numero_de_nos = conta_nos(opcoes, letras)
 
+    node_id = get_node_id(response.json())
+    # Call asynchronously task
+    get_photos_asynch.delay(node_id)
+
     return respostajson(response, numero_de_nos=numero_de_nos)
 
 
@@ -313,6 +319,8 @@ def api_nextNodes():
     response = find_next_nodes(node_id)
 
     numero_expansoes = conta_expansoes(node_id)
+    # Call asynchronously task
+    get_photos_asynch.delay(node_id)
 
     return respostajson(response, numero_de_expansoes=numero_expansoes)
 
