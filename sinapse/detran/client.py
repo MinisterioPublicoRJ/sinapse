@@ -108,7 +108,8 @@ def get_photos(node_id):
         status, content = get_processed_rg(success.rg)
         photo = parse_content(content)
         if photo is not None:
-            COLLECTION_FOTOS.insert_one(
-                {'rg': success.rg,
-                 'foto': photo}
+            COLLECTION_FOTOS.update(
+                {'rg': success.rg},
+                {'$set': {'foto': photo}},
+                upsert=True
             )
