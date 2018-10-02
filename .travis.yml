@@ -9,3 +9,5 @@ script:
   - coverage run -m pytest -v
 after_success:
   - codecov
+service:
+  - redis
