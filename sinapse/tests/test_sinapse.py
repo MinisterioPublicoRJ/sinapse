@@ -129,7 +129,8 @@ class CasoGlobal(unittest.TestCase):
 
         assert resposta.status_code == 302
 
-    def test_autorizacao_da_api(self):
+    @mock.patch('sinapse.start.get_photos_asynch')
+    def test_autorizacao_da_api(self, _gpa):
         api_node = self.app.get('/api/node')
         api_findNodes = self.app.get('/api/findNodes')
         api_nextNodes = self.app.get('/api/nextNodes')
@@ -197,8 +198,9 @@ class MetodosConsulta(unittest.TestCase):
                     "usuario": "usuario",
                     "senha": "senha"})
 
+    @mock.patch('sinapse.start.get_photos_asynch')
     @logresponse
-    def test_monta_query_dinamica(self):
+    def test_monta_query_dinamica(self, _gpa):
         query_string = {
             'label': 'pessoa,personagem',
             'prop': 'nome,pess_dk',
@@ -251,8 +253,9 @@ class MetodosConsulta(unittest.TestCase):
                 _ENDERECO_NEO4J % caso['endereco']
             )
 
+    @mock.patch('sinapse.start.get_photos_asynch')
     @logresponse
-    def test_resposta_nos(self):
+    def test_resposta_nos(self, _gpa):
         responses.add(
             responses.POST,
             _ENDERECO_NEO4J % '/db/data/transaction/commit',
@@ -308,9 +311,11 @@ class MetodosConsulta(unittest.TestCase):
 
         self.assertEqual(numero_nos, 3)
 
+    @mock.patch('sinapse.start.get_photos_asynch')
+    @mock.patch('sinapse.start.get_node_id', return_value=12345)
     @mock.patch('sinapse.start.conta_nos', return_value=101)
     @logresponse
-    def test_conta_numero_de_nos_antes_da_busca(self, _conta_nos):
+    def test_conta_numero_de_nos_antes_da_busca(self, _conta_nos, _gni, _gpa):
         mock_resposta = mock.MagicMock()
         responses.add(
             responses.POST,
@@ -343,8 +348,9 @@ class MetodosConsulta(unittest.TestCase):
         )
         self.assertEqual(resposta.json['numero_de_nos'], 101)
 
+    @mock.patch('sinapse.start.get_photos_asynch')
     @logresponse
-    def test_resposta_expansoes(self):
+    def test_resposta_expansoes(self, _gpa):
         responses.add(
             responses.POST,
             _ENDERECO_NEO4J % '/db/data/transaction/commit',
@@ -396,9 +402,10 @@ class MetodosConsulta(unittest.TestCase):
                          ' (n)-[*..1]-(x) where id(n) = 1234 return count(r),'
                          ' count(n), count(x)"}]}')
 
+    @mock.patch('sinapse.start.get_photos_asynch')
     @mock.patch('sinapse.start.conta_expansoes', return_value=[1, 1, 1])
     @logresponse
-    def test_conta_numero_de_expansoes_antes_da_busca(self, _conta_nos):
+    def test_conta_numero_de_expansoes_antes_da_busca(self, _conta_nos, _gfa):
         mock_resposta = mock.MagicMock()
         responses.add(
             responses.POST,
