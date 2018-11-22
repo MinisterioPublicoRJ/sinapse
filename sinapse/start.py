@@ -306,7 +306,7 @@ def api_findNodes():
 
     node_id = get_node_id(response.json())
     # Call asynchronously task
-    get_photos_asynch.delay(node_id)
+    #get_photos_asynch.delay(node_id)
 
     return respostajson(response, numero_de_nos=numero_de_nos)
 
@@ -320,7 +320,7 @@ def api_nextNodes():
 
     numero_expansoes = conta_expansoes(node_id)
     # Call asynchronously task
-    get_photos_asynch.delay(node_id)
+    #get_photos_asynch.delay(node_id)
 
     return respostajson(response, numero_de_expansoes=numero_expansoes)
 
