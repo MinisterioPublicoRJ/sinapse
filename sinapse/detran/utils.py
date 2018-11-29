@@ -3,15 +3,14 @@ from collections import namedtuple
 import lxml.etree as et
 
 
-def parse_content(content):
+def parse_content(content, tag_name):
     xml_obj = et.fromstring(content)
-    level = xml_obj.findall('*')
-    while len(level) == 1:
-        level = level[0].find('*')
+    prefix = '*//{http://www.detran.rj.gov.br}' + tag_name
+    content = xml_obj.find(prefix).text
+    if not content:
+        content = xml_obj.find(prefix).find('*').text
 
-    for ele in level:
-        if 'foto' in ele.tag:
-            return ele.find('*').text
+    return content
 
 
 def get_node_id(response_json):
