@@ -22,7 +22,8 @@ from sinapse.start import (
     limpa_relacoes,
     conta_nos,
     conta_expansoes,
-    _monta_query_filtro_opcional
+    _monta_query_filtro_opcional,
+    _USERINFO_MPRJ,
 )
 
 from .fixtures import (
@@ -82,6 +83,13 @@ def test_autenticar():
         _AUTH_MPRJ,
         status=200
     )
+    responses.add(
+        responses.GET,
+        _USERINFO_MPRJ,
+        status=200,
+        json={'permissions': {'ROLE_Conexao': True}}
+    )
+
 
     retorno = _autenticar("usuario", "senha")
     assert retorno == "usuario"
