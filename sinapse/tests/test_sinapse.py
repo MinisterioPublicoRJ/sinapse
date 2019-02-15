@@ -22,7 +22,8 @@ from sinapse.start import (
     limpa_relacoes,
     conta_nos,
     conta_expansoes,
-    _monta_query_filtro_opcional
+    _monta_query_filtro_opcional,
+    _USERINFO_MPRJ,
 )
 
 from .fixtures import (
@@ -81,6 +82,12 @@ def test_autenticar():
         responses.POST,
         _AUTH_MPRJ,
         status=200
+    )
+    responses.add(
+        responses.GET,
+        _USERINFO_MPRJ,
+        status=200,
+        json={'permissions': {'ROLE_Conexao': True}}
     )
 
     retorno = _autenticar("usuario", "senha")
@@ -201,6 +208,7 @@ class MetodosConsulta(unittest.TestCase):
     @mock.patch('sinapse.start.get_photos_asynch')
     @logresponse
     def test_monta_query_dinamica(self, _gpa):
+        _gpa.__name__ = 'Response'
         query_string = {
             'label': 'pessoa,personagem',
             'prop': 'nome,pess_dk',
@@ -256,6 +264,7 @@ class MetodosConsulta(unittest.TestCase):
     @mock.patch('sinapse.start.get_photos_asynch')
     @logresponse
     def test_resposta_nos(self, _gpa):
+        _gpa.__name__ = 'Response'
         responses.add(
             responses.POST,
             _ENDERECO_NEO4J % '/db/data/transaction/commit',
@@ -316,6 +325,8 @@ class MetodosConsulta(unittest.TestCase):
     @mock.patch('sinapse.start.conta_nos', return_value=101)
     @logresponse
     def test_conta_numero_de_nos_antes_da_busca(self, _conta_nos, _gni, _gpa):
+        _gni.__name__ = 'Return'
+        _gpa.__name__ = 'Return'
         mock_resposta = mock.MagicMock()
         responses.add(
             responses.POST,
