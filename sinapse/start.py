@@ -23,6 +23,7 @@ from sinapse.buildup import (
     _AUTH,
     _HEADERS,
     _AUTH_MPRJ,
+    _USERINFO_MPRJ,
 )
 from sinapse.detran.tasks import get_photos_asynch
 from sinapse.detran.utils import get_node_id
@@ -170,10 +171,11 @@ def _autenticar(usuario, senha):
             'password': senha
         })
     if response.status_code == 200:
-        # TODO: implementar a restrição por grupo do SCA
-        # response = sessao.get(url=_USERINFO_MPRJ)
-        # json.loads(response.content.decode('utf-8'))
-        return usuario
+        response = sessao.get(url=_USERINFO_MPRJ)
+        permissoes = json.loads(response.content.decode('utf-8'))['permissions']
+
+        if 'ROLE_Conexao' in permissoes and permissoes['ROLE_Conexao']:
+            return usuario
     return None
 
 
