@@ -32,6 +32,9 @@ from sinapse.queries import find_next_nodes
 def parse_json_to_visjs(json):
     nodes = {}
     relationships = {}
+    
+    if 'results' not in json:
+        return json
 
     for result in json['results'][0]['data']:
         result_nodes = result['graph']['nodes']

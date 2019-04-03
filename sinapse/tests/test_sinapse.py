@@ -143,12 +143,14 @@ class CasoGlobal(unittest.TestCase):
         api_nextNodes = self.app.get('/api/nextNodes')
         api_nodeProperties = self.app.get('/api/nodeProperties')
         api_relationships = self.app.get('/api/relationships')
+        api_findShortestPath = self.app.get('/api/findShortestPath')
 
         assert api_node.status_code == 403
         assert api_findNodes.status_code == 403
         assert api_nextNodes.status_code == 403
         assert api_nodeProperties.status_code == 403
         assert api_relationships.status_code == 403
+        assert api_findShortestPath == 403
 
 
 class LoginUsuario(unittest.TestCase):

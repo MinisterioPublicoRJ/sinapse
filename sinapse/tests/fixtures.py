@@ -876,6 +876,109 @@ resposta_relationships_ok = [
     'telefonema'
 ]
 
+request_findShortestPath_ok = {
+    "statements": [
+        {
+        "statement": "MATCH p = shortestPath((a)-[*]-(b)) "
+            "WHERE id(a) = 140885160 AND id(b) = 328898991 RETURN p",
+        "resultDataContents": ["row", "graph"]
+        }
+    ]
+}
+
+resposta_findShortestPath_ok = {
+    "edges": [
+        {
+            "arrows":"to",
+            "dashes":False,
+            "from":"81208568",
+            "id":"384945543",
+            "label":"trabalha",
+            "properties":{
+                "dt_admissao":"20180601"
+                },
+            "to":"328898991"
+        },
+        {
+            "arrows":"to",
+            "dashes":False,
+            "from":"205537878",
+            "id":"304651477",
+            "label":"filho",
+            "properties":{},
+            "to":"81208568"
+        },
+        {
+            "arrows":"to",
+            "dashes":False,
+            "from":"205537878",
+            "id":"288234032",
+            "label":"filho",
+            "properties":{},
+            "to":"140885160"
+        }
+    ],
+    "nodes":[
+        {
+            "id":"328898991",
+            "label":"Label de Teste",
+            "properties":{},
+            "type":["sigiloso"]
+        },
+        {
+            "id":"205537878",
+            "label":"Label de Teste",
+            "properties":{
+                "cpf":"17937488700",
+                "dt_nasc":"20120924",
+                "filho_rel_status":7,
+                "filho_rel_status_pai":1,
+                "nome":"LUIZA LIMA DE ALMEIDA BELCHIOR",
+                "nome_mae":"SILVIA LIMA DE ALMEIDA",
+                "nome_pai":"DANIEL CARVALHO BELCHIOR",
+                "nome_rg":"LUIZA LIMA DE ALMEIDA BELCHIOR",
+                "rg":"298572447",
+                "sexo":"2",
+                "uf":"RJ"},
+            "type":["pessoa"]
+        },
+        {
+            "id":"140885160",
+            "label":"Label de Teste",
+            "properties":{
+                "cpf":"11452244740",
+                "dt_nasc":"19850522",
+                "filho_rel_status":1,
+                "filho_rel_status_pai":1,
+                "nome":"DANIEL CARVALHO BELCHIOR",
+                "nome_mae":"MARTA CARVALHO BELCHIOR",
+                "nome_pai":"FRANCISCO IVAN FONTELE BELCHIOR",
+                "nome_rg":"DANIEL CARVALHO BELCHIOR",
+                "rg":"131242950",
+                "sexo":"1",
+                "uf":"RJ",
+                "visitado":False},
+            "type":["pessoa"]
+        },
+        {
+            "id":"81208568",
+            "label":"Label de Teste",
+            "properties":{
+                "cpf":"10069222703",
+                "dt_nasc":"19820723",
+                "filho_rel_status":3,
+                "filho_rel_status_pai":1,
+                "nome":"SILVIA LIMA DE ALMEIDA",
+                "nome_mae":"MARIA FREITAS DE LIMA",
+                "nome_pai":"AMARO JOSE DE ALMEIDA PINHEIRO",
+                "nome_rg":"SILVIA LIMA DE ALMEIDA",
+                "rg":"203556378",
+                "sexo":"2",
+                "uf":"RJ"},
+            "type":["pessoa"]
+        }
+    ]
+}
 
 casos_servicos = [
     {
@@ -886,6 +989,18 @@ casos_servicos = [
         'requisicao': request_node_ok,
         'query_string': {
             "node_id": 395989945
+        },
+        'metodo': responses.POST
+    },
+    {
+        'nome': 'api_findShortestPath',
+        'endereco': '/db/data/transaction/commit',
+        'servico': '/api/findShortestPath',
+        'resposta': resposta_findShortestPath_ok,
+        'requisicao': request_findShortestPath_ok,
+        'query_string': {
+            "node_id1": 140885160,
+            "node_id2": 328898991
         },
         'metodo': responses.POST
     },
