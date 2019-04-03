@@ -39,7 +39,7 @@ def parse_json_to_visjs(json):
         for node in result_nodes:
             nodes[node['id']] = node
         for relationship in result_relationships:
-            relationships[node['id']] = relationship
+            relationships[relationship['id']] = relationship
     
     nodes = list(nodes.values())
     for d in nodes:
@@ -288,6 +288,27 @@ def api_node():
         auth=_AUTH,
         headers=_HEADERS)
 
+    return respostajson_visjs(response)
+
+
+@app.route("/api/findShortestPath")
+@login_necessario
+def api_findShortestPath():
+    id_start = request.args.get('node_id1')
+    id_end = request.args.get('node_id2')
+
+    query = {"statements": [{
+        "statement": "MATCH p = shortestPath((a)-[*]-(b)) "
+            "WHERE id(a) = %s AND id(b) = %s RETURN p" % (id_start, id_end),
+        "resultDataContents": ["row", "graph"]
+    }]}
+
+    response = requests.post(
+        _ENDERECO_NEO4J % '/db/data/transaction/commit',
+        data=json.dumps(query),
+        auth=_AUTH,
+        headers=_HEADERS)
+    
     return respostajson_visjs(response)
 
 
