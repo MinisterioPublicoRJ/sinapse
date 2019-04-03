@@ -161,10 +161,10 @@ def conta_nos(opcoes, letras):
     return response.json()['results'][0]['data'][0]['row'][0]
 
 
-def conta_expansoes(n_id):
+def conta_expansoes(n_id, rel_types=''):
     query = {"statements": [{
-        "statement": "MATCH r = (n)-[*..1]-(x) where id(n) = %s"
-        " return count(r), count(n), count(x)" % n_id,
+        "statement": "MATCH r = (n)-[%s*..1]-(x) where id(n) = %s"
+        " return count(r), count(n), count(x)" % (rel_types, n_id),
     }]}
 
     response = requests.post(
@@ -389,10 +389,13 @@ def api_findNodes():
 @login_necessario
 def api_nextNodes():
     node_id = request.args.get('node_id')
+    rel_types = request.args.get('rel_types', '')
+    if rel_types:
+        rel_types = ':' + rel_types.replace(',', '|:')
 
-    response = find_next_nodes(node_id)
+    response = find_next_nodes(node_id, rel_types)
 
-    numero_expansoes = conta_expansoes(node_id)
+    numero_expansoes = conta_expansoes(node_id, rel_types)
     # Call asynchronously task
     # get_photos_asynch.delay(node_id)
 

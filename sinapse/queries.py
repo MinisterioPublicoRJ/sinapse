@@ -9,10 +9,10 @@ from sinapse.buildup import (
 )
 
 
-def find_next_nodes(node_id):
+def find_next_nodes(node_id, rel_types=''):
     query = {"statements": [{
-        "statement": "MATCH r = (n)-[*..1]-(x) where id(n) = %s"
-        " return r,n,x limit 100" % node_id,
+        "statement": "MATCH r = (n)-[%s*..1]-(x) where id(n) = %s"
+        " return r,n,x limit 100" % (rel_types, node_id),
         "resultDataContents": ["row", "graph"]
     }]}
     response = requests.post(
