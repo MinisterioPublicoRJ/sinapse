@@ -29,6 +29,34 @@ from sinapse.detran.tasks import get_photos_asynch
 from sinapse.detran.utils import get_node_id
 from sinapse.queries import find_next_nodes
 
+def parse_json_to_visjs(json):
+    nodes = {}
+    relationships = {}
+
+    for result in json['results'][0]['data']:
+        result_nodes = result['graph']['nodes']
+        result_relationships = result['graph']['relationships']
+        for node in result_nodes:
+            nodes[node['id']] = node
+        for relationship in result_relationships:
+            relationships[node['id']] = relationship
+    
+    nodes = list(nodes.values())
+    for d in nodes:
+        d['type'] = d.pop('labels')
+        d['label'] = 'Label de Teste'
+
+    relationships = list(relationships.values())
+    for r in relationships:
+        r['label'] = r.pop('type')
+        r['from'] = r.pop('startNode')
+        r['to'] = r.pop('endNode')
+        r['arrows'] = "to"
+        r['dashes'] = False
+        
+    json_visjs = {'nodes': nodes, 'edges': relationships}
+    
+    return json_visjs
 
 def redirecionar(url, code=302):
     retorno = redirect(url, code=code)
@@ -48,6 +76,20 @@ def respostajson(response, **kwargs):
         return jsonify(remove_info_sensiveis(dados))
 
     return jsonify(dados)
+
+def respostajson_visjs(response, **kwargs):
+    usuario = session.get('usuario', "dummy")
+    sessionid = request.cookies.get('session')
+    _log_response(usuario, sessionid, response)
+    dados = response.json()
+    if isinstance(dados, dict):
+        dados.update(kwargs)
+
+    if resposta_sensivel(dados):
+        return jsonify(parse_json_to_visjs(
+            remove_info_sensiveis(dados)))
+
+    return jsonify(parse_json_to_visjs(dados))
 
 
 def limpa_nos(nos):
@@ -246,7 +288,7 @@ def api_node():
         auth=_AUTH,
         headers=_HEADERS)
 
-    return respostajson(response)
+    return respostajson_visjs(response)
 
 
 def _monta_query_filtro_opcional(label, prop, val, letra):
@@ -313,7 +355,7 @@ def api_findNodes():
     get_photos_asynch.__name__
     get_node_id.__name__
 
-    return respostajson(response, numero_de_nos=numero_de_nos)
+    return respostajson_visjs(response, numero_de_nos=numero_de_nos)
 
 
 @app.route("/api/nextNodes")
@@ -327,7 +369,7 @@ def api_nextNodes():
     # Call asynchronously task
     # get_photos_asynch.delay(node_id)
 
-    return respostajson(response, numero_de_expansoes=numero_expansoes)
+    return respostajson_visjs(response, numero_de_expansoes=numero_expansoes)
 
 
 @app.route("/api/nodeProperties")
