@@ -32,7 +32,7 @@ from sinapse.queries import find_next_nodes
 def parse_json_to_visjs(json):
     nodes = {}
     relationships = {}
-    
+
     if 'results' not in json:
         return json
 
@@ -299,10 +299,13 @@ def api_node():
 def api_findShortestPath():
     id_start = request.args.get('node_id1')
     id_end = request.args.get('node_id2')
+    rel_types = request.args.get('rel_types', '')
+    if rel_types:
+        rel_types = ':' + rel_types.replace(',', '|:')
 
     query = {"statements": [{
-        "statement": "MATCH p = shortestPath((a)-[*]-(b)) "
-            "WHERE id(a) = %s AND id(b) = %s RETURN p" % (id_start, id_end),
+        "statement": "MATCH p = shortestPath((a)-[%s*]-(b)) "
+            "WHERE id(a) = %s AND id(b) = %s RETURN p" % (rel_types, id_start, id_end),
         "resultDataContents": ["row", "graph"]
     }]}
 
