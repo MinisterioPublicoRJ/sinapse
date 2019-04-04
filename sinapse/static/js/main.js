@@ -4,22 +4,22 @@
 const init = () => {
     // initNeo4JD3()
     getLabels()
-    // initSearch()
-    // initFooter()
-    visjsmock()
+    initSearch()
+    initFooter()
+    initVisjs()
 }
 
-const visjsmock = () => {
-    
+// Initial vars
+let nodes, edges, container, data, options, network
+
+const initVisjs = () => {
+    nodes = new vis.DataSet([])
+    edges = new vis.DataSet([])
+    container = document.getElementById('graph')
+    data = { nodes, edges }
+    options = {}
+    network = new vis.Network(container, data, options)
 }
-
-
-
-
-
-
-
-
 
 // Initial vars
 let neo4jd3
@@ -171,7 +171,6 @@ const getNodeProperties = e => {
  * @param {string} optionValue The <option> value and innerHTML.
  */
 const appendOption = (select, optionValue) => {
-
     var mylist = document.getElementById('selectProp');
     mylist.insertAdjacentHTML('beforeend', `
         <input type="radio" class="badgebox" name="test" id="` + optionValue + `" value="` + optionValue + `" onclick="checkRadio()">
@@ -344,8 +343,14 @@ const getNodeType = node => {
  */
 const updateNodes = data => {
     // update graph
-    neo4jd3.updateWithNeo4jData(data)
-    updateNodeSize()
+    //updateNodeSize()
+    console.log(data)
+    if (data.nodes) {
+        nodes.add(data.nodes)
+    }
+    if (data.edges) {
+        edges.add(data.edges)
+    }
 
     // show back button
     document.getElementById('step3').className = ''
