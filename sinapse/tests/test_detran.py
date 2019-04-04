@@ -57,7 +57,7 @@ class Utils(unittest.TestCase):
 
     def test_find_node_ids(self):
         node_id = get_node_id(resposta_node_ok)
-        expected = 395989945
+        expected = '395989945'
 
         self.assertEqual(node_id, expected)
 

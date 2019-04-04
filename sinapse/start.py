@@ -33,6 +33,7 @@ def parse_json_to_visjs(json):
     nodes = {}
     relationships = {}
 
+    # Change this to have an error message
     if 'results' not in json:
         return json
 
