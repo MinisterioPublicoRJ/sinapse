@@ -10,12 +10,13 @@ const init = () => {
 }
 
 // Initial vars
-let nodes, edges, container, data, options, network, nodesData
+let nodes, edges, container, data, options, network, nodesData, edgesData
 const sidebarRight = document.getElementById("sidebarRight")
 const baseIconsPath = '/static/img/icon/graph/'
 
 const initVisjs = () => {
     nodesData = []
+    edgesData = []
     nodes = new vis.DataSet([])
     edges = new vis.DataSet([])
     container = document.getElementById('graph')
@@ -25,25 +26,35 @@ const initVisjs = () => {
             hover: true
         },
         manipulation: {
-            enabled: true
+            enabled: false
         }
     }
     network = new vis.Network(container, data, options)
     // Não trocar para arrow function
     network.on("click", function(params) {
-        // params.event = "[original event]"
         const selectedNodeId = this.getNodeAt(params.pointer.DOM)
         if (selectedNodeId) {
             const selectedNode = nodesData.filter(node => node.id === selectedNodeId)[0]
-            console.log('click event, getNodeAt returns: ' + selectedNodeId)
-            console.log('selectedNode: ', selectedNode)
             populateSidebarRight(selectedNode)
             showSidebarRight()
         }
     })
+    network.on("doubleClick", function(params) {
+        const selectedNodeId = this.getNodeAt(params.pointer.DOM)
+        if (selectedNodeId) {
+            getNextNodes(selectedNodeId)
+        }
+    })
 }
 
+/**/
+const getNextNodes = nodeId => {
+    get(`/api/nextNodes?node_id=${nodeId}`, setNextNodes)
+}
 
+const setNextNodes = data => {
+    updateNodes(data)
+}
 
 /**
  * Gets labels from the API.
@@ -182,8 +193,6 @@ const initSearch = () => {
     })
     // Step 3 Clear Search button
     document.getElementById('clear').onclick = e => {
-        // clear graph
-        neo4jd3.clearNodes()
         // show search form
         document.getElementById('step1').className = ''
         document.getElementById('step3').className = 'hidden'
@@ -244,13 +253,23 @@ const getNodeType = node => {
  */
 const updateNodes = data => {
     // update graph
-    console.log(data)
     if (data.nodes) {
-        nodesData = nodesData.concat(data.nodes)
-        nodes.add(data.nodes)
+        for (node of data.nodes) {
+            let filteredNode = nodesData.filter(n => n.id === node.id)
+            if (filteredNode.length === 0) {
+                nodesData.push(node)
+                nodes.add(node)
+            }
+        }
     }
     if (data.edges) {
-        edges.add(data.edges)
+        for (edge of data.edges) {
+            let filteredEdge = edgesData.filter(e => e.id === edge.id)
+            if (filteredEdge.length === 0) {
+                edgesData.push(edge)
+                edges.add(edge)
+            }
+        }
     }
 
     // show back button
@@ -425,7 +444,7 @@ const populateSidebarRight = node => {
         dataSpan.appendChild(dataContent)
         valuesContainer.appendChild(dataSpan)
 
-        console.log(property, node.properties[property])
+        // console.log(property, node.properties[property])
     });
 
     let closeButton = document.createElement("button")

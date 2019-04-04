@@ -47,7 +47,6 @@ def parse_json_to_visjs(json):
     nodes = list(nodes.values())
     for d in nodes:
         d['type'] = d.pop('labels')
-        d['label'] = 'Label de Teste'
 
     relationships = list(relationships.values())
     for r in relationships:
