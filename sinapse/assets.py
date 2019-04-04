@@ -5,8 +5,7 @@ from sinapse.buildup import app
 bundles = {
 
     'js': Bundle(
-        'js/vendor/d3.min.js',
-        'js/vendor/neo4jd3.js',
+        'js/vendor/vis.min.js',
         'js/main.js',
     ),
     'css': Bundle(
@@ -14,7 +13,7 @@ bundles = {
         # Font Awesome não pode ficar em 'vendor/'
         # porque se referencia às fontes como '../fonts/'
         'css/font-awesome.min.css',
-        'css/vendor/neo4jd3.min.css',
+        'css/vendor/vis.min.css',
         'css/main.css',
         'css/busca.css',
         'css/login.css',

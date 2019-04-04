@@ -2,11 +2,24 @@
  * Init function called on window.onload.
  */
 const init = () => {
-    initNeo4JD3()
+    // initNeo4JD3()
     getLabels()
-    initSearch()
-    initFooter()
+    // initSearch()
+    // initFooter()
+    visjsmock()
 }
+
+const visjsmock = () => {
+    
+}
+
+
+
+
+
+
+
+
 
 // Initial vars
 let neo4jd3

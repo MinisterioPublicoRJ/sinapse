@@ -1,5 +1,6 @@
-.neo4jd3-graph {
-    border: none !important;
+#graph {
+    width: 100%;
+    height: 100%;
 }
 
 .logo {
