@@ -10,85 +10,40 @@ const init = () => {
 }
 
 // Initial vars
-let nodes, edges, container, data, options, network
+let nodes, edges, container, data, options, network, nodesData
+const sidebarRight = document.getElementById("sidebarRight")
+const baseIconsPath = '/static/img/icon/graph/'
 
 const initVisjs = () => {
+    nodesData = []
     nodes = new vis.DataSet([])
     edges = new vis.DataSet([])
     container = document.getElementById('graph')
     data = { nodes, edges }
-    options = {}
-    network = new vis.Network(container, data, options)
-}
-
-// Initial vars
-let neo4jd3
-let doubleClickTime = 0
-const threshold = 200
-const sidebarRight = document.getElementById("sidebarRight")
-const clickedNodes = []
-
-const checkNodeWasClicked = node => {
-    for (nodeIndex in clickedNodes) {
-        let clickedNode = clickedNodes[nodeIndex]
-        if (clickedNode.id === node.id) {
-            return true
+    options = {
+        interaction:{
+            hover: true
+        },
+        manipulation: {
+            enabled: true
         }
     }
-    return false
-}
-
-const baseIconsPath = '/static/img/icon/graph/'
-
-/**
- * Inits the Neo4JD3 graph.
- */
-const initNeo4JD3 = () => {
-    neo4jd3 = new Neo4jd3('#neo4jd3', {
-        iconsPaths: {
-            'empresa': baseIconsPath+'empresa.svg',
-            'mgp':baseIconsPath+'mgp.svg',
-            'multa':baseIconsPath+'multa.svg',
-            'orgao':baseIconsPath+'orgao.svg',
-            'pessoa': baseIconsPath+'pessoa.svg',
-            'personagem':baseIconsPath+'personagem.svg',
-            'telefone':baseIconsPath+'telefone.svg',
-            'veiculo': baseIconsPath+'veiculo.svg',
-        },
-        infoPanel: false,
-        minCollision: 80,
-        neo4jDataUrl: '/static/json/neo4jData_vazio.json',
-        nodeRadius: 25,
-        onNodeDoubleClick: node => {
-            doubleClickTime = new Date();
-
-            if(checkNodeWasClicked(node)){
-                return false
-            }
-            clickedNodes.push(node)
-            get('api/nextNodes?node_id=' + node.id, data => {
-                neo4jd3.updateWithNeo4jData(data)
-                updateNodeSize()
-            });
-        },
-        onRelationshipDoubleClick: relationship => {
-            console.log('double click on relationship: ' + JSON.stringify(relationship))
-        },
-        onNodeClick: node => {
-            let t0 = new Date()
-            if (t0 - doubleClickTime > threshold) {
-                setTimeout(function () {
-                    if (t0 - doubleClickTime > threshold) {
-                        if (node.labels[0] !== 'sigiloso') {
-                            populateSidebarRight(node)
-                            showSidebarRight()
-                        }
-                    }
-                }, threshold)
-            }
-        },
+    network = new vis.Network(container, data, options)
+    // Não trocar para arrow function
+    network.on("click", function(params) {
+        // params.event = "[original event]"
+        const selectedNodeId = this.getNodeAt(params.pointer.DOM)
+        if (selectedNodeId) {
+            const selectedNode = nodesData.filter(node => node.id === selectedNodeId)[0]
+            console.log('click event, getNodeAt returns: ' + selectedNodeId)
+            console.log('selectedNode: ', selectedNode)
+            populateSidebarRight(selectedNode)
+            showSidebarRight()
+        }
     })
 }
+
+
 
 /**
  * Gets labels from the API.
@@ -274,60 +229,6 @@ const _findNodes = (label, prop, val) => {
 }
 
 /**
- * Updates Neo4JD3 created nodes' circles with different sizes for each node type.
- */
-const updateNodeSize = () => {
-    const largeRadius = 50
-    const smallRadius = 20
-    d3.select('svg').selectAll('circle').attr('r', d => {
-        let nodeType = getNodeType(d)
-        if (nodeType === "pessoa" || nodeType === "empresa") {
-            return largeRadius
-        }
-        return smallRadius
-    })
-
-    d3.select('svg').selectAll('.relationship path').attr('fill', (d) => {
-        let nodeType = getNodeType(d.target)
-
-        if (nodeType === "pessoa" || nodeType === "empresa") {
-            return "#000000"
-        }
-        return "#ededed"
-    })
-
-    d3.select('svg').selectAll('image')
-        .attr('height', d => {
-            let nodeType = getNodeType(d)
-            if (nodeType === "pessoa" || nodeType === "empresa") {
-                return largeRadius*2
-            }
-            return smallRadius*2
-        })
-        .attr('width', d => {
-            let nodeType = getNodeType(d)
-            if (nodeType === "pessoa" || nodeType === "empresa") {
-                return largeRadius*2
-            }
-            return smallRadius*2
-        })
-        .attr('x', function(d) {
-            let nodeType = getNodeType(d)
-            if (nodeType === "pessoa" || nodeType === "empresa") {
-                return `-${largeRadius}px`
-            }
-            return `-${smallRadius}px`
-        })
-        .attr('y', function(d) {
-            let nodeType = getNodeType(d)
-            if (nodeType === "pessoa" || nodeType === "empresa") {
-                return `-${largeRadius}px`
-            }
-            return `-${smallRadius}px`
-        })
-}
-
-/**
  * Returns a node type.
  *
  * @param {*} node 
@@ -337,15 +238,15 @@ const getNodeType = node => {
 }
 
 /**
- * Update nodes with given Neo4J database.
+ * Update nodes with given API data.
  *
- * @param {*} data Data from Neo4J database.
+ * @param {*} data Data from API data.
  */
 const updateNodes = data => {
     // update graph
-    //updateNodeSize()
     console.log(data)
     if (data.nodes) {
+        nodesData = nodesData.concat(data.nodes)
         nodes.add(data.nodes)
     }
     if (data.edges) {
@@ -462,9 +363,8 @@ const populateSidebarRight = node => {
     // Deleting fields from object to not shown to user
     delete node.properties['filho_rel_status']
     delete node.properties['filho_rel_status_pai']
-    node.properties['sexo'] = node.properties['sexo'] == 1 ? 'Masculino' : 'Feminino'
 
-    let label = node.labels[0]
+    let label = node.type[0]
     switch (label) {
         case 'personagem':
             sidebarRight.setAttribute('class', 'personagem')
