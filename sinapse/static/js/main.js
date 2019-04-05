@@ -34,12 +34,17 @@ const initVisjs = () => {
     container = document.getElementById('graph')
     data = { nodes, edges }
     options = {
+        edges: {
+            color: {
+                inherit: 'from',
+            },
+        },
         interaction:{
-            hover: true
+            hover: true,
         },
         manipulation: {
-            enabled: false
-        }
+            enabled: false,
+        },
     }
     network = new vis.Network(container, data, options)
     
@@ -48,6 +53,8 @@ const initVisjs = () => {
         const selectedNodeId = this.getNodeAt(params.pointer.DOM)
         if (selectedNodeId) {
             const selectedNode = nodesData.filter(node => node.id === selectedNodeId)[0]
+            // console.log('click event, getNodeAt returns: ' + selectedNodeId)
+            // console.log('selectedNode: ', selectedNode)
             populateSidebarRight(selectedNode)
             showSidebarRight()
         }
@@ -57,6 +64,10 @@ const initVisjs = () => {
         if (selectedNodeId) {
             getNextNodes(selectedNodeId)
         }
+    })
+    network.on("oncontext", function(params) {
+        container.oncontextmenu = () => false // Cancels right click menu
+        console.log("Right Click")
     })
 }
 
@@ -260,6 +271,42 @@ const getNodeType = node => {
     return node.labels[0]
 }
 
+const addColorToNode = node => {
+    let color = '#7bb3ff'
+
+    switch (node.type[0]) {
+        case 'empresa':
+            color = '#51c881'
+            break
+        case 'mgp':
+            color = '#ab897f'
+            break
+        case 'multa':
+            color = '#ff524e'
+            break
+        case 'orgao':
+            color = '#ffb842'
+            break
+        case 'personagem':
+            color = '#a176d1'
+            break
+        case 'pessoa':
+            color = '#00d1e2'
+            break
+        case 'telefone':
+            color = '#324eb6'
+            break
+        case 'veiculo':
+            color = '#ff8b63'
+            break
+    }
+
+    return {
+        ...node,
+        color,
+    }
+}
+
 /**
  * Update nodes with given API data.
  *
@@ -269,20 +316,31 @@ const updateNodes = data => {
     // update graph. notice we only add non-existant nodes/edges - no duplicates are allowed.
     if (data.nodes) {
         for (node of data.nodes) {
+            console.log('Analisando nó ' + node.id)
             let filteredNode = nodesData.filter(n => n.id === node.id)
             if (filteredNode.length === 0) {
-                nodesData.push(node)
-                nodes.add(node)
+                console.log('Não existe')
+                let formattedNode = addColorToNode(node)
+                nodesData.push(formattedNode)
+                nodes.add(formattedNode)
+            } else {
+                console.log('Já existe')
             }
+            console.log()
         }
     }
     if (data.edges) {
         for (edge of data.edges) {
+            console.log('Analisando aresta ' + edge.id)
             let filteredEdge = edgesData.filter(e => e.id === edge.id)
             if (filteredEdge.length === 0) {
+                console.log('Não existe')
                 edgesData.push(edge)
                 edges.add(edge)
+            } else {
+                console.log('Já existe')
             }
+            console.log()
         }
     }
 
