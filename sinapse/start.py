@@ -29,7 +29,7 @@ from sinapse.detran.tasks import get_photos_asynch
 from sinapse.detran.utils import get_node_id
 from sinapse.queries import find_next_nodes
 
-def parse_json_to_visjs(json):
+def parse_json_to_visjs(json, **kwargs):
     nodes = {}
     relationships = {}
 
@@ -58,6 +58,7 @@ def parse_json_to_visjs(json):
         r['dashes'] = False
         
     json_visjs = {'nodes': nodes, 'edges': relationships}
+    json_visjs.update(kwargs)
     
     return json_visjs
 
@@ -90,9 +91,9 @@ def respostajson_visjs(response, **kwargs):
 
     if resposta_sensivel(dados):
         return jsonify(parse_json_to_visjs(
-            remove_info_sensiveis(dados)))
+            remove_info_sensiveis(dados), **kwargs))
 
-    return jsonify(parse_json_to_visjs(dados))
+    return jsonify(parse_json_to_visjs(dados, **kwargs))
 
 
 def limpa_nos(nos):
@@ -105,19 +106,19 @@ def limpa_nos(nos):
     return copia_nos
 
 
-def limpa_linhas(linhas):
-    copia_linhas = deepcopy(linhas)
-    novas_linhas = []
-    for linha in copia_linhas:
-        if isinstance(linha, list):
-            novas_linhas.append(limpa_linhas(linha))
-        elif isinstance(linha, dict):
-            if 'sensivel' in linha.keys():
-                novas_linhas.append(dict())
-            else:
-                novas_linhas.append(linha)
+# def limpa_linhas(linhas):
+#     copia_linhas = deepcopy(linhas)
+#     novas_linhas = []
+#     for linha in copia_linhas:
+#         if isinstance(linha, list):
+#             novas_linhas.append(limpa_linhas(linha))
+#         elif isinstance(linha, dict):
+#             if 'sensivel' in linha.keys():
+#                 novas_linhas.append(dict())
+#             else:
+#                 novas_linhas.append(linha)
 
-    return novas_linhas
+#     return novas_linhas
 
 
 def limpa_relacoes(relacoes):
@@ -134,7 +135,7 @@ def remove_info_sensiveis(resposta):
     resp = deepcopy(resposta)
     for data in resp['results'][0]['data']:
         data['graph']['nodes'] = limpa_nos(data['graph']['nodes'])
-        data['row'] = limpa_linhas(data['row'])
+        #data['row'] = limpa_linhas(data['row'])
         data['graph']['relationships'] = limpa_relacoes(
             data['graph']['relationships'])
 

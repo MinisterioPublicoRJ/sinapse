@@ -16,7 +16,7 @@ from sinapse.start import (
     _ENDERECO_NEO4J,
     _log_response,
     limpa_nos,
-    limpa_linhas,
+    #limpa_linhas,
     remove_info_sensiveis,
     resposta_sensivel,
     limpa_relacoes,
@@ -24,6 +24,7 @@ from sinapse.start import (
     conta_expansoes,
     _monta_query_filtro_opcional,
     _USERINFO_MPRJ,
+    parse_json_to_visjs,
 )
 
 from .fixtures import (
@@ -150,7 +151,7 @@ class CasoGlobal(unittest.TestCase):
         assert api_nextNodes.status_code == 403
         assert api_nodeProperties.status_code == 403
         assert api_relationships.status_code == 403
-        assert api_findShortestPath == 403
+        assert api_findShortestPath.status_code == 403
 
 
 class LoginUsuario(unittest.TestCase):
@@ -207,9 +208,11 @@ class MetodosConsulta(unittest.TestCase):
                     "usuario": "usuario",
                     "senha": "senha"})
 
+    @mock.patch('sinapse.start.conta_nos')
     @mock.patch('sinapse.start.get_photos_asynch')
     @logresponse
-    def test_monta_query_dinamica(self, _gpa):
+    def test_monta_query_dinamica(self, _gpa, _conta_nos):
+        _conta_nos.return_value = 10
         _gpa.__name__ = 'Response'
         query_string = {
             'label': 'pessoa,personagem',
@@ -233,8 +236,10 @@ class MetodosConsulta(unittest.TestCase):
         statements = json.loads(responses.calls[0].request.body)
         assert statements['statements'] == query_dinamica
 
+    @mock.patch('sinapse.start.conta_expansoes')
     @logresponse
-    def test_metodos_consulta(self):
+    def test_metodos_consulta(self, _conta_expansoes):
+        _conta_expansoes.side_effect = [[73, 73, 73]]*len(casos_servicos)
         for caso in casos_servicos:
             self._consultar(caso)
 
@@ -418,7 +423,7 @@ class MetodosConsulta(unittest.TestCase):
     @mock.patch('sinapse.start.get_photos_asynch')
     @mock.patch('sinapse.start.conta_expansoes', return_value=[1, 1, 1])
     @logresponse
-    def test_conta_numero_de_expansoes_antes_da_busca(self, _conta_nos, _gfa):
+    def test_conta_numero_de_expansoes_antes_da_busca(self, _conta_expansoes, _gfa):
         mock_resposta = mock.MagicMock()
         responses.add(
             responses.POST,
@@ -434,16 +439,16 @@ class MetodosConsulta(unittest.TestCase):
             'node_id': 1234
         }
 
-        resposta_espereda = deepcopy(resposta_filterNodes_ok)
-        resposta_espereda['numero_de_nos'] = [1, 1, 1]
-        mock_resposta.json.return_value = resposta_espereda
+        resposta_esperada = deepcopy(resposta_filterNodes_ok)
+        resposta_esperada['numero_de_expansoes'] = [1, 1, 1]
+        mock_resposta.json.return_value = resposta_esperada
 
         resposta = self.app.get(
             '/api/nextNodes',
             query_string=query_string
         )
 
-        _conta_nos.assert_called_once_with('1234')
+        _conta_expansoes.assert_called_once_with('1234', '')
         self.assertEqual(resposta.json['numero_de_expansoes'], [1, 1, 1])
 
 
@@ -501,25 +506,24 @@ class RemoveInfoSensivel(unittest.TestCase):
         self.assertNotEqual(info, nos)
         self.assertEqual(info, nos_sensiveis_esp)
 
-    def test_remove_linhas_sensiveis(self):
-        linhas = resposta_node_sensivel_ok['results'][0]['data'][0]['row']
-        info = limpa_linhas(linhas)
+    # def test_remove_linhas_sensiveis(self):
+    #     linhas = resposta_node_sensivel_ok['results'][0]['data'][0]['row']
+    #     info = limpa_linhas(linhas)
 
-        self.assertNotEqual(info, linhas)
-        self.assertEqual(info, [dict()])
+    #     self.assertNotEqual(info, linhas)
+    #     self.assertEqual(info, [dict()])
 
     def test_mantem_nos_nao_sensiveis(self):
-        nos = resposta_node_ok['results'][0]['data'][0][
-            'graph']['nodes']
+        nos = resposta_node_ok['nodes']
         info = limpa_nos(nos)
 
         self.assertEqual(info, nos)
 
-    def test_mantem_linhas_nao_sensiveis(self):
-        linhas = resposta_node_ok['results'][0]['data'][0]['row']
-        info = limpa_linhas(linhas)
+    # def test_mantem_linhas_nao_sensiveis(self):
+    #     linhas = resposta_node_ok['results'][0]['data'][0]['row']
+    #     info = limpa_linhas(linhas)
 
-        self.assertEqual(info, linhas)
+    #     self.assertEqual(info, linhas)
 
     def test_remove_relacoes_sensiveis(self):
         info = limpa_relacoes(relacoes_sensiveis)
@@ -552,8 +556,8 @@ class RemoveInfoSensivel(unittest.TestCase):
         )
 
         resposta = self.app.get('/api/node?node_id=395989945')
-
-        self.assertEqual(resposta.json, resposta_node_sensivel_esp)
+        
+        self.assertEqual(resposta.json, parse_json_to_visjs(resposta_node_sensivel_esp))
 
     @mock.patch("sinapse.start._log_response")
     @responses.activate
