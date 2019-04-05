@@ -316,31 +316,24 @@ const updateNodes = data => {
     // update graph. notice we only add non-existant nodes/edges - no duplicates are allowed.
     if (data.nodes) {
         for (node of data.nodes) {
-            console.log('Analisando nó ' + node.id)
+            // check if this node already exists checking its id
             let filteredNode = nodesData.filter(n => n.id === node.id)
             if (filteredNode.length === 0) {
-                console.log('Não existe')
+                // doesn't exist, add it
                 let formattedNode = addColorToNode(node)
                 nodesData.push(formattedNode)
                 nodes.add(formattedNode)
-            } else {
-                console.log('Já existe')
             }
-            console.log()
         }
     }
     if (data.edges) {
         for (edge of data.edges) {
-            console.log('Analisando aresta ' + edge.id)
+            // the same for edges
             let filteredEdge = edgesData.filter(e => e.id === edge.id)
             if (filteredEdge.length === 0) {
-                console.log('Não existe')
                 edgesData.push(edge)
                 edges.add(edge)
-            } else {
-                console.log('Já existe')
             }
-            console.log()
         }
     }
 
@@ -544,7 +537,7 @@ const hideSidebarRight = () => {
 }
 
 /**
- * Initialize the footer click event.
+ * Initialize filter events
  */
 const initFilter = () => {
     const filterExpanded = document.getElementById('filter-expanded')
@@ -568,9 +561,32 @@ const initFilter = () => {
                 filter.classList.add('disabled')
                 filteredEntityTypes.push(entityType)
             }
-            console.log(`filteredEntityTypes`, filteredEntityTypes)
+            updateFilteredEntityTypes()
         }
     })
+}
+
+/**
+ * Updates entities hidden status based on their types
+ */
+const updateFilteredEntityTypes = () => {
+    // first make all hidden nodes visible
+    let filteredNodes = []
+    nodesData.filter(node => node.hidden).forEach(node => {
+        filteredNodes.push({id: node.id, hidden: false})
+        node.hidden = false
+    })
+    nodes.update(filteredNodes)
+
+    // then hide nodes with filtered types
+    filteredNodes = []
+    filteredEntityTypes.forEach(type => {
+        nodesData.filter(node => node.type[0] === type).forEach(node => {
+            filteredNodes.push({id: node.id, hidden: true})
+            node.hidden = true
+        })
+    })
+    nodes.update(filteredNodes)
 }
 
 // Finally, declare init function to run when the page loads.
