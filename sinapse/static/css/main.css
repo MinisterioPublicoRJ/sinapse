@@ -38,3 +38,14 @@
 .mprj span {
     display: none;
 }
+
+/* Vis CSS overload */
+
+div.vis-network div.vis-manipulation {
+    background: white;
+    border: 0;
+}
+
+div.vis-network div.vis-manipulation div.vis-button.vis-delete {
+    background: none;
+}

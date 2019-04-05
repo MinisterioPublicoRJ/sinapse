@@ -42,8 +42,17 @@ const initVisjs = () => {
         interaction:{
             hover: true,
         },
+        locale: 'pt-br',
+        locales: {
+            'pt-br': {
+                del: 'Apagar nó selecionado',
+                edit: 'Editar',
+            },
+        },
         manipulation: {
-            enabled: false,
+            addEdge: false,
+            addNode: false,
+            enabled: true,
         },
     }
     network = new vis.Network(container, data, options)
@@ -67,7 +76,6 @@ const initVisjs = () => {
     })
     network.on("oncontext", function(params) {
         container.oncontextmenu = () => false // Cancels right click menu
-        console.log("Right Click")
     })
 }
 
