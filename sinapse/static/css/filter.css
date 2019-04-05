@@ -1,0 +1,56 @@
+.filter {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    font: 14px Roboto;
+}
+
+.filter span.text {
+    position: relative;
+    top: -6px;
+    margin-left: 5px;
+}
+
+.filter .ball {
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    border-radius: 12px;
+}
+
+.filter #filter-call .ball {
+    background-color: #7ab3ff;
+}
+.filter .empresa .ball {
+    background-color: #51c881;
+}
+.filter .mgp .ball {
+    background-color: #ab897f;
+}
+.filter .multa .ball {
+    background-color: #ff524e;
+}
+.filter .orgao .ball {
+    background-color: #ffb842;
+}
+.filter .personagem .ball {
+    background-color: #a176d1;
+}
+.filter .pessoa .ball {
+    background-color: #00d1e2;
+}
+.filter .telefone .ball {
+    background-color: #324eb6;
+}
+.filter .veiculo .ball {
+    background-color: #ff8b63;
+}
+
+.filter .disabled .text {
+    color: #999;
+    text-decoration: line-through;
+}
+.filter .disabled .ball {
+    background-color: #999;
+
+}

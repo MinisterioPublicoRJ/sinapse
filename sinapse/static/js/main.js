@@ -5,18 +5,30 @@ const init = () => {
     // initNeo4JD3()
     getLabels()
     initSearch()
-    initFooter()
+    initFilter()
     initVisjs()
 }
 
 // Initial vars
-let nodes, edges, container, data, options, network, nodesData, edgesData
-const sidebarRight = document.getElementById("sidebarRight")
+let nodes,               // Visjs initialized nodes
+    nodesData,           // Nodes array as is from API
+    edges,               // Visjs initialized edges (path between nodes)
+    edgesData,           // Edges array as is from API
+    entityTypes,         // Entity types from API
+    filteredEntityTypes, // Entity types we don't want on future API queries
+    container,           // Visjs DOM element
+    data,                // Object with nodes and edges
+    options,             // Object that holds Visjs options
+    network              // Visjs Network, linking container, data and options
+
 const baseIconsPath = '/static/img/icon/graph/'
+const sidebarRight = document.getElementById("sidebarRight")
 
 const initVisjs = () => {
+    // initialize everything as empty (we don't have data yet)
     nodesData = []
     edgesData = []
+    filteredEntityTypes = []
     nodes = new vis.DataSet([])
     edges = new vis.DataSet([])
     container = document.getElementById('graph')
@@ -30,8 +42,9 @@ const initVisjs = () => {
         }
     }
     network = new vis.Network(container, data, options)
-    // Não trocar para arrow function
-    network.on("click", function(params) {
+    
+    // Don't change to arrow function (`this` wouldn't work)
+    network.on('click', function(params) {
         const selectedNodeId = this.getNodeAt(params.pointer.DOM)
         if (selectedNodeId) {
             const selectedNode = nodesData.filter(node => node.id === selectedNodeId)[0]
@@ -39,7 +52,7 @@ const initVisjs = () => {
             showSidebarRight()
         }
     })
-    network.on("doubleClick", function(params) {
+    network.on('doubleClick', function(params) {
         const selectedNodeId = this.getNodeAt(params.pointer.DOM)
         if (selectedNodeId) {
             getNextNodes(selectedNodeId)
@@ -47,13 +60,12 @@ const initVisjs = () => {
     })
 }
 
-/**/
+/**
+ * Gets 
+ * @param {Number} nodeId A Node ID to fetch from API
+ */
 const getNextNodes = nodeId => {
-    get(`/api/nextNodes?node_id=${nodeId}`, setNextNodes)
-}
-
-const setNextNodes = data => {
-    updateNodes(data)
+    get(`/api/nextNodes?node_id=${nodeId}`, updateNodes)
 }
 
 /**
@@ -66,14 +78,18 @@ const getLabels = () => {
 /**
  * Sets labels and create a DOM element for each of them. Also initializes buttons events.
  *
- * @param {Array.<string>} labels An array of labels as strings.
+ * @param {String[]} labels An array of labels as strings.
  */
-const setLabels = labels => {
+const setLabels = data => {
+    // store it
+    labels = data
 
+    // hides loading
     document.getElementById('loading').className = 'hidden'
     if (!window.filtroInicial) {
         document.getElementById('step1').className = ''
     }
+    // create labels dynamically
     let labelsMenu = document.getElementById('opcoes')
     labels.sort().map(label => {
         if (label !== 'teste') {
@@ -133,10 +149,9 @@ const getNodeProperties = e => {
 /**
  * Append an option to a given select.
  *
- * @param {Element} select The <select> DOMElement to append the created <option>
  * @param {string} optionValue The <option> value and innerHTML.
  */
-const appendOption = (select, optionValue) => {
+const appendOption = optionValue => {
     var mylist = document.getElementById('selectProp');
     mylist.insertAdjacentHTML('beforeend', `
         <input type="radio" class="badgebox" name="test" id="` + optionValue + `" value="` + optionValue + `" onclick="checkRadio()">
@@ -175,7 +190,7 @@ const setProps = nodeProperties => {
     }
 
     // add options
-    props.sort().map(prop => appendOption(selectProp, prop))
+    props.sort().map(prop => appendOption(prop))
 }
 
 /**
@@ -208,12 +223,11 @@ const checkRadio = () => {
 }
 
 /**
- * Gets from API the nodes that match the given label, prop and val.
+ * Reads data from DOM to find nodes (label, prop and val)
  */
 const findNodes = () => {
     let label = document.getElementById('selectLabel').value
     let prop = document.querySelector('input[name="test"]:checked').value
-
     let val = document.getElementById('textVal').value
 
     _findNodes(label, prop, val)
@@ -252,7 +266,7 @@ const getNodeType = node => {
  * @param {*} data Data from API data.
  */
 const updateNodes = data => {
-    // update graph
+    // update graph. notice we only add non-existant nodes/edges - no duplicates are allowed.
     if (data.nodes) {
         for (node of data.nodes) {
             let filteredNode = nodesData.filter(n => n.id === node.id)
@@ -474,15 +488,31 @@ const hideSidebarRight = () => {
 /**
  * Initialize the footer click event.
  */
-const initFooter = () => {
-    const legendExpanded = document.getElementById('legend-expanded')
-    document.getElementById('legend-call').onclick = e => {
-        if (legendExpanded.className) {
-            legendExpanded.className = ''
+const initFilter = () => {
+    const filterExpanded = document.getElementById('filter-expanded')
+
+    // Show/hide filter
+    document.getElementById('filter-call').onclick = e => {
+        if (filterExpanded.className) {
+            filterExpanded.className = ''
         } else {
-            legendExpanded.className = 'hidden'
+            filterExpanded.className = 'hidden'
         }
     }
+    // Each filter
+    document.querySelectorAll('.filter .entity').forEach(filter => {
+        filter.onclick = e => {
+            let entityType = filter.classList[1]
+            if (filter.classList.contains('disabled')) {
+                filter.classList.remove('disabled')
+                filteredEntityTypes.splice(filteredEntityTypes.indexOf(entityType), 1)
+            } else {
+                filter.classList.add('disabled')
+                filteredEntityTypes.push(entityType)
+            }
+            console.log(`filteredEntityTypes`, filteredEntityTypes)
+        }
+    })
 }
 
 // Finally, declare init function to run when the page loads.
