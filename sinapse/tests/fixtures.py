@@ -1308,6 +1308,43 @@ parser_test_output = {
     ]
 }
 
+# Whereabouts
+
+request_get_cpf_from_node = {
+    'statements': [
+        {
+            'statement': 'MATCH (n:pessoa) WHERE id(n) = 140885160' 
+            ' RETURN n.cpf as num_cpf',
+            'resultDataContents': ['row']
+        }
+    ]
+}
+
+resposta_get_cpf_from_node_ok = {
+    'results':[
+        {
+            'data':[
+                {
+                    'row':['00000000001']
+                }
+            ]
+        }
+    ],
+    'errors': []
+}
+
+resposta_whereabouts_ok = [
+    {
+        'formatted_addresses': {
+            'descr_complemento_logradouro': 'CASA 5', 
+            'descr_logradouro': 'JOSE SILVA', 
+            'nome_bairro': 'JACAREPAGUA', 
+            'nome_municipio': 'RIO DE JANEIRO', ...}, 
+        'type': 'labcontas'
+    }, 
+    None
+]
+
 # Detran
 response_rg = b'<?xml version="1.0" encoding="utf-8"?><soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"><soap:Body><consultarRGResponse xmlns="http://www.detran.rj.gov.br"><consultarRGResult>0000 - Inclus\xc3\xa3o realizada com sucesso. Aguardar processamento</consultarRGResult></consultarRGResponse></soap:Body></soap:Envelope>'
 
