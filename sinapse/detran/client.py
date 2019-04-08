@@ -7,7 +7,7 @@ from sinapse.detran.utils import find_relations_info, parse_content
 from sinapse.queries import find_next_nodes
 
 
-COLLECTION_FOTOS = _MONGO_CLIENT.mmps.fotos
+COLLECTION_FOTOS = _MONGO_CLIENT.mpmapas.fotos
 
 
 RG_BODY = """<?xml version="1.0" encoding="utf-8"?>
