@@ -25,6 +25,7 @@
     <body>
         <div class="logo"></div>
         <div class="busca">
+
             <div id="loading">
                 <img src="/static/img/icon/Loading_icon.gif">
             </div>
@@ -35,25 +36,32 @@
                 </div>
                 <div class="opcoes hidden" id="opcoes"></div>
             </div>
+
+
+            
             <div id="step2" class="hidden">
                 <div id="form-step2">
                     <input type="hidden" id="selectLabel">
                     <div class="step2-avatar">
                         <img id="step2img">
                     </div>
-                        <div id="selectProp"></div>
-                    <div id="textBusca">
-                        <input type="text" placeholder="Digite aqui o valor que deseja buscar" id="textVal">
-                        <button id="buttonBusca">Localizar 🔎</button>
-                    </div>
-
+                        <div id="selectProp" class="containermenu"></div>
+                        <div id="textBusca">
+                            <input type="text" placeholder="Digite aqui o valor que deseja buscar" id="textVal">
+                            <button id="buttonBusca">Localizar 🔎</button>
+                        </div>
                 </div>
+                    <!-- </div> -->
             </div>
+
+
+
             <div id="step3" class="hidden">
                 <button id="clear">
                     <span>Voltar para a busca</span>
                 </button>
             </div>
+
         </div>
         <div id="graph"></div>
         <aside id="sidebarRight"></aside>
