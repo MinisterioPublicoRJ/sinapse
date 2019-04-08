@@ -5,55 +5,86 @@ const init = () => {
     // initNeo4JD3()
     getLabels()
     initSearch()
-    initFooter()
+    initFilter()
     initVisjs()
 }
 
 // Initial vars
-let nodes, edges, container, data, options, network, nodesData, edgesData
-const sidebarRight = document.getElementById("sidebarRight")
+let nodes,               // Visjs initialized nodes
+    nodesData,           // Nodes array as is from API
+    edges,               // Visjs initialized edges (path between nodes)
+    edgesData,           // Edges array as is from API
+    entityTypes,         // Entity types from API
+    filteredEntityTypes, // Entity types we don't want on future API queries
+    container,           // Visjs DOM element
+    data,                // Object with nodes and edges
+    options,             // Object that holds Visjs options
+    network              // Visjs Network, linking container, data and options
+
 const baseIconsPath = '/static/img/icon/graph/'
+const sidebarRight = document.getElementById("sidebarRight")
 
 const initVisjs = () => {
+    // initialize everything as empty (we don't have data yet)
     nodesData = []
     edgesData = []
+    filteredEntityTypes = []
     nodes = new vis.DataSet([])
     edges = new vis.DataSet([])
     container = document.getElementById('graph')
     data = { nodes, edges }
     options = {
+        edges: {
+            color: {
+                inherit: 'from',
+            },
+        },
         interaction:{
-            hover: true
+            hover: true,
+        },
+        locale: 'pt-br',
+        locales: {
+            'pt-br': {
+                del: 'Apagar nó selecionado',
+                edit: 'Editar',
+            },
         },
         manipulation: {
-            enabled: false
-        }
+            addEdge: false,
+            addNode: false,
+            enabled: true,
+        },
     }
     network = new vis.Network(container, data, options)
-    // Não trocar para arrow function
-    network.on("click", function(params) {
+    
+    // Don't change to arrow function (`this` wouldn't work)
+    network.on('click', function(params) {
         const selectedNodeId = this.getNodeAt(params.pointer.DOM)
         if (selectedNodeId) {
             const selectedNode = nodesData.filter(node => node.id === selectedNodeId)[0]
+            // console.log('click event, getNodeAt returns: ' + selectedNodeId)
+            // console.log('selectedNode: ', selectedNode)
             populateSidebarRight(selectedNode)
             showSidebarRight()
         }
     })
-    network.on("doubleClick", function(params) {
+    network.on('doubleClick', function(params) {
         const selectedNodeId = this.getNodeAt(params.pointer.DOM)
         if (selectedNodeId) {
             getNextNodes(selectedNodeId)
         }
     })
+    network.on("oncontext", function(params) {
+        container.oncontextmenu = () => false // Cancels right click menu
+    })
 }
 
-/**/
+/**
+ * Gets 
+ * @param {Number} nodeId A Node ID to fetch from API
+ */
 const getNextNodes = nodeId => {
-    get(`/api/nextNodes?node_id=${nodeId}`, setNextNodes)
-}
-
-const setNextNodes = data => {
-    updateNodes(data)
+    get(`/api/nextNodes?node_id=${nodeId}`, updateNodes)
 }
 
 /**
@@ -66,14 +97,18 @@ const getLabels = () => {
 /**
  * Sets labels and create a DOM element for each of them. Also initializes buttons events.
  *
- * @param {Array.<string>} labels An array of labels as strings.
+ * @param {String[]} labels An array of labels as strings.
  */
-const setLabels = labels => {
+const setLabels = data => {
+    // store it
+    labels = data
 
+    // hides loading
     document.getElementById('loading').className = 'hidden'
     if (!window.filtroInicial) {
         document.getElementById('step1').className = ''
     }
+    // create labels dynamically
     let labelsMenu = document.getElementById('opcoes')
     labels.sort().map(label => {
         if (label !== 'teste') {
@@ -133,10 +168,9 @@ const getNodeProperties = e => {
 /**
  * Append an option to a given select.
  *
- * @param {Element} select The <select> DOMElement to append the created <option>
  * @param {string} optionValue The <option> value and innerHTML.
  */
-const appendOption = (select, optionValue) => {
+const appendOption = optionValue => {
     var mylist = document.getElementById('selectProp');
     mylist.insertAdjacentHTML('beforeend', `
         <input type="radio" class="badgebox" name="test" id="` + optionValue + `" value="` + optionValue + `" onclick="checkRadio()">
@@ -175,7 +209,7 @@ const setProps = nodeProperties => {
     }
 
     // add options
-    props.sort().map(prop => appendOption(selectProp, prop))
+    props.sort().map(prop => appendOption(prop))
 }
 
 /**
@@ -208,12 +242,11 @@ const checkRadio = () => {
 }
 
 /**
- * Gets from API the nodes that match the given label, prop and val.
+ * Reads data from DOM to find nodes (label, prop and val)
  */
 const findNodes = () => {
     let label = document.getElementById('selectLabel').value
     let prop = document.querySelector('input[name="test"]:checked').value
-
     let val = document.getElementById('textVal').value
 
     _findNodes(label, prop, val)
@@ -246,24 +279,64 @@ const getNodeType = node => {
     return node.labels[0]
 }
 
+const addColorToNode = node => {
+    let color = '#7bb3ff'
+
+    switch (node.type[0]) {
+        case 'empresa':
+            color = '#51c881'
+            break
+        case 'mgp':
+            color = '#ab897f'
+            break
+        case 'multa':
+            color = '#ff524e'
+            break
+        case 'orgao':
+            color = '#ffb842'
+            break
+        case 'personagem':
+            color = '#a176d1'
+            break
+        case 'pessoa':
+            color = '#00d1e2'
+            break
+        case 'telefone':
+            color = '#324eb6'
+            break
+        case 'veiculo':
+            color = '#ff8b63'
+            break
+    }
+
+    return {
+        ...node,
+        color,
+    }
+}
+
 /**
  * Update nodes with given API data.
  *
  * @param {*} data Data from API data.
  */
 const updateNodes = data => {
-    // update graph
+    // update graph. notice we only add non-existant nodes/edges - no duplicates are allowed.
     if (data.nodes) {
         for (node of data.nodes) {
+            // check if this node already exists checking its id
             let filteredNode = nodesData.filter(n => n.id === node.id)
             if (filteredNode.length === 0) {
-                nodesData.push(node)
-                nodes.add(node)
+                // doesn't exist, add it
+                let formattedNode = addColorToNode(node)
+                nodesData.push(formattedNode)
+                nodes.add(formattedNode)
             }
         }
     }
     if (data.edges) {
         for (edge of data.edges) {
+            // the same for edges
             let filteredEdge = edgesData.filter(e => e.id === edge.id)
             if (filteredEdge.length === 0) {
                 edgesData.push(edge)
@@ -472,17 +545,56 @@ const hideSidebarRight = () => {
 }
 
 /**
- * Initialize the footer click event.
+ * Initialize filter events
  */
-const initFooter = () => {
-    const legendExpanded = document.getElementById('legend-expanded')
-    document.getElementById('legend-call').onclick = e => {
-        if (legendExpanded.className) {
-            legendExpanded.className = ''
+const initFilter = () => {
+    const filterExpanded = document.getElementById('filter-expanded')
+
+    // Show/hide filter
+    document.getElementById('filter-call').onclick = e => {
+        if (filterExpanded.className) {
+            filterExpanded.className = ''
         } else {
-            legendExpanded.className = 'hidden'
+            filterExpanded.className = 'hidden'
         }
     }
+    // Each filter
+    document.querySelectorAll('.filter .entity').forEach(filter => {
+        filter.onclick = e => {
+            let entityType = filter.classList[1]
+            if (filter.classList.contains('disabled')) {
+                filter.classList.remove('disabled')
+                filteredEntityTypes.splice(filteredEntityTypes.indexOf(entityType), 1)
+            } else {
+                filter.classList.add('disabled')
+                filteredEntityTypes.push(entityType)
+            }
+            updateFilteredEntityTypes()
+        }
+    })
+}
+
+/**
+ * Updates entities hidden status based on their types
+ */
+const updateFilteredEntityTypes = () => {
+    // first make all hidden nodes visible
+    let filteredNodes = []
+    nodesData.filter(node => node.hidden).forEach(node => {
+        filteredNodes.push({id: node.id, hidden: false})
+        node.hidden = false
+    })
+    nodes.update(filteredNodes)
+
+    // then hide nodes with filtered types
+    filteredNodes = []
+    filteredEntityTypes.forEach(type => {
+        nodesData.filter(node => node.type[0] === type).forEach(node => {
+            filteredNodes.push({id: node.id, hidden: true})
+            node.hidden = true
+        })
+    })
+    nodes.update(filteredNodes)
 }
 
 // Finally, declare init function to run when the page loads.

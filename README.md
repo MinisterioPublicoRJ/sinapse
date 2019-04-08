@@ -69,3 +69,75 @@ Para instalação das dependências do projeto é necessário instalar os pacote
 
 O servidor *waitress* está configurado para rodar no endereço:  
 `http://127.0.0.1:8080`
+
+## Endpoints
+
+A API exposta pelo backend tem os seguintes endpoints:
+
+### /labels
+
+Retorna array de strings com os tipos de entidades disponíveis.
+
+### /nodeProperties?label=
+
+Retorna objeto com as propriedades disponíveis para a entidade buscada, no formato:
+
+    {
+        "columns": [
+            "keys(n)"
+        ],
+        "data": [
+            [
+                [
+                    "prop1", "prop2"
+                ]
+            ]
+        ]
+    }
+
+### /findNodes?label=&prop=&val=
+
+Retorna as propriedades de uma dada entidade, em um objeto no formato:
+
+    {
+        "nodes": [
+            "id": 1,
+            "type": [
+                "type1"
+            ],
+            "properties": {
+                "prop1": "val1"
+            }
+        ]
+    }
+
+### /nextNodes?node_id=
+
+Retorna as ligações de uma dada entiade, em um objeto no formato:
+
+    {
+        "edges": [
+            {
+                "arrows":"to",
+                "dashes":false,
+                "from":"1",
+                "to":"2"
+                "id":"3",
+                "label":"um label",
+                "properties":{
+                    "prop1":"val1"
+                },
+            }
+        ],
+        "nodes":[
+            {
+                "id":"1",
+                "properties":{
+                    "prop1": "val1"
+                },
+                "type":[
+                    "type1"
+                ]
+            }
+        ]
+    }

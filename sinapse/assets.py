@@ -19,6 +19,7 @@ bundles = {
         'css/login.css',
         'css/sidebarRight.css',
         'css/graph.css',
+        'css/filter.css',
     ),
 }
 
