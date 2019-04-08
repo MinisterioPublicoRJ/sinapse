@@ -39,8 +39,15 @@ from .fixtures import (
     relacoes_sensiveis_esp,
     resposta_filterNodes_ok,
     resposta_nextNodes_ok,
-    query_dinamica
+    query_dinamica,
+    parser_test_input,
+    parser_test_output
 )
+
+def test_parser_visjs():
+    saida = parse_json_to_visjs(parser_test_input)
+    print(saida)
+    assert saida == parser_test_output
 
 
 def test_monta_query_filtro_opcional():

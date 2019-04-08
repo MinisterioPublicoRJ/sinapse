@@ -1201,6 +1201,112 @@ query_dinamica = [
                   "optional match (b:personagem {pess_dk:24728287}) return a,b limit 100",
                   'resultDataContents': ['graph']}]
 
+# Vis.js Parser
+
+parser_test_input = {'results': [{'columns': ['p', 'a', 'b'],
+    'data': [{'graph': {'nodes': [{'id': '413827112',
+        'labels': ['teste2'],
+        'properties': {'nome': 'maria'}},
+        {'id': '413827111',
+        'labels': ['teste'],
+        'properties': {'nome': 'jose'}}],
+        'relationships': [{'id': '402463320',
+        'type': 'relacao',
+        'startNode': '413827111',
+        'endNode': '413827112',
+        'properties': {}}]}},
+    {'graph': {'nodes': [{'id': '413827152',
+        'labels': ['teste'],
+        'properties': {'nome': 'a'}},
+        {'id': '413827172', 'labels': ['teste'], 'properties': {'nome': 'b'}}],
+        'relationships': [{'id': '402463342',
+        'type': 'testeRel',
+        'startNode': '413827172',
+        'endNode': '413827152',
+        'properties': {}}]}},
+    {'graph': {'nodes': [{'id': '413827152',
+        'labels': ['teste'],
+        'properties': {'nome': 'a'}},
+        {'id': '413827172', 'labels': ['teste'], 'properties': {'nome': 'b'}}],
+        'relationships': [{'id': '402463341',
+        'type': 'testeRel',
+        'startNode': '413827152',
+        'endNode': '413827172',
+        'properties': {}}]}},
+    {'graph': {'nodes': [{'id': '413827152',
+        'labels': ['teste'],
+        'properties': {'nome': 'a'}},
+        {'id': '413827172', 'labels': ['teste'], 'properties': {'nome': 'b'}}],
+        'relationships': [{'id': '402463342',
+        'type': 'testeRel',
+        'startNode': '413827172',
+        'endNode': '413827152',
+        'properties': {}}]}},
+    {'graph': {'nodes': [{'id': '413827152',
+        'labels': ['teste'],
+        'properties': {'nome': 'a'}},
+        {'id': '413827172', 'labels': ['teste'], 'properties': {'nome': 'b'}}],
+        'relationships': [{'id': '402463341',
+        'type': 'testeRel',
+        'startNode': '413827152',
+        'endNode': '413827172',
+        'properties': {}}]}}]}],
+    'errors': []
+}
+
+parser_test_output = {
+    'nodes': [
+        {
+            'id': '413827112',
+            'properties': {'nome': 'maria'},
+            'type': ['teste2']
+        },
+        {
+            'id': '413827111',
+            'properties': {'nome': 'jose'},
+            'type': ['teste']
+        },
+        {
+            'id': '413827152',
+            'properties': {'nome': 'a'},
+            'type': ['teste']
+        },
+        {
+            'id': '413827172',
+            'properties': {'nome': 'b'},
+            'type': ['teste']
+        }
+    ],
+    'edges': [
+        {
+            'id': '402463320',
+            'properties': {},
+            'label': 'relacao',
+            'from': '413827111',
+            'to': '413827112',
+            'arrows': 'to',
+            'dashes': False
+        },
+        {
+            'id': '402463342', 
+            'properties': {}, 
+            'label': 'testeRel', 
+            'from': '413827172', 
+            'to': '413827152', 
+            'arrows': 'to', 
+            'dashes': False
+        },
+        {
+            'id': '402463341',
+            'properties': {},
+            'label': 'testeRel',
+            'from': '413827152',
+            'to': '413827172',
+            'arrows': 'to',
+            'dashes': False
+        }
+    ]
+}
 
 # Detran
 response_rg = b'<?xml version="1.0" encoding="utf-8"?><soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"><soap:Body><consultarRGResponse xmlns="http://www.detran.rj.gov.br"><consultarRGResult>0000 - Inclus\xc3\xa3o realizada com sucesso. Aguardar processamento</consultarRGResult></consultarRGResponse></soap:Body></soap:Envelope>'
