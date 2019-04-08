@@ -613,7 +613,7 @@ const handleZoomChange = params => {
  * Shows build information
  */
 const initVersion = () => {
-    document.getElementById('version').innerHTML = `Versão ${VERSION}`
+    document.getElementById('version_number').innerHTML = `Versão: ${VERSION}-${btoa(document.getElementById('version_username').innerHTML)}`
 }
 
 // Finally, declare init function to run when the page loads.

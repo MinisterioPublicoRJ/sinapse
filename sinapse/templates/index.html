@@ -111,7 +111,9 @@
                 <span><abbr title="Ministério Público">MP</abbr> em Mapas</span>
             </a>
         </div>
-        <div id="version"></div>
+        <div id="version">
+            <span id="version_number"></span><span id="version_username">{{session['usuario']}}</span>
+        </div>
         {% assets "js" %}
             <script type="text/javascript" src="{{ ASSET_URL }}"></script>
         {% endassets %}

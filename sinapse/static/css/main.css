@@ -51,7 +51,13 @@ div.vis-network div.vis-manipulation div.vis-button.vis-delete {
 }
 
 #version {
-    display: fixed;
+    color: #ccc;
+    font-size: 10px;
+    position: fixed;
     left: 0;
     top: 0;
+}
+
+#version_username {
+    display: none;
 }
