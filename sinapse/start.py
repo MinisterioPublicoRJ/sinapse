@@ -283,7 +283,7 @@ def api_node():
 
     query = {"statements": [{
         "statement": "MATCH  (n) where id(n) = " + node_id + " return n",
-        "resultDataContents": ["row", "graph"]
+        "resultDataContents": ["graph"]
     }]}
 
     response = requests.post(
@@ -366,7 +366,7 @@ def api_findNodes():
             ' '.join(opcoes) +
             ' return %s limit 100' % (','.join(letras))
             ),
-        'resultDataContents': ['row', 'graph']
+        'resultDataContents': ['graph']
     }]}
 
     response = requests.post(
