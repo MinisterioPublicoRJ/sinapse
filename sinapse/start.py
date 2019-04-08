@@ -27,7 +27,9 @@ from sinapse.buildup import (
 )
 from sinapse.detran.tasks import get_photos_asynch
 from sinapse.detran.utils import get_node_id
-from sinapse.queries import find_next_nodes
+from sinapse.queries import find_next_nodes, get_cpf_from_node
+from sinapse.whereabouts.labcontas import get_whereabouts_lc
+from sinapse.whereabouts.credilink import get_whereabouts_credilink
 
 def parse_json_to_visjs(json, **kwargs):
     nodes = {}
@@ -436,6 +438,26 @@ def api_relationships():
         auth=_AUTH,
         headers=_HEADERS)
     return respostajson(response)
+
+@app.route("/api/whereabouts")
+@login_necessario
+def api_whereabouts():
+    # TODO: Hide sensitive information
+    node_id = request.args.get('node_id')
+    
+    response = get_cpf_from_node(node_id)
+    
+    num_cpf = response.json()['results'][0]['data'][0]['row'][0]
+
+    whereabouts = []
+
+    whereabouts_lc = get_whereabouts_lc(num_cpf)
+    whereabouts.append(whereabouts_lc)
+
+    whereabouts_credilink = get_whereabouts_credilink(num_cpf)
+    whereabouts.append(whereabouts_credilink)
+
+    return jsonify(whereabouts)
 
 
 @app.context_processor
