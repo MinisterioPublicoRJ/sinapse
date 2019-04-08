@@ -7,7 +7,10 @@ const init = () => {
     initSearch()
     initFilter()
     initVisjs()
+    initVersion()
 }
+
+const VERSION = '20190501'
 
 // Initial vars
 let nodes,               // Visjs initialized nodes
@@ -74,9 +77,10 @@ const initVisjs = () => {
             getNextNodes(selectedNodeId)
         }
     })
-    network.on("oncontext", function(params) {
+    network.on('oncontext', function(params) {
         container.oncontextmenu = () => false // Cancels right click menu
     })
+    network.on('zoom', handleZoomChange)
 }
 
 /**
@@ -595,6 +599,21 @@ const updateFilteredEntityTypes = () => {
         })
     })
     nodes.update(filteredNodes)
+}
+
+/**
+ * Handles zoom change
+ * @param {Object} params 
+ */
+const handleZoomChange = params => {
+    console.log(params)
+}
+
+/**
+ * Shows build information
+ */
+const initVersion = () => {
+    document.getElementById('version').innerHTML = `Versão ${VERSION}`
 }
 
 // Finally, declare init function to run when the page loads.

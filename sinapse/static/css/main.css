@@ -49,3 +49,9 @@ div.vis-network div.vis-manipulation {
 div.vis-network div.vis-manipulation div.vis-button.vis-delete {
     background: none;
 }
+
+#version {
+    display: fixed;
+    left: 0;
+    top: 0;
+}
