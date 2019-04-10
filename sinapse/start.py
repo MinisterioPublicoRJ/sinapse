@@ -27,7 +27,7 @@ from sinapse.buildup import (
 )
 from sinapse.detran.tasks import get_photos_asynch
 from sinapse.detran.utils import get_node_id
-from sinapse.queries import find_next_nodes, get_cpf_from_node
+from sinapse.queries import find_next_nodes, get_node_from_id
 from sinapse.whereabouts.whereabouts import get_whereabouts_lc, get_whereabouts_credilink
 
 def parse_json_to_visjs(json, **kwargs):
@@ -444,9 +444,15 @@ def api_whereabouts():
     # TODO: Hide sensitive information
     node_id = request.args.get('node_id')
     
-    response = get_cpf_from_node(node_id)
+    response = get_node_from_id(node_id)
+    response = remove_info_sensiveis(response.json())
     
-    num_cpf = response.json()['results'][0]['data'][0]['row'][0]
+    node_props = response['results'][0]['data'][0]['graph']['nodes'][0]['properties']
+    # If information is confidential, properties will be empty
+    if node_props:
+        num_cpf = node_props['cpf']
+    else:
+        return jsonify([])
 
     whereabouts = []
 

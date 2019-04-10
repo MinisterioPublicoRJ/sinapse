@@ -23,11 +23,11 @@ def find_next_nodes(node_id, rel_types=''):
 
     return response
 
-def get_cpf_from_node(node_id):
+def get_node_from_id(node_id):
     query = {"statements": [{
         "statement": "MATCH (n:pessoa) WHERE id(n) = %s"
-        " RETURN n.cpf as num_cpf" % (node_id),
-        "resultDataContents": ["row"]
+        " RETURN n" % (node_id),
+        "resultDataContents": ["graph"]
     }]}
 
     response = requests.post(
