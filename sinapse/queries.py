@@ -26,8 +26,39 @@ def find_next_nodes(node_id):
     return response
 
 
-def search_by_name(name):
-    f_name = re.sub(r'\s+', '+', name)
-    query = """pessoa_fisica_shard1_replica1/select?q=%22{f_name}%22&fl=uuid+nome+nome_mae&wt=json&indent=true&defType=edismax&qf=nome%5E10+nome_mae%5E5&qs=1&stopwords=true&lowercaseOperators=true&hl=true&hl.simple.pre=%3Cem%3E&hl.simple.post=%3C%2Fem%3E""".format(f_name=f_name)
+def search_info(q):
+    f_q = re.sub(r'\s+', '+', q)
+    person = _search_person(f_q)
+    auto = _search_auto(f_q)
+    company = _search_company(f_q)
+    return person, auto, company
+
+
+def clean_info(func):
+    def wrapper(f_q):
+        resp = func(f_q)
+        resp_copy = resp.json().copy()
+        resp_copy.pop('responseHeader')
+        return resp_copy
+    return wrapper
+
+
+@clean_info
+def _search_person(f_q):
+    query = """pessoa_fisica_shard1_replica1/select?q=%22{f_q}%22&fl=uuid+nome+nome_mae&wt=json&indent=true&defType=edismax&qf=nome%5E10+nome_mae%5E5&qs=1&stopwords=true&lowercaseOperators=true&hl=true&hl.simple.pre=%3Cem%3E&hl.simple.post=%3C%2Fem%3E""".format(f_q=f_q)
+    query += config('HOST_SOLR')
+    return requests.get(query)
+
+
+@clean_info
+def _search_auto(f_q):
+    query = """veiculos_shard1_replica1/select?q=%22{f_q}%22&wt=json&indent=true&defType=edismax&qf=descricao+proprietario&qs=5&stopwords=true&lowercaseOperators=true""".format(f_q=f_q)
+    query += config('HOST_SOLR')
+    return requests.get(query)
+
+
+@clean_info
+def _search_company(f_q):
+    query = """pessoa_fisica_shard1_replica1/select?q=%22{f_q}%22&fl=uuid+nome+nome_mae&wt=json&indent=true&defType=edismax&qf=nome%5E10+nome_mae%5E5&qs=1&stopwords=true&lowercaseOperators=true&hl=true&hl.simple.pre=%3Cem%3E&hl.simple.post=%3C%2Fem%3E""".format(f_q=f_q)
     query += config('HOST_SOLR')
     return requests.get(query)

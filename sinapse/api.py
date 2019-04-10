@@ -5,20 +5,8 @@ from flask import (
 )
 from .auth import autenticadorjwt
 from .buildup import app
-from .queries import search_by_name
+from .queries import search_info
 from .start import login_necessario
-
-
-class RespWrapper:
-    def __init__(self, resp_content):
-        self.content = resp_content
-
-
-class PersonWrapper(RespWrapper):
-    def json(self):
-        clean_content = self.content.copy()
-        clean_content.pop('responseHeader')
-        return clean_content
 
 
 @app.route("/api/filtroinicial", methods=['GET'])
@@ -41,7 +29,10 @@ def filtro_inicial():
 @app.route("/api/search", methods=['GET'])
 @login_necessario
 def api_search():
-    name = request.args.get('name')
-    resp = search_by_name(name)
-    person_info = PersonWrapper(resp.json())
-    return jsonify(person_info.json())
+    q = request.args.get('q')
+    info = {}
+    resp_person, resp_auto, resp_comp = search_info(q)
+    info['pf'] = resp_person
+    info['auto'] = resp_auto
+    info['company'] = resp_comp
+    return jsonify(info)
