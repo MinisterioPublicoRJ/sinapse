@@ -31,6 +31,10 @@ _MONGO_CLIENT = MongoClient(
     authSource=_AUTHDB_MONGO
 )
 
-_LOG_MONGO = _MONGO_CLIENT.mpmapas.log_sinapse
+
+_MONGO_NAMESPACE = config('MONGO_NAMESPACE')
+_LOG_MONGO = _MONGO_CLIENT[_MONGO_NAMESPACE].log_sinapse
 _AUTH_MPRJ = config('AUTH_MPRJ')
 _USERINFO_MPRJ = config('USERINFO_MPRJ')
+
+_FOTOS_DETRAN = _MONGO_CLIENT[_MONGO_NAMESPACE].fotos_detran
