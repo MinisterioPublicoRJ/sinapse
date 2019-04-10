@@ -93,6 +93,7 @@ def get_photos(node_id):
     for info in infos:
         photo_document = _FOTOS_DETRAN.find_one(
             {'rg': info.rg,
+             'node_id': node_id,
              'foto': {'$exists': True}}
         )
         if photo_document is None:
@@ -103,10 +104,13 @@ def get_photos(node_id):
 
     for success in successes:
         status, content = get_processed_rg(success.rg)
-        photo = parse_content(content)
+        photo = parse_content(content, 'fotoCivil')
         if photo is not None:
             _FOTOS_DETRAN.update(
                 {'rg': success.rg},
-                {'$set': {'foto': photo}},
+                {'$set': {
+                    'foto': photo,
+                    'node_id': success.node_id
+                }},
                 upsert=True
             )

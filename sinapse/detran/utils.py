@@ -19,14 +19,18 @@ def get_node_id(response_json):
 
 def find_relations_info(response_json):
     person_info = namedtuple('Pessoa', ['rg', 'node_id'])
+    saved_rg = []
     info = []
     for data in response_json['results'][0]['data']:
         for node in data['graph']['nodes']:
             if node['labels'] == ['pessoa']:
-                info.append(
-                    person_info(
-                        node['properties']['rg'],
-                        node['id'])
-                )
+                rg = node['properties'].get('rg')
+                if rg is not None and rg not in saved_rg:
+                    info.append(
+                        person_info(
+                            node['properties']['rg'],
+                            node['id'])
+                    )
+                    saved_rg.append(rg)
 
-    return list(set(info))
+    return info
