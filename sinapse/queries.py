@@ -1,5 +1,5 @@
 import json
-
+import re
 import requests
 
 from sinapse.buildup import (
@@ -22,3 +22,9 @@ def find_next_nodes(node_id):
         headers=_HEADERS)
 
     return response
+
+
+def search_by_name(name):
+    f_name = re.sub(r'\s+', '+', name)
+    query = """http://bda1node05.pgj.rj.gov.br:8983/solr/pessoa_fisica_shard1_replica1/select?q=%22{f_name}%22&fl=uuid+nome+nome_mae&wt=json&indent=true&defType=edismax&qf=nome%5E10+nome_mae%5E5&qs=1&stopwords=true&lowercaseOperators=true&hl=true&hl.simple.pre=%3Cem%3E&hl.simple.post=%3C%2Fem%3E""".format(f_name=f_name)
+    return requests.get(query)
