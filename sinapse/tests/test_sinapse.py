@@ -46,7 +46,7 @@ from .fixtures import (
 
 def test_parser_visjs():
     saida = parse_json_to_visjs(parser_test_input)
-    print(saida)
+    
     assert saida == parser_test_output
 
 

@@ -22,3 +22,18 @@ def find_next_nodes(node_id, rel_types=''):
         headers=_HEADERS)
 
     return response
+
+def get_node_from_id(node_id):
+    query = {"statements": [{
+        "statement": "MATCH (n:pessoa) WHERE id(n) = %s"
+        " RETURN n" % (node_id),
+        "resultDataContents": ["graph"]
+    }]}
+
+    response = requests.post(
+        _ENDERECO_NEO4J % '/db/data/transaction/commit',
+        data=json.dumps(query),
+        auth=_AUTH,
+        headers=_HEADERS)
+
+    return response
