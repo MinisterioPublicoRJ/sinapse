@@ -28,7 +28,7 @@ from sinapse.buildup import (
 from sinapse.detran.tasks import get_photos_asynch
 from sinapse.detran.utils import get_node_id
 from sinapse.queries import find_next_nodes, get_node_from_id
-from sinapse.whereabouts.whereabouts import get_whereabouts_lc, get_whereabouts_credilink
+from sinapse.whereabouts.whereabouts import get_whereabouts_receita, get_whereabouts_credilink
 
 def parse_json_to_visjs(json, **kwargs):
     nodes = {}
@@ -456,8 +456,8 @@ def api_whereabouts():
 
     whereabouts = []
 
-    whereabouts_lc = get_whereabouts_lc(num_cpf)
-    whereabouts.append(whereabouts_lc)
+    whereabouts_receita = get_whereabouts_receita(num_cpf)
+    whereabouts.append(whereabouts_receita)
 
     whereabouts_credilink = get_whereabouts_credilink(num_cpf)
     whereabouts.append(whereabouts_credilink)

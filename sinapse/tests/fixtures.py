@@ -1397,8 +1397,7 @@ resposta_get_node_from_id_sensivel_ok = {
     'errors': []
 }
 
-# TODO: Mock of whereabouts_lc and whereabouts_credilink responses
-input_whereabouts_addresses_lc = [(
+input_whereabouts_addresses_receita = [(
     'RUA',
     'DE TESTE',
     '123',
@@ -1411,7 +1410,7 @@ input_whereabouts_addresses_lc = [(
     '25696969'
 )]
 
-output_whereabouts_addresses_lc = [{
+output_whereabouts_addresses_receita = [{
     'endereco': 'RUA DE TESTE', 
     'numero': '123',
     'complemento': 'APTO 101',
@@ -1472,9 +1471,9 @@ output_whereabouts_addresses_credilink = [
     }
 ]
 
-resposta_whereabouts_lc_ok = {
+resposta_whereabouts_receita_ok = {
     'type': 'receita_federal',
-    'formatted_addresses': output_whereabouts_addresses_lc
+    'formatted_addresses': output_whereabouts_addresses_receita
 }
 
 resposta_whereabouts_credilink_ok = {
@@ -1483,7 +1482,7 @@ resposta_whereabouts_credilink_ok = {
 }
 
 resposta_whereabouts_ok = [
-    resposta_whereabouts_lc_ok, 
+    resposta_whereabouts_receita_ok, 
     resposta_whereabouts_credilink_ok
 ]
 

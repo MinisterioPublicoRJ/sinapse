@@ -12,7 +12,7 @@ CREDILINK_USUARIO = config('CREDILINK_USUARIO')
 CREDILINK_SENHA = config('CREDILINK_SENHA')
 CREDILINK_SIGLA = config('CREDILINK_SIGLA')
 
-def get_data_from_lc(num_cpf):
+def get_data_from_receita(num_cpf):
     with connect(host=IMPALA_HOST, port=IMPALA_PORT) as conn:
         cursor = conn.cursor()
         cursor.execute("""SELECT tipo_logradouro, 
@@ -30,7 +30,7 @@ def get_data_from_lc(num_cpf):
     return rows
 
 
-def extract_addresses_from_lc(rows):
+def extract_addresses_from_receita(rows):
     addresses = []
     for data in rows:
         address = {
@@ -47,10 +47,10 @@ def extract_addresses_from_lc(rows):
     return addresses
 
 
-def get_whereabouts_lc(num_cpf):
-    rows = get_data_from_lc(num_cpf)
+def get_whereabouts_receita(num_cpf):
+    rows = get_data_from_receita(num_cpf)
 
-    addresses = extract_addresses_from_lc(rows)
+    addresses = extract_addresses_from_receita(rows)
 
     whereabouts = {'type': 'receita_federal'}
     whereabouts['formatted_addresses'] = addresses
