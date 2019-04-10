@@ -45,14 +45,14 @@ def clean_info(func):
 
 @clean_info
 def _search_person(f_q):
-    query = """pessoa_fisica_shard1_replica1/select?q=%22{f_q}%22&fl=uuid+nome+nome_mae&wt=json&indent=true&defType=edismax&qf=nome%5E10+nome_mae%5E5&qs=1&stopwords=true&lowercaseOperators=true&hl=true&hl.simple.pre=%3Cem%3E&hl.simple.post=%3C%2Fem%3E""".format(f_q=f_q)
+    query = """http://bda1node05.pgj.rj.gov.br:8983/solr/pessoa_fisica_shard1_replica1/select?q=%22{f_q}%22&wt=json&indent=true&defType=edismax&qf=nome%5E10+nome_mae%5E5&qs=1&stopwords=true&lowercaseOperators=true&hl=true&hl.simple.pre=%3Cem%3E&hl.simple.post=%3C%2Fem%3E""".format(f_q=f_q)
     query += config('HOST_SOLR')
     return requests.get(query)
 
 
 @clean_info
 def _search_auto(f_q):
-    query = """veiculos_shard1_replica1/select?q=%22{f_q}%22&wt=json&indent=true&defType=edismax&qf=descricao+proprietario&qs=5&stopwords=true&lowercaseOperators=true""".format(f_q=f_q)
+    query = """http://bda1node06.pgj.rj.gov.br:8983/solr/veiculos_shard1_replica1/select?q=%22{f_q}%22&wt=json&indent=true&defType=edismax&qf=descricao+proprietario&qs=5&stopwords=true&lowercaseOperators=true&hl=true""".format(f_q=f_q)
     query += config('HOST_SOLR')
     return requests.get(query)
 
