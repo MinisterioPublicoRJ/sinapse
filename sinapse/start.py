@@ -306,7 +306,7 @@ def api_findShortestPath():
         rel_types = ':' + rel_types.replace(',', '|:')
 
     query = {"statements": [{
-        "statement": "MATCH p = shortestPath((a)-[%s*]-(b)) "
+        "statement": "MATCH p = allShortestPaths((a)-[%s*]-(b)) "
             "WHERE id(a) = %s AND id(b) = %s RETURN p" % (rel_types, id_start, id_end),
         "resultDataContents": ["row", "graph"]
     }]}
