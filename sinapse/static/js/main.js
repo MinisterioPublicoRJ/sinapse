@@ -26,6 +26,7 @@ let nodes,               // Visjs initialized nodes
 
 const baseIconsPath = '/static/img/icon/graph/'
 const sidebarRight = document.getElementById("sidebarRight")
+const sidebarLeft = document.getElementById("entitylist")
 
 const initVisjs = () => {
     // initialize everything as empty (we don't have data yet)
@@ -351,6 +352,8 @@ const updateNodes = data => {
 
     // show back button
     document.getElementById('step3').className = ''
+
+    updateLeftSidebar()
 }
 
 /**
@@ -614,6 +617,95 @@ const handleZoomChange = params => {
  */
 const initVersion = () => {
     document.getElementById('version_number').innerHTML = `Versão: ${VERSION}-${btoa(document.getElementById('version_username').innerHTML)}`
+}
+
+/**
+ * Updates left sidebar with entities to zoom
+ */
+const updateLeftSidebar = () => {
+    document.querySelector('.entitylist').style.display = 'block'
+    let entityListToWrite = ''
+
+    labels.forEach(type => {
+        let nodesForThisType = sortByType(nodesData.filter(node => node.type[0] === type), type)
+        if (nodesForThisType.length) {
+            entityListToWrite += `<h2>${type}</h2>`
+            nodesForThisType.forEach(node => {
+                entityListToWrite += nodeToDOMString(node)
+            })
+        }
+    })
+
+    sidebarLeft.innerHTML = entityListToWrite
+}
+
+/**
+ * 
+ * @param {Object[]} nodes Array of nodes to be sorted
+ * @param {String} type The type of node (which varies the key to sort them)
+ */
+const sortByType = (nodes, type) => {
+    switch (type) {
+        case 'pessoa':
+            return sortByProperty(nodes, 'nome')
+        default:
+            return nodes
+    }
+}
+
+/**
+ * Sorts a node Array
+ * @param {Object[]} nodes Array of nodes to be sorted
+ * @param {Object} nodes[].properties
+ * @param {Object} nodes[].properties.prop A number of string to be sorted.
+ * @param {String} prop The name of the property to sort.
+ */
+const sortByProperty = (nodes, prop) => {
+    return nodes.sort((a, b) => (a.properties[prop] > b.properties[prop]) ? 1 : -1)
+}
+
+/**
+ * Returns a DOM string for a node on the sidebar
+ * @param {Object} node
+ * @param {Object} node.properties
+ * @param {String[]} node.type
+ */
+const nodeToDOMString = node => {
+    if (node) {
+        switch (node.type[0]) {
+            case 'pessoa':
+                return `<h3 onclick="zoomToNodeId(${node.id})">Nome: ${node.properties.nome}</h3><p>CPF: ${formatCPF(node.properties.cpf)}</p>`
+            case 'empresa':
+                return `<h3 onclick="zoomToNodeId(${node.id})">Razão Social: ${node.properties.razao_social}</h3><p>CNPJ: ${formatCNPJ(node.properties.cnpj)}</p>`
+            default:
+                return `<p onclick="zoomToNodeId(${node.id})">${node.id}</p>`
+        }
+    }
+    return ''
+}
+
+/**
+ * Zooms to a given nodeId
+ * @param {String} nodeId 
+ */
+const zoomToNodeId = nodeId => {
+    network.focus(nodeId, { scale: 2, animation: true })
+}
+
+/**
+ * Formats as CPF - xxx.xxx.xxx-xx
+ * @param {String} cpf 
+ */
+const formatCPF = cpf => {
+    return `${cpf.substr(0,3)}.${cpf.substr(3,3)}.${cpf.substr(6,3)}-${cpf.substr(9)}`
+}
+
+/**
+ * Formats as CNPJ - xx.xxx.xxx/xxxx-xx
+ * @param {String} cnpj 
+ */
+const formatCNPJ = cnpj => {
+    return `${cnpj.substr(0,2)}.${cnpj.substr(2,3)}.${cnpj.substr(5,3)}/${cnpj.substr(8,4)}-${cnpj.substr(10)}`
 }
 
 // Finally, declare init function to run when the page loads.
