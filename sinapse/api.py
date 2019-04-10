@@ -32,7 +32,7 @@ def api_search():
     q = request.args.get('q')
     info = {}
     resp_person, resp_auto, resp_comp = search_info(q)
-    info['pf'] = resp_person
-    info['auto'] = resp_auto
-    info['company'] = resp_comp
+    info['pessoa'] = resp_person
+    info['veiculo'] = resp_auto
+    info['empresa'] = resp_comp
     return jsonify(info)
