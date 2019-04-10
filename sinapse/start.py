@@ -28,8 +28,7 @@ from sinapse.buildup import (
 from sinapse.detran.tasks import get_photos_asynch
 from sinapse.detran.utils import get_node_id
 from sinapse.queries import find_next_nodes, get_cpf_from_node
-from sinapse.whereabouts.labcontas import get_whereabouts_lc
-from sinapse.whereabouts.credilink import get_whereabouts_credilink
+from sinapse.whereabouts.whereabouts import get_whereabouts_lc, get_whereabouts_credilink
 
 def parse_json_to_visjs(json, **kwargs):
     nodes = {}
