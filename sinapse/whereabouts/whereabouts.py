@@ -12,9 +12,7 @@ CREDILINK_USUARIO = config('CREDILINK_USUARIO')
 CREDILINK_SENHA = config('CREDILINK_SENHA')
 CREDILINK_SIGLA = config('CREDILINK_SIGLA')
 
-def get_whereabouts_lc(num_cpf):
-    whereabouts = {'type': 'receita_federal'}
-
+def get_data_from_lc(num_cpf):
     with connect(host=IMPALA_HOST, port=IMPALA_PORT) as conn:
         cursor = conn.cursor()
         cursor.execute("""SELECT tipo_logradouro, 
@@ -28,26 +26,39 @@ def get_whereabouts_lc(num_cpf):
             num_ddd, num_telefone 
             FROM bases.lc_cpf 
             WHERE num_cpf = '{}'""".format(num_cpf))
-        addresses = []
-        for data in cursor.fetchall():
-            address = {
-                'endereco': data[0] + " " + data[1], 
-                'numero': data[2],
-                'complemento': data[3],
-                'bairro': data[4],
-                'cep': data[5],
-                'cidade': data[6],
-                'sigla_uf': data[7],
-                'telefone': data[8] + data[9]
-            }
-            addresses.append(address)
-        whereabouts['formatted_addresses'] = addresses
+        rows = cursor.fetchall()
+    return rows
+
+
+def extract_addresses_from_lc(rows):
+    addresses = []
+    for data in rows:
+        address = {
+            'endereco': data[0] + " " + data[1], 
+            'numero': data[2],
+            'complemento': data[3],
+            'bairro': data[4],
+            'cep': data[5],
+            'cidade': data[6],
+            'sigla_uf': data[7],
+            'telefone': data[8] + data[9]
+        }
+        addresses.append(address)
+    return addresses
+
+
+def get_whereabouts_lc(num_cpf):
+    rows = get_data_from_lc(num_cpf)
+
+    addresses = extract_addresses_from_lc(rows)
+
+    whereabouts = {'type': 'receita_federal'}
+    whereabouts['formatted_addresses'] = addresses
 
     return whereabouts
 
-def get_whereabouts_credilink(num_cpf):
-    whereabouts = {'type': 'credilink'}
 
+def get_data_from_credilink(num_cpf):
     cliente = Client(CREDILINK_URL)
 
     response = cliente.service.completo(
@@ -59,8 +70,11 @@ def get_whereabouts_credilink(num_cpf):
         telefone=''
     )
 
-    root = ET.fromstring(response)
+    return response
 
+
+def extract_addresses_from_credilink(response):
+    root = ET.fromstring(response)
     telefones = root.find('consulta_telefone_proprietario').findall('telefone')
 
     addresses = []
@@ -76,6 +90,15 @@ def get_whereabouts_credilink(num_cpf):
             'telefone': tel.find('telefone').text
         }
         addresses.append(address)
+    return addresses
+
+
+def get_whereabouts_credilink(num_cpf):
+    response = get_data_from_credilink(num_cpf)
+
+    addresses = extract_addresses_from_credilink(response)
+
+    whereabouts = {'type': 'credilink'}
     whereabouts['formatted_addresses'] = addresses
 
     return whereabouts

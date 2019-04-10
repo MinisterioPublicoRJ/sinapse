@@ -1310,22 +1310,47 @@ parser_test_output = {
 
 # Whereabouts
 
-request_get_cpf_from_node = {
+request_get_node_from_id = {
     'statements': [
         {
             'statement': 'MATCH (n:pessoa) WHERE id(n) = 140885160' 
-            ' RETURN n.cpf as num_cpf',
-            'resultDataContents': ['row']
+            ' RETURN n',
+            'resultDataContents': ['graph']
         }
     ]
 }
 
-resposta_get_cpf_from_node_ok = {
+resposta_get_node_from_id_ok = {
     'results':[
         {
+            'columns': ['n'],
             'data':[
                 {
-                    'row':['00000000001']
+                    'graph': {
+                        'nodes': [
+                            {
+                                'id': '140885160', 
+                                'labels': ['pessoa'], 
+                                'properties': {
+                                    'nome_pai': 'FRANCISCO IVAN FONTELE BELCHIOR', 
+                                    'filho_rel_status_pai': 1, 
+                                    'nome': 'DANIEL CARVALHO BELCHIOR', 
+                                    'uuid': '607056258864169709', 
+                                    'idade': 36, 
+                                    'uf': 'RJ', 
+                                    'rg': '131242950', 
+                                    'visitado': False, 
+                                    'cpf': '11452244740', 
+                                    'filho_rel_status': 1, 
+                                    'nome_mae': 'MARTA CARVALHO BELCHIOR', 
+                                    'sexo': '1', 
+                                    'nome_rg': 'DANIEL CARVALHO BELCHIOR', 
+                                    'dt_nasc': '19850522'
+                                }
+                            }
+                        ],
+                        'relationships': []
+                    }
                 }
             ]
         }
@@ -1333,16 +1358,133 @@ resposta_get_cpf_from_node_ok = {
     'errors': []
 }
 
-resposta_whereabouts_ok = [
+resposta_get_node_from_id_sensivel_ok = {
+    'results':[
+        {
+            'columns': ['n'],
+            'data':[
+                {
+                    'graph': {
+                        'nodes': [
+                            {
+                                'id': '140885160', 
+                                'labels': ['pessoa'], 
+                                'properties': {
+                                    'nome_pai': 'FRANCISCO IVAN FONTELE BELCHIOR', 
+                                    'filho_rel_status_pai': 1, 
+                                    'nome': 'DANIEL CARVALHO BELCHIOR', 
+                                    'uuid': '607056258864169709', 
+                                    'idade': 36, 
+                                    'uf': 'RJ', 
+                                    'rg': '131242950', 
+                                    'visitado': False, 
+                                    'cpf': '11452244740', 
+                                    'filho_rel_status': 1, 
+                                    'nome_mae': 'MARTA CARVALHO BELCHIOR', 
+                                    'sexo': '1', 
+                                    'nome_rg': 'DANIEL CARVALHO BELCHIOR', 
+                                    'dt_nasc': '19850522',
+                                    'sensivel': True
+                                }
+                            }
+                        ],
+                        'relationships': []
+                    }
+                }
+            ]
+        }
+    ],
+    'errors': []
+}
+
+# TODO: Mock of whereabouts_lc and whereabouts_credilink responses
+input_whereabouts_addresses_lc = [(
+    'RUA',
+    'DE TESTE',
+    '123',
+    'APTO 101',
+    'BAIRRO DE TESTE',
+    '20000000',
+    'RIO DE JANEIRO',
+    'RJ',
+    '21',
+    '25696969'
+)]
+
+output_whereabouts_addresses_lc = [{
+    'endereco': 'RUA DE TESTE', 
+    'numero': '123',
+    'complemento': 'APTO 101',
+    'bairro': 'BAIRRO DE TESTE',
+    'cep': '20000000',
+    'cidade': 'RIO DE JANEIRO',
+    'sigla_uf': 'RJ',
+    'telefone': '2125696969'
+}]
+
+input_whereabouts_addresses_credilink = ("<?xml version='1.0' encoding='iso-8859-1'?>"
+    "<credilink_webservice>"
+    "<consulta_telefone_proprietario>"
+    "<telefone>"
+    "<contador>1</contador><nome>FULANO DE TESTE DA SILVA</nome>"
+    "<telefone>2125696969</telefone><dt_istalacao>01/01/2000</dt_istalacao>"
+    "<endereco>RUA DE TESTE</endereco><numero>123</numero><complemento>APT 101</complemento>"
+    "<bairro>BAIRRO DE TESTE</bairro><cep>20000000</cep><cidade>RIO DE JANEIRO</cidade><uf>RJ</uf>"
+    "<cpfcnpj>00000000001</cpfcnpj><sexo>M</sexo><mae>CICLANA DE TESTE</mae>"
+    "<nasc>01/01/1990</nasc><titulo_eleitor></titulo_eleitor><statustelefone>1</statustelefone>"
+    "<atualizacao>SAT</atualizacao><operadora>EMBRATEL</operadora><procon>(NAO TEM)</procon>"
+    "<emails></emails><whatsapp></whatsapp><estadocivil></estadocivil>"
+    "</telefone>"
+    "<telefone>"
+    "<contador>1</contador><nome>FULANO DE TESTE DA SILVA</nome>"
+    "<telefone>2138522500</telefone><dt_istalacao>01/01/2002</dt_istalacao>"
+    "<endereco>RUA ALPHA BETA</endereco><numero>100</numero><complemento>APT 202</complemento>"
+    "<bairro>BAIRRO DE TESTE</bairro><cep>20000000</cep><cidade>RIO DE JANEIRO</cidade><uf>RJ</uf>"
+    "<cpfcnpj>00000000001</cpfcnpj><sexo>M</sexo><mae>CICLANA DE TESTE</mae>"
+    "<nasc>01/01/1990</nasc><titulo_eleitor></titulo_eleitor><statustelefone>1</statustelefone>"
+    "<atualizacao>SAT</atualizacao><operadora>EMBRATEL</operadora><procon>(NAO TEM)</procon>"
+    "<emails></emails><whatsapp></whatsapp><estadocivil></estadocivil>"
+    "</telefone>"
+    "</consulta_telefone_proprietario>"
+    "</credilink_webservice>"
+)
+
+output_whereabouts_addresses_credilink = [
     {
-        'formatted_addresses': {
-            'descr_complemento_logradouro': 'CASA 5', 
-            'descr_logradouro': 'JOSE SILVA', 
-            'nome_bairro': 'JACAREPAGUA', 
-            'nome_municipio': 'RIO DE JANEIRO', ...}, 
-        'type': 'labcontas'
-    }, 
-    None
+        'endereco': 'RUA DE TESTE', 
+        'numero': '123',
+        'complemento': 'APT 101',
+        'bairro': 'BAIRRO DE TESTE',
+        'cep': '20000000',
+        'cidade': 'RIO DE JANEIRO',
+        'sigla_uf': 'RJ',
+        'telefone': '2125696969'
+    },
+    {
+        'endereco': 'RUA ALPHA BETA', 
+        'numero': '100',
+        'complemento': 'APT 202',
+        'bairro': 'BAIRRO DE TESTE',
+        'cep': '20000000',
+        'cidade': 'RIO DE JANEIRO',
+        'sigla_uf': 'RJ',
+        'telefone': '2138522500'
+    }
+]
+
+resposta_whereabouts_lc_ok = {
+    'type': 'receita_federal',
+    'formatted_addresses': output_whereabouts_addresses_lc
+}
+
+resposta_whereabouts_credilink_ok = {
+    'type': 'credilink',
+    'formatted_addresses': output_whereabouts_addresses_credilink
+}
+
+resposta_whereabouts_ok = [
+    resposta_whereabouts_lc_ok, 
+    resposta_whereabouts_credilink_ok
 ]
 
 # Detran
