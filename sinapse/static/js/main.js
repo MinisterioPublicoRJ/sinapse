@@ -640,7 +640,7 @@ const updateLeftSidebar = () => {
 }
 
 /**
- * 
+ *
  * @param {Object[]} nodes Array of nodes to be sorted
  * @param {String} type The type of node (which varies the key to sort them)
  */
@@ -648,6 +648,10 @@ const sortByType = (nodes, type) => {
     switch (type) {
         case 'pessoa':
             return sortByProperty(nodes, 'nome')
+        case 'empresa':
+            return sortByProperty(nodes, 'razao_social')
+        case 'multa':
+            return sortByProperty(nodes, 'data')
         default:
             return nodes
     }
@@ -671,22 +675,33 @@ const sortByProperty = (nodes, prop) => {
  * @param {String[]} node.type
  */
 const nodeToDOMString = node => {
+    let ret = ''
     if (node) {
         switch (node.type[0]) {
             case 'pessoa':
-                return `<h3 onclick="zoomToNodeId(${node.id})">Nome: ${node.properties.nome}</h3><p>CPF: ${formatCPF(node.properties.cpf)}</p>`
+            case 'personagem':
+                ret = `<div onclick="zoomToNodeId(${node.id})"><h3>${node.properties.nome}</h3>`
+                if (node.properties.cpf) {
+                    ret += `<p>CPF: ${formatCPF(node.properties.cpf)}</p>`
+                }
+                ret += `</div>`
+                break
             case 'empresa':
-                return `<h3 onclick="zoomToNodeId(${node.id})">Razão Social: ${node.properties.razao_social}</h3><p>CNPJ: ${formatCNPJ(node.properties.cnpj)}</p>`
+                ret = `<div onclick="zoomToNodeId(${node.id})"><h3>${node.properties.razao_social}</h3><p>CNPJ: ${formatCNPJ(node.properties.cnpj)}</p></div>`
+                break
+            case 'multa':
+                ret = `<p onclick="zoomToNodeId(${node.id})">${formatDate(node.properties.data)} - ${node.properties.desc}</p>`
+                break
             default:
-                return `<p onclick="zoomToNodeId(${node.id})">${node.id}</p>`
+                ret = `<p onclick="zoomToNodeId(${node.id})">${node.id}</p>`
         }
     }
-    return ''
+    return ret
 }
 
 /**
  * Zooms to a given nodeId
- * @param {String} nodeId 
+ * @param {String} nodeId
  */
 const zoomToNodeId = nodeId => {
     network.focus(nodeId, { scale: 2, animation: true })
@@ -694,7 +709,7 @@ const zoomToNodeId = nodeId => {
 
 /**
  * Formats as CPF - xxx.xxx.xxx-xx
- * @param {String} cpf 
+ * @param {String} cpf
  */
 const formatCPF = cpf => {
     return `${cpf.substr(0,3)}.${cpf.substr(3,3)}.${cpf.substr(6,3)}-${cpf.substr(9)}`
@@ -702,10 +717,18 @@ const formatCPF = cpf => {
 
 /**
  * Formats as CNPJ - xx.xxx.xxx/xxxx-xx
- * @param {String} cnpj 
+ * @param {String} cnpj
  */
 const formatCNPJ = cnpj => {
     return `${cnpj.substr(0,2)}.${cnpj.substr(2,3)}.${cnpj.substr(5,3)}/${cnpj.substr(8,4)}-${cnpj.substr(10)}`
+}
+
+/**
+ * Formats as Date - from yyyymmdd to dd/mm/yyyy
+ * @param {String} date
+ */
+const formatDate = date => {
+    return `${date.substr(6)}/${date.substr(4,2)}/${date.substr(0,4)}`
 }
 
 // Finally, declare init function to run when the page loads.
