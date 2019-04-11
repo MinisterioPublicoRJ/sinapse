@@ -22,6 +22,7 @@ _USUARIO_MONGO = config('MONGO_USUARIO')
 _SENHA_MONGO = config('MONGO_SENHA')
 _HOST_MONGO = config('MONGO_HOST')
 _AUTHDB_MONGO = config('MONGO_AUTHDB')
+_COLLECTION_MONGO = config('MONGO_COLLECTION')
 
 _MONGO_CLIENT = MongoClient(
     _HOST_MONGO,
@@ -31,6 +32,6 @@ _MONGO_CLIENT = MongoClient(
     authSource=_AUTHDB_MONGO
 )
 
-_LOG_MONGO = _MONGO_CLIENT.mmps.log_sinapse
+_LOG_MONGO = _MONGO_CLIENT[_COLLECTION_MONGO].log_sinapse
 _AUTH_MPRJ = config('AUTH_MPRJ')
 _USERINFO_MPRJ = config('USERINFO_MPRJ')
