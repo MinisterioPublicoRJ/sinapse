@@ -21,3 +21,5 @@ urllib3==1.23
 waitress==1.1.0
 webassets==0.12.1
 Werkzeug==0.14.1
+impyla==0.14.2.2
+zeep==3.3.1
