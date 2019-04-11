@@ -27,7 +27,8 @@ from sinapse.buildup import (
 )
 from sinapse.detran.tasks import get_photos_asynch
 from sinapse.detran.utils import get_node_id
-from sinapse.queries import find_next_nodes
+from sinapse.queries import find_next_nodes, get_node_from_id
+from sinapse.whereabouts.whereabouts import get_whereabouts_receita, get_whereabouts_credilink
 
 def parse_json_to_visjs(json, **kwargs):
     nodes = {}
@@ -305,7 +306,7 @@ def api_findShortestPath():
         rel_types = ':' + rel_types.replace(',', '|:')
 
     query = {"statements": [{
-        "statement": "MATCH p = shortestPath((a)-[%s*]-(b)) "
+        "statement": "MATCH p = allShortestPaths((a)-[%s*]-(b)) "
             "WHERE id(a) = %s AND id(b) = %s RETURN p" % (rel_types, id_start, id_end),
         "resultDataContents": ["row", "graph"]
     }]}
@@ -436,6 +437,32 @@ def api_relationships():
         auth=_AUTH,
         headers=_HEADERS)
     return respostajson(response)
+
+@app.route("/api/whereabouts")
+@login_necessario
+def api_whereabouts():
+    # TODO: Hide sensitive information
+    node_id = request.args.get('node_id')
+    
+    response = get_node_from_id(node_id)
+    response = remove_info_sensiveis(response.json())
+    
+    node_props = response['results'][0]['data'][0]['graph']['nodes'][0]['properties']
+    # If information is confidential, properties will be empty
+    if node_props:
+        num_cpf = node_props['cpf']
+    else:
+        return jsonify([])
+
+    whereabouts = []
+
+    whereabouts_receita = get_whereabouts_receita(num_cpf)
+    whereabouts.append(whereabouts_receita)
+
+    whereabouts_credilink = get_whereabouts_credilink(num_cpf)
+    whereabouts.append(whereabouts_credilink)
+
+    return jsonify(whereabouts)
 
 
 @app.context_processor
