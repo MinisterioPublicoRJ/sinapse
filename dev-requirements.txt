@@ -28,3 +28,5 @@ responses==0.9.0
 pytest-coverage==0.0
 codecov==2.0.15
 freezegun==0.3.10
+impyla==0.14.2.2
+zeep==3.3.1
