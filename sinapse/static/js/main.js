@@ -66,8 +66,6 @@ const initVisjs = () => {
         const selectedNodeId = this.getNodeAt(params.pointer.DOM)
         if (selectedNodeId) {
             const selectedNode = nodesData.filter(node => node.id === selectedNodeId)[0]
-            // console.log('click event, getNodeAt returns: ' + selectedNodeId)
-            // console.log('selectedNode: ', selectedNode)
             populateSidebarRight(selectedNode)
             showSidebarRight()
         }
@@ -705,6 +703,9 @@ const nodeToDOMString = node => {
  */
 const zoomToNodeId = nodeId => {
     network.focus(nodeId, { scale: 2, animation: true })
+    const selectedNode = nodesData.filter(node => node.id === nodeId.toString())[0] // nodeId comes as Number, node.id is a String
+    populateSidebarRight(selectedNode)
+    showSidebarRight()
 }
 
 /**
