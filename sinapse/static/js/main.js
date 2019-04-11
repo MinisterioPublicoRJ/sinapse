@@ -429,6 +429,35 @@ const formatPropString = text => {
 }
 
 /**
+ * Format a given key according to a given property
+ * @param {String} prop property to format
+ * @param {String} key key to format
+ */
+const formatKeyString = (prop, key) => {
+    switch (prop) {
+        case 'cnae':
+            return formatCNAE(key)
+        case 'cnpj':
+            return formatCNPJ(key)
+        case 'cpf':
+        case 'cpf_responsavel':
+            return formatCPF(key)
+        case 'dt_nasc':
+        case 'data_inicio':
+        case 'data':
+            return formatDate(key)
+        case 'ident':
+            return formatVehicleIdent(key)
+        case 'placa':
+            return formatVehiclePlate(key)
+        case 'rg':
+            return formatRG(key)
+        default:
+            return key
+    }
+}
+
+/**
  * Make a HTTP GET call and returns the data.
  *
  * @param {String} url The URL to GET.
@@ -461,40 +490,11 @@ const populateSidebarRight = node => {
     delete node.properties['filho_rel_status']
     delete node.properties['filho_rel_status_pai']
 
-    let label = node.type[0]
-    switch (label) {
-        case 'personagem':
-            sidebarRight.setAttribute('class', 'personagem')
-            break
-        case 'pessoa':
-            sidebarRight.setAttribute('class', 'pessoa')
-            break
-        case 'empresa':
-            sidebarRight.setAttribute('class', 'empresa')
-            break
-        case 'telefone':
-            sidebarRight.setAttribute('class', 'telefone')
-            break
-        case 'multa':
-            sidebarRight.setAttribute('class', 'multa')
-            break
-        case 'veiculo':
-            sidebarRight.setAttribute('class', 'veiculo')
-            break
-        case 'orgao':
-            sidebarRight.setAttribute('class', 'orgao')
-            break
-        case 'mgp':
-            sidebarRight.setAttribute('class', 'mgp')
-            break
+    sidebarRight.setAttribute('class', node.type[0])
 
-        default:
-            sidebarRight.setAttribute('class', '')
-            break
-    }
-
+    // empty sidebarRight
     while (sidebarRight.hasChildNodes()) {
-        sidebarRight.removeChild(sidebarRight.firstChild);
+        sidebarRight.removeChild(sidebarRight.firstChild)
     }
 
     let content = document.createElement('div')
@@ -517,7 +517,7 @@ const populateSidebarRight = node => {
 
         let dataSpan = document.createElement('span')
         dataSpan.className = 'sidebarRight-data'
-        let dataContent = document.createTextNode(node.properties[property])
+        let dataContent = document.createTextNode(formatKeyString(property, node.properties[property]))
 
         dataSpan.appendChild(dataContent)
         valuesContainer.appendChild(dataSpan)
@@ -709,11 +709,11 @@ const zoomToNodeId = nodeId => {
 }
 
 /**
- * Formats as CPF - xxx.xxx.xxx-xx
- * @param {String} cpf
+ * Format as CNAE - xxxx-x/xx
+ * @param {String} cnae
  */
-const formatCPF = cpf => {
-    return `${cpf.substr(0,3)}.${cpf.substr(3,3)}.${cpf.substr(6,3)}-${cpf.substr(9)}`
+const formatCNAE = cnae => {
+    return `${cnae.substr(0,4)}-${cnae.substr(4,1)}/${cnae.substr(5)}`
 }
 
 /**
@@ -721,7 +721,21 @@ const formatCPF = cpf => {
  * @param {String} cnpj
  */
 const formatCNPJ = cnpj => {
-    return `${cnpj.substr(0,2)}.${cnpj.substr(2,3)}.${cnpj.substr(5,3)}/${cnpj.substr(8,4)}-${cnpj.substr(10)}`
+    if (cnpj.length === 14) {
+        return `${cnpj.substr(0,2)}.${cnpj.substr(2,3)}.${cnpj.substr(5,3)}/${cnpj.substr(8,4)}-${cnpj.substr(12)}`
+    }
+    return cnpj
+}
+
+/**
+ * Formats as CPF - xxx.xxx.xxx-xx
+ * @param {String} cpf
+ */
+const formatCPF = cpf => {
+    if (cpf.length === 11) {
+        return `${cpf.substr(0,3)}.${cpf.substr(3,3)}.${cpf.substr(6,3)}-${cpf.substr(9)}`
+    }
+    return cpf
 }
 
 /**
@@ -729,7 +743,45 @@ const formatCNPJ = cnpj => {
  * @param {String} date
  */
 const formatDate = date => {
-    return `${date.substr(6)}/${date.substr(4,2)}/${date.substr(0,4)}`
+    if (date.length === 8) {
+        return `${date.substr(6)}/${date.substr(4,2)}/${date.substr(0,4)}`
+    }
+    return date
+}
+
+/**
+ * Format RG on Detran format - xx.xxx.xxx-x
+ * @param {String} rg
+ */
+const formatRG = rg => {
+    if (rg.length === 9) {
+        return `${rg.substr(0,2)}.${rg.substr(2,3)}.${rg.substr(5,3)}-${rg.substr(-1)}`
+    }
+    return rg
+}
+
+/**
+ * Format Vehicle Ident as CPF or CNPJ
+ * @param {String} ident Vehicle owner ident
+ */
+const formatVehicleIdent = ident => {
+    // ident is the PK of vehicle owner, either CPF or CNPJ
+    // we will naively assume that if it starts with three zeroes, its a CPF, otherwise, it should be a CNPJ
+    if (ident.substr(0,3) === '000') {
+        return formatCPF(ident.substr(3))
+    }
+    formatCNPJ(ident)
+}
+
+/**
+ * Format as Vehicle Plate - XXX-XXXX
+ * @param {String} plate
+ */
+const formatVehiclePlate = plate => {
+    if (plate.length === 7) {
+        return `${plate.substr(0,3)}-${plate.substr(3)}`
+    }
+    return plate
 }
 
 // Finally, declare init function to run when the page loads.
