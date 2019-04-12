@@ -46,16 +46,24 @@ div.vis-network div.vis-manipulation {
     border: 0;
 }
 
+div.vis-network div.vis-edit-mode {
+    left: 14%;
+}
+
 div.vis-network div.vis-manipulation div.vis-button.vis-delete {
     background: none;
+    left: 10%;
+    position: relative;
 }
 
 #version {
     color: #ccc;
     font-size: 10px;
-    position: fixed;
     left: 0;
+    position: fixed;
+    text-align: center;
     top: 0;
+    width: 100%;
 }
 
 #version_username {
@@ -63,6 +71,7 @@ div.vis-network div.vis-manipulation div.vis-button.vis-delete {
 }
 
 .entitylist {
+    background: #fff;
     display: none;
     position: fixed;
     left: 0;
@@ -71,7 +80,7 @@ div.vis-network div.vis-manipulation div.vis-button.vis-delete {
     width: 200px;
     border-right: 1px solid black;
     height: 100%;
-    padding: 50px 10px;
+    padding: 30px 10px;
     overflow-y: scroll;
 }
 
