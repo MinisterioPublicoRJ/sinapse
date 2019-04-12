@@ -86,7 +86,7 @@ def get_processed_rg(rg):
 
 
 def get_photos(node_id):
-    next_nodes = find_next_nodes(node_id)
+    next_nodes = find_next_nodes(node_id, path_size=2)
     infos = find_relations_info(next_nodes.json())
 
     successes = []

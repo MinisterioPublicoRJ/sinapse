@@ -14,10 +14,10 @@ from sinapse.buildup import (
 )
 
 
-def find_next_nodes(node_id, rel_types=''):
+def find_next_nodes(node_id, rel_types='', path_size=1):
     query = {"statements": [{
-        "statement": "MATCH r = (n)-[%s*..1]-(x) where id(n) = %s"
-        " return r,n,x limit 100" % (rel_types, node_id),
+        "statement": "MATCH r = (n)-[%s*..%s]-(x) where id(n) = %s"
+        " return r,n,x limit 100" % (rel_types, path_size, node_id),
         "resultDataContents": ["row", "graph"]
     }]}
     response = requests.post(
