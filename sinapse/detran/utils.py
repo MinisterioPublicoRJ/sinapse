@@ -6,7 +6,10 @@ import lxml.etree as et
 def parse_content(content, tag_name):
     xml_obj = et.fromstring(content)
     prefix = '*//{http://www.detran.rj.gov.br}' + tag_name
-    content = xml_obj.find(prefix).text
+    try:
+        content = xml_obj.find(prefix).text
+    except AttributeError:
+        return ''
     if not content:
         content = xml_obj.find(prefix).find('*').text
 
