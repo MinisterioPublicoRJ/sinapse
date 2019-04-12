@@ -11,7 +11,8 @@ def api_photo():
     rg = request.args.get('rg')
 
     photo_doc = _FOTOS_DETRAN.find_one(
-        {'$or': [{'rg': rg}, {'node_id': node_id}]}
+        {'$or': [{'rg': rg}, {'node_id': node_id}]},
+        {'_id': 0}
     )
 
     if photo_doc:
