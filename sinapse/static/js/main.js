@@ -442,9 +442,11 @@ const formatKeyString = (prop, key) => {
         case 'cpf':
         case 'cpf_responsavel':
             return formatCPF(key)
-        case 'dt_nasc':
-        case 'data_inicio':
         case 'data':
+        case 'data_inicio':
+        case 'dt_criacao':
+        case 'dt_extincao':
+        case 'dt_nasc':
             return formatDate(key)
         case 'ident':
             return formatVehicleIdent(key)
@@ -452,6 +454,8 @@ const formatKeyString = (prop, key) => {
             return formatVehiclePlate(key)
         case 'rg':
             return formatRG(key)
+        case 'sexo':
+            return formatGender(key)
         default:
             return key
     }
@@ -747,6 +751,21 @@ const formatDate = date => {
         return `${date.substr(6)}/${date.substr(4,2)}/${date.substr(0,4)}`
     }
     return date
+}
+
+/**
+ * Formats Gender string
+ * @param {String} genderId
+ */
+const formatGender = genderId => {
+    switch (genderId) {
+        case "1":
+            return "Masculino"
+        case "2":
+            return "Feminino"
+        default:
+            return genderId
+    }
 }
 
 /**
