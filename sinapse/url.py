@@ -20,6 +20,8 @@ from .auth import (
     autorizar
 )
 
+from .detran.api import api_photo
+
 
 __all__ = [
     'app',
@@ -33,5 +35,6 @@ __all__ = [
     'logout',
     'login',
     'autorizar',
-    'filtro_inicial'
+    'filtro_inicial',
+    'api_photo'
 ]

@@ -32,6 +32,13 @@ _MONGO_CLIENT = MongoClient(
     authSource=_AUTHDB_MONGO
 )
 
+<<<<<<< HEAD
 _LOG_MONGO = _MONGO_CLIENT[_COLLECTION_MONGO].log_sinapse
+=======
+_LOG_NEO4J = _MONGO_CLIENT[_COLLECTION_MONGO].log_neo4j
+_LOG_SOLR = _MONGO_CLIENT[_COLLECTION_MONGO].log_solr
+>>>>>>> develop
 _AUTH_MPRJ = config('AUTH_MPRJ')
 _USERINFO_MPRJ = config('USERINFO_MPRJ')
+
+_FOTOS_DETRAN = _MONGO_CLIENT[_COLLECTION_MONGO].fotos_detran
