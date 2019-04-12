@@ -10,10 +10,9 @@ def api_photo():
     node_id = request.args.get('node_id')
     rg = request.args.get('rg')
 
-    if node_id is not None:
-        photo_doc = _FOTOS_DETRAN.find_one({'node_id': node_id}, {'_id': 0})
-    elif rg is not None:
-        photo_doc = _FOTOS_DETRAN.find_one({'rg': rg}, {'_id': 0})
+    photo_doc = _FOTOS_DETRAN.find_one(
+        {'$or': [{'rg': rg}, {'node_id': node_id}]}
+    )
 
     if photo_doc:
         return jsonify(photo_doc)
