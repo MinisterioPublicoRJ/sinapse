@@ -32,6 +32,7 @@ const initVisjs = () => {
     // initialize everything as empty (we don't have data yet)
     nodesData = []
     edgesData = []
+    photosData = {}
     filteredEntityTypes = []
     nodes = new vis.DataSet([])
     edges = new vis.DataSet([])
@@ -79,7 +80,6 @@ const initVisjs = () => {
     network.on('oncontext', function(params) {
         container.oncontextmenu = () => false // Cancels right click menu
     })
-    network.on('zoom', handleZoomChange)
 }
 
 /**
@@ -335,6 +335,17 @@ const updateNodes = data => {
                 nodesData.push(formattedNode)
                 nodes.add(formattedNode)
             }
+            // if it's a person, check if we can add it to our photos array
+            if (node.type[0] === 'pessoa' && node.properties.rg && !photosData[node.id]) {
+                get(`/api/foto?rg=${node.properties.rg}`, data => {
+                    if (data.node_id && data.foto) {
+                        if (!photosData[data.node_id]) {
+                            photosData[data.node_id] = data
+                            nodes.update({id: data.node_id, shape: 'circularImage', image: `data:image/png;base64,${data.foto}`})
+                        }
+                    }
+                })
+            }
         }
     }
     if (data.edges) {
@@ -512,16 +523,10 @@ const populateSidebarRight = node => {
     valuesContainer.setAttribute('id', 'valuesContainer')
 
     // Add person photo
-    if (node.type[0] === 'pessoa' && node.properties.rg) {
-        get(`/api/foto?rg=${node.properties.rg}`, data => {
-            console.log(data)
-            if (data.foto) {
-                let img = document.createElement('img')
-                img.setAttribute('src', `data:image/png;base64,${data.foto}`)
-                let header = document.querySelector('.pessoa .header')
-                header.appendChild(img)
-            }
-        })
+    if (node.type[0] === 'pessoa' && node.properties.rg && photosData[node.id]) {
+        let img = document.createElement('img')
+        img.setAttribute('src', `data:image/png;base64,${photosData[node.id].foto}`)
+        headerSidebarRight.appendChild(img)
     }
 
     Object.keys(node.properties).forEach(function(property) {
@@ -617,14 +622,6 @@ const updateFilteredEntityTypes = () => {
         })
     })
     nodes.update(filteredNodes)
-}
-
-/**
- * Handles zoom change
- * @param {Object} params 
- */
-const handleZoomChange = params => {
-    console.log(params)
 }
 
 /**
