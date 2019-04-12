@@ -2,12 +2,15 @@ import json
 import re
 import requests
 
+from datetime import datetime
+
 from decouple import config
 
 from sinapse.buildup import (
     _ENDERECO_NEO4J,
     _AUTH,
     _HEADERS,
+    _LOG_SOLR
 )
 
 
@@ -62,3 +65,12 @@ def _search_company(f_q):
     query = """pessoa_fisica_shard1_replica1/select?q=%22{f_q}%22&fl=uuid+nome+nome_mae&wt=json&indent=true&defType=edismax&qf=nome%5E10+nome_mae%5E5&qs=1&stopwords=true&lowercaseOperators=true&hl=true&hl.simple.pre=%3Cem%3E&hl.simple.post=%3C%2Fem%3E""".format(f_q=f_q)
     query += config('HOST_SOLR')
     return requests.get(query)
+
+
+def log_solr_response(user, sessionid, query):
+    _LOG_SOLR.insert_one({
+        'usuario': user,
+        'sessionid': sessionid,
+        'datahora': datetime.now(),
+        'resposta': query
+    })
