@@ -31,10 +31,11 @@ def find_next_nodes(node_id, rel_types=''):
 
 def search_info(q, solr_queries):
     f_q = re.sub(r'\s+', '+', q)
-    person = _solr_search(f_q, solr_queries['pessoa'])
-    auto = _solr_search(f_q, solr_queries['veiculo'])
-    company = _solr_search(f_q, solr_queries['empresa'])
-    return person, auto, company
+    resp = dict()
+    for label, query in solr_queries.items():
+        if query:
+            resp[label] = _solr_search(f_q, query)
+    return resp
 
 
 def clean_info(func):
