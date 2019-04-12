@@ -511,6 +511,19 @@ const populateSidebarRight = node => {
     let valuesContainer = document.createElement('div')
     valuesContainer.setAttribute('id', 'valuesContainer')
 
+    // Add person photo
+    if (node.type[0] === 'pessoa' && node.properties.rg) {
+        get(`/api/foto?rg=${node.properties.rg}`, data => {
+            console.log(data)
+            if (data.foto) {
+                let img = document.createElement('img')
+                img.setAttribute('src', `data:image/png;base64,${data.foto}`)
+                let header = document.querySelector('.pessoa .header')
+                header.appendChild(img)
+            }
+        })
+    }
+
     Object.keys(node.properties).forEach(function(property) {
 
         let labelSpan = document.createElement('span')

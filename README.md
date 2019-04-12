@@ -41,17 +41,28 @@ Para instalação das dependências do projeto é necessário instalar os pacote
 
 ### Configurando ambiente no Linux
 
+    sudo apt-get install redis-server
     virtualenv venv
     source venv/bin/activate
     pip install -r dev-requirements.txt
 
 ### Configurando ambiente no Mac
 
+    brew install redis
+    brew services start redis
     virtualenv --python=$(which python3.6) venv
     source venv/bin/activate
     pip install -r dev-requirements.txt
 
 ### Rodando no Linux ou Mac
+
+Você precisará abrir dois terminais. No primeiro:
+
+    source venv/bin/activate
+    export WORKER=1
+    sh app.sh
+
+No segundo:
 
     source venv/bin/activate
     sh app.sh
@@ -77,6 +88,32 @@ A API exposta pelo backend tem os seguintes endpoints:
 ### /labels
 
 Retorna array de strings com os tipos de entidades disponíveis.
+
+### /search?q=
+
+Retorna entidades que contenham os termos buscados.
+
+    {
+        "tipo_da_entidade": {
+            "highlighting": {
+                "id_aleatorio": {
+                    "chave": [
+                        "<em>texto que deu match</em>"
+                    ]
+                }
+            },
+            "response": {
+                "docs": [
+                    {
+                        "chave": "valor",
+                        "uuid": "id único"
+                    }
+                ],
+                "numFound": quantidade_de_elementos_encontrados,
+                "start": item_inicial_retornado_(0)
+            }
+        }
+    }
 
 ### /nodeProperties?label=
 
