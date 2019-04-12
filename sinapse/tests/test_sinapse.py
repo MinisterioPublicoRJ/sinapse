@@ -109,7 +109,7 @@ def logresponse(funcao):
     return wrapper
 
 
-@mock.patch("sinapse.start._LOG_MONGO")
+@mock.patch("sinapse.start._LOG_NEO4J")
 def test_log_response(_log_mongo):
     response = mock.Mock()
     response.json.side_effect = ["response"]
