@@ -31,6 +31,7 @@ _MONGO_CLIENT = MongoClient(
     authSource=_AUTHDB_MONGO
 )
 
-_LOG_MONGO = _MONGO_CLIENT.mmps.log_sinapse
+_LOG_NEO4J = _MONGO_CLIENT.conexao.log_neo4j
+_LOG_SOLR = _MONGO_CLIENT.conexao.log_solr
 _AUTH_MPRJ = config('AUTH_MPRJ')
 _USERINFO_MPRJ = config('USERINFO_MPRJ')

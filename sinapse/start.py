@@ -18,7 +18,7 @@ from flask import (
 
 from sinapse.buildup import (
     app,
-    _LOG_MONGO,
+    _LOG_NEO4J,
     _ENDERECO_NEO4J,
     _AUTH,
     _HEADERS,
@@ -195,7 +195,7 @@ def resposta_sensivel(resposta):
 
 
 def _log_response(usuario, sessionid, response):
-    _LOG_MONGO.insert(
+    _LOG_NEO4J.insert(
         {
             'usuario': usuario,
             'datahora': datetime.now(),
