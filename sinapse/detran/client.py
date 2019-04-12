@@ -96,7 +96,7 @@ def get_photos(node_id):
              'node_id': node_id,
              'foto': {'$exists': True}}
         )
-        if photo_document is None:
+        if photo_document is None or photo_document['foto'] == '':
             status, content = send_rg_query(info.rg)
             if b'sucesso' in content.lower()\
                     or b'foi finalizada' in content.lower():
