@@ -1,3 +1,7 @@
+import json
+
+from decouple import config
+
 from flask import (
     request,
     render_template,
@@ -30,9 +34,10 @@ def filtro_inicial():
 @app.route("/api/search", methods=['GET'])
 @login_necessario
 def api_search():
+    solr_queries = json.load(open(config('SOLR_QUERIES'), 'r'))
     q = request.args.get('q')
     info = {}
-    resp_person, resp_auto, resp_comp = search_info(q)
+    resp_person, resp_auto, resp_comp = search_info(q, solr_queries)
     info['pessoa'] = resp_person
     info['veiculo'] = resp_auto
     info['empresa'] = resp_comp
