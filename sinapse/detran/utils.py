@@ -3,31 +3,37 @@ from collections import namedtuple
 import lxml.etree as et
 
 
-def parse_content(content):
+def parse_content(content, tag_name):
     xml_obj = et.fromstring(content)
-    level = xml_obj.findall('*')
-    while len(level) == 1:
-        level = level[0].find('*')
+    prefix = '*//{http://www.detran.rj.gov.br}' + tag_name
+    try:
+        content = xml_obj.find(prefix).text
+    except AttributeError:
+        return ''
+    if not content:
+        content = xml_obj.find(prefix).find('*').text
 
-    for ele in level:
-        if 'foto' in ele.tag:
-            return ele.find('*').text
+    return content
 
 
 def get_node_id(response_json):
-    return response_json['results'][0]['data'][0]['meta'][0]['id']
+    return response_json['results'][0]['data'][0]['graph']['nodes'][0]['id']
 
 
 def find_relations_info(response_json):
     person_info = namedtuple('Pessoa', ['rg', 'node_id'])
+    saved_rg = []
     info = []
     for data in response_json['results'][0]['data']:
         for node in data['graph']['nodes']:
             if node['labels'] == ['pessoa']:
-                info.append(
-                    person_info(
-                        node['properties']['rg'],
-                        node['id'])
-                )
+                rg = node['properties'].get('rg')
+                if rg is not None and rg not in saved_rg:
+                    info.append(
+                        person_info(
+                            node['properties']['rg'],
+                            node['id'])
+                    )
+                    saved_rg.append(rg)
 
-    return list(set(info))
+    return info

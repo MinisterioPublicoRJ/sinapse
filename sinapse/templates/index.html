@@ -112,6 +112,13 @@
                 <span><abbr title="Ministério Público">MP</abbr> em Mapas</span>
             </a>
         </div>
+        <div class="entitylist">
+            <p>As entidades exibidas no grafo serão exibidas nesta barra lateral.</p>
+            <div id="entitylist"></div>
+        </div>
+        <div id="version">
+            <span id="version_number"></span><span id="version_username">{{session['usuario']}}</span>
+        </div>
         {% assets "js" %}
             <script type="text/javascript" src="{{ ASSET_URL }}"></script>
         {% endassets %}

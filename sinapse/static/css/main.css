@@ -83,3 +83,32 @@ div.vis-network div.vis-manipulation {
 div.vis-network div.vis-manipulation div.vis-button.vis-delete {
     background: none;
 }
+
+#version {
+    color: #ccc;
+    font-size: 10px;
+    position: fixed;
+    left: 0;
+    top: 0;
+}
+
+#version_username {
+    display: none;
+}
+
+.entitylist {
+    display: none;
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 2;
+    width: 200px;
+    border-right: 1px solid black;
+    height: 100%;
+    padding: 50px 10px;
+    overflow-y: scroll;
+}
+
+.entitylist h3 {
+    font-size: 1.2em
+}

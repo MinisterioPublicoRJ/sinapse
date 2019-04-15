@@ -2,12 +2,9 @@ import requests
 
 from decouple import config
 
-from sinapse.buildup import _MONGO_CLIENT
+from sinapse.buildup import _FOTOS_DETRAN
 from sinapse.detran.utils import find_relations_info, parse_content
 from sinapse.queries import find_next_nodes
-
-
-COLLECTION_FOTOS = _MONGO_CLIENT.mmps.fotos
 
 
 RG_BODY = """<?xml version="1.0" encoding="utf-8"?>
@@ -94,8 +91,9 @@ def get_photos(node_id):
 
     successes = []
     for info in infos:
-        photo_document = COLLECTION_FOTOS.find_one(
+        photo_document = _FOTOS_DETRAN.find_one(
             {'rg': info.rg,
+             'node_id': node_id,
              'foto': {'$exists': True}}
         )
         if photo_document is None:
@@ -106,10 +104,13 @@ def get_photos(node_id):
 
     for success in successes:
         status, content = get_processed_rg(success.rg)
-        photo = parse_content(content)
+        photo = parse_content(content, 'fotoCivil')
         if photo is not None:
-            COLLECTION_FOTOS.update(
+            _FOTOS_DETRAN.update(
                 {'rg': success.rg},
-                {'$set': {'foto': photo}},
+                {'$set': {
+                    'foto': photo,
+                    'node_id': success.node_id
+                }},
                 upsert=True
             )

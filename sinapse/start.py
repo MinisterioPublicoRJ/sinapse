@@ -18,7 +18,7 @@ from flask import (
 
 from sinapse.buildup import (
     app,
-    _LOG_MONGO,
+    _LOG_NEO4J,
     _ENDERECO_NEO4J,
     _AUTH,
     _HEADERS,
@@ -27,12 +27,14 @@ from sinapse.buildup import (
 )
 from sinapse.detran.tasks import get_photos_asynch
 from sinapse.detran.utils import get_node_id
-from sinapse.queries import find_next_nodes
+from sinapse.queries import find_next_nodes, get_node_from_id
+from sinapse.whereabouts.whereabouts import get_whereabouts_receita, get_whereabouts_credilink
 
-def parse_json_to_visjs(json):
+def parse_json_to_visjs(json, **kwargs):
     nodes = {}
     relationships = {}
 
+    # Change this to have an error message
     if 'results' not in json:
         return json
 
@@ -57,6 +59,7 @@ def parse_json_to_visjs(json):
         r['dashes'] = False
         
     json_visjs = {'nodes': nodes, 'edges': relationships}
+    json_visjs.update(kwargs)
     
     return json_visjs
 
@@ -89,9 +92,9 @@ def respostajson_visjs(response, **kwargs):
 
     if resposta_sensivel(dados):
         return jsonify(parse_json_to_visjs(
-            remove_info_sensiveis(dados)))
+            remove_info_sensiveis(dados), **kwargs))
 
-    return jsonify(parse_json_to_visjs(dados))
+    return jsonify(parse_json_to_visjs(dados, **kwargs))
 
 
 def limpa_nos(nos):
@@ -104,19 +107,19 @@ def limpa_nos(nos):
     return copia_nos
 
 
-def limpa_linhas(linhas):
-    copia_linhas = deepcopy(linhas)
-    novas_linhas = []
-    for linha in copia_linhas:
-        if isinstance(linha, list):
-            novas_linhas.append(limpa_linhas(linha))
-        elif isinstance(linha, dict):
-            if 'sensivel' in linha.keys():
-                novas_linhas.append(dict())
-            else:
-                novas_linhas.append(linha)
+# def limpa_linhas(linhas):
+#     copia_linhas = deepcopy(linhas)
+#     novas_linhas = []
+#     for linha in copia_linhas:
+#         if isinstance(linha, list):
+#             novas_linhas.append(limpa_linhas(linha))
+#         elif isinstance(linha, dict):
+#             if 'sensivel' in linha.keys():
+#                 novas_linhas.append(dict())
+#             else:
+#                 novas_linhas.append(linha)
 
-    return novas_linhas
+#     return novas_linhas
 
 
 def limpa_relacoes(relacoes):
@@ -133,7 +136,7 @@ def remove_info_sensiveis(resposta):
     resp = deepcopy(resposta)
     for data in resp['results'][0]['data']:
         data['graph']['nodes'] = limpa_nos(data['graph']['nodes'])
-        data['row'] = limpa_linhas(data['row'])
+        #data['row'] = limpa_linhas(data['row'])
         data['graph']['relationships'] = limpa_relacoes(
             data['graph']['relationships'])
 
@@ -194,7 +197,7 @@ def resposta_sensivel(resposta):
 
 
 def _log_response(usuario, sessionid, response):
-    _LOG_MONGO.insert(
+    _LOG_NEO4J.insert(
         {
             'usuario': usuario,
             'datahora': datetime.now(),
@@ -281,7 +284,7 @@ def api_node():
 
     query = {"statements": [{
         "statement": "MATCH  (n) where id(n) = " + node_id + " return n",
-        "resultDataContents": ["row", "graph"]
+        "resultDataContents": ["graph"]
     }]}
 
     response = requests.post(
@@ -303,7 +306,7 @@ def api_findShortestPath():
         rel_types = ':' + rel_types.replace(',', '|:')
 
     query = {"statements": [{
-        "statement": "MATCH p = shortestPath((a)-[%s*]-(b)) "
+        "statement": "MATCH p = allShortestPaths((a)-[%s*]-(b)) "
             "WHERE id(a) = %s AND id(b) = %s RETURN p" % (rel_types, id_start, id_end),
         "resultDataContents": ["row", "graph"]
     }]}
@@ -364,7 +367,7 @@ def api_findNodes():
             ' '.join(opcoes) +
             ' return %s limit 100' % (','.join(letras))
             ),
-        'resultDataContents': ['row', 'graph']
+        'resultDataContents': ['graph']
     }]}
 
     response = requests.post(
@@ -375,11 +378,9 @@ def api_findNodes():
 
     numero_de_nos = conta_nos(opcoes, letras)
 
-    # node_id = get_node_id(response.json())
+    node_id = get_node_id(response.json())
     # Call asynchronously task
-
-    get_photos_asynch.__name__
-    get_node_id.__name__
+    get_photos_asynch.delay(node_id)
 
     return respostajson_visjs(response, numero_de_nos=numero_de_nos)
 
@@ -396,7 +397,7 @@ def api_nextNodes():
 
     numero_expansoes = conta_expansoes(node_id, rel_types)
     # Call asynchronously task
-    # get_photos_asynch.delay(node_id)
+    get_photos_asynch.delay(node_id)
 
     return respostajson_visjs(response, numero_de_expansoes=numero_expansoes)
 
@@ -434,6 +435,32 @@ def api_relationships():
         auth=_AUTH,
         headers=_HEADERS)
     return respostajson(response)
+
+@app.route("/api/whereabouts")
+@login_necessario
+def api_whereabouts():
+    # TODO: Hide sensitive information
+    node_id = request.args.get('node_id')
+    
+    response = get_node_from_id(node_id)
+    response = remove_info_sensiveis(response.json())
+    
+    node_props = response['results'][0]['data'][0]['graph']['nodes'][0]['properties']
+    # If information is confidential, properties will be empty
+    if node_props:
+        num_cpf = node_props['cpf']
+    else:
+        return jsonify([])
+
+    whereabouts = []
+
+    whereabouts_receita = get_whereabouts_receita(num_cpf)
+    whereabouts.append(whereabouts_receita)
+
+    whereabouts_credilink = get_whereabouts_credilink(num_cpf)
+    whereabouts.append(whereabouts_credilink)
+
+    return jsonify(whereabouts)
 
 
 @app.context_processor

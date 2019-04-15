@@ -7,7 +7,10 @@ const init = () => {
     initSearch()
     initFilter()
     initVisjs()
+    initVersion()
 }
+
+const VERSION = '20190501'
 
 // Initial vars
 let nodes,               // Visjs initialized nodes
@@ -23,11 +26,13 @@ let nodes,               // Visjs initialized nodes
 
 const baseIconsPath = '/static/img/icon/graph/'
 const sidebarRight = document.getElementById("sidebarRight")
+const sidebarLeft = document.getElementById("entitylist")
 
 const initVisjs = () => {
     // initialize everything as empty (we don't have data yet)
     nodesData = []
     edgesData = []
+    photosData = {}
     filteredEntityTypes = []
     nodes = new vis.DataSet([])
     edges = new vis.DataSet([])
@@ -62,8 +67,6 @@ const initVisjs = () => {
         const selectedNodeId = this.getNodeAt(params.pointer.DOM)
         if (selectedNodeId) {
             const selectedNode = nodesData.filter(node => node.id === selectedNodeId)[0]
-            // console.log('click event, getNodeAt returns: ' + selectedNodeId)
-            // console.log('selectedNode: ', selectedNode)
             populateSidebarRight(selectedNode)
             showSidebarRight()
         }
@@ -74,7 +77,7 @@ const initVisjs = () => {
             getNextNodes(selectedNodeId)
         }
     })
-    network.on("oncontext", function(params) {
+    network.on('oncontext', function(params) {
         container.oncontextmenu = () => false // Cancels right click menu
     })
 }
@@ -332,6 +335,17 @@ const updateNodes = data => {
                 nodesData.push(formattedNode)
                 nodes.add(formattedNode)
             }
+            // if it's a person, check if we can add it to our photos array
+            if (node.type[0] === 'pessoa' && node.properties.rg && !photosData[node.id]) {
+                get(`/api/foto?rg=${node.properties.rg}`, data => {
+                    if (data.node_id && data.foto) {
+                        if (!photosData[data.node_id]) {
+                            photosData[data.node_id] = data
+                            nodes.update({id: data.node_id, shape: 'circularImage', image: `data:image/png;base64,${data.foto}`})
+                        }
+                    }
+                })
+            }
         }
     }
     if (data.edges) {
@@ -347,6 +361,8 @@ const updateNodes = data => {
 
     // show back button
     document.getElementById('step3').className = ''
+
+    updateLeftSidebar()
 }
 
 /**
@@ -424,6 +440,39 @@ const formatPropString = text => {
 }
 
 /**
+ * Format a given key according to a given property
+ * @param {String} prop property to format
+ * @param {String} key key to format
+ */
+const formatKeyString = (prop, key) => {
+    switch (prop) {
+        case 'cnae':
+            return formatCNAE(key)
+        case 'cnpj':
+            return formatCNPJ(key)
+        case 'cpf':
+        case 'cpf_responsavel':
+            return formatCPF(key)
+        case 'data':
+        case 'data_inicio':
+        case 'dt_criacao':
+        case 'dt_extincao':
+        case 'dt_nasc':
+            return formatDate(key)
+        case 'ident':
+            return formatVehicleIdent(key)
+        case 'placa':
+            return formatVehiclePlate(key)
+        case 'rg':
+            return formatRG(key)
+        case 'sexo':
+            return formatGender(key)
+        default:
+            return key
+    }
+}
+
+/**
  * Make a HTTP GET call and returns the data.
  *
  * @param {String} url The URL to GET.
@@ -456,40 +505,11 @@ const populateSidebarRight = node => {
     delete node.properties['filho_rel_status']
     delete node.properties['filho_rel_status_pai']
 
-    let label = node.type[0]
-    switch (label) {
-        case 'personagem':
-            sidebarRight.setAttribute('class', 'personagem')
-            break
-        case 'pessoa':
-            sidebarRight.setAttribute('class', 'pessoa')
-            break
-        case 'empresa':
-            sidebarRight.setAttribute('class', 'empresa')
-            break
-        case 'telefone':
-            sidebarRight.setAttribute('class', 'telefone')
-            break
-        case 'multa':
-            sidebarRight.setAttribute('class', 'multa')
-            break
-        case 'veiculo':
-            sidebarRight.setAttribute('class', 'veiculo')
-            break
-        case 'orgao':
-            sidebarRight.setAttribute('class', 'orgao')
-            break
-        case 'mgp':
-            sidebarRight.setAttribute('class', 'mgp')
-            break
+    sidebarRight.setAttribute('class', node.type[0])
 
-        default:
-            sidebarRight.setAttribute('class', '')
-            break
-    }
-
+    // empty sidebarRight
     while (sidebarRight.hasChildNodes()) {
-        sidebarRight.removeChild(sidebarRight.firstChild);
+        sidebarRight.removeChild(sidebarRight.firstChild)
     }
 
     let content = document.createElement('div')
@@ -502,6 +522,13 @@ const populateSidebarRight = node => {
     let valuesContainer = document.createElement('div')
     valuesContainer.setAttribute('id', 'valuesContainer')
 
+    // Add person photo
+    if (node.type[0] === 'pessoa' && node.properties.rg && photosData[node.id]) {
+        let img = document.createElement('img')
+        img.setAttribute('src', `data:image/png;base64,${photosData[node.id].foto}`)
+        headerSidebarRight.appendChild(img)
+    }
+
     Object.keys(node.properties).forEach(function(property) {
 
         let labelSpan = document.createElement('span')
@@ -512,7 +539,7 @@ const populateSidebarRight = node => {
 
         let dataSpan = document.createElement('span')
         dataSpan.className = 'sidebarRight-data'
-        let dataContent = document.createTextNode(node.properties[property])
+        let dataContent = document.createTextNode(formatKeyString(property, node.properties[property]))
 
         dataSpan.appendChild(dataContent)
         valuesContainer.appendChild(dataSpan)
@@ -613,6 +640,195 @@ const updateFilteredEntityTypes = () => {
         })
     })
     nodes.update(filteredNodes)
+}
+
+/**
+ * Shows build information
+ */
+const initVersion = () => {
+    document.getElementById('version_number').innerHTML = `Versão: ${VERSION}-${btoa(document.getElementById('version_username').innerHTML)}`
+}
+
+/**
+ * Updates left sidebar with entities to zoom
+ */
+const updateLeftSidebar = () => {
+    document.querySelector('.entitylist').style.display = 'block'
+    let entityListToWrite = ''
+
+    labels.forEach(type => {
+        let nodesForThisType = sortByType(nodesData.filter(node => node.type[0] === type), type)
+        if (nodesForThisType.length) {
+            entityListToWrite += `<h2>${type}</h2>`
+            nodesForThisType.forEach(node => {
+                entityListToWrite += nodeToDOMString(node)
+            })
+        }
+    })
+
+    sidebarLeft.innerHTML = entityListToWrite
+}
+
+/**
+ *
+ * @param {Object[]} nodes Array of nodes to be sorted
+ * @param {String} type The type of node (which varies the key to sort them)
+ */
+const sortByType = (nodes, type) => {
+    switch (type) {
+        case 'pessoa':
+            return sortByProperty(nodes, 'nome')
+        case 'empresa':
+            return sortByProperty(nodes, 'razao_social')
+        case 'multa':
+            return sortByProperty(nodes, 'data')
+        default:
+            return nodes
+    }
+}
+
+/**
+ * Sorts a node Array
+ * @param {Object[]} nodes Array of nodes to be sorted
+ * @param {Object} nodes[].properties
+ * @param {Object} nodes[].properties.prop A number of string to be sorted.
+ * @param {String} prop The name of the property to sort.
+ */
+const sortByProperty = (nodes, prop) => {
+    return nodes.sort((a, b) => (a.properties[prop] > b.properties[prop]) ? 1 : -1)
+}
+
+/**
+ * Returns a DOM string for a node on the sidebar
+ * @param {Object} node
+ * @param {Object} node.properties
+ * @param {String[]} node.type
+ */
+const nodeToDOMString = node => {
+    let ret = ''
+    if (node) {
+        switch (node.type[0]) {
+            case 'pessoa':
+            case 'personagem':
+                ret = `<div onclick="zoomToNodeId(${node.id})"><h3>${node.properties.nome}</h3>`
+                if (node.properties.cpf) {
+                    ret += `<p>CPF: ${formatCPF(node.properties.cpf)}</p>`
+                }
+                ret += `</div>`
+                break
+            case 'empresa':
+                ret = `<div onclick="zoomToNodeId(${node.id})"><h3>${node.properties.razao_social}</h3><p>CNPJ: ${formatCNPJ(node.properties.cnpj)}</p></div>`
+                break
+            case 'multa':
+                ret = `<p onclick="zoomToNodeId(${node.id})">${formatDate(node.properties.data)} - ${node.properties.desc}</p>`
+                break
+            default:
+                ret = `<p onclick="zoomToNodeId(${node.id})">${node.id}</p>`
+        }
+    }
+    return ret
+}
+
+/**
+ * Zooms to a given nodeId
+ * @param {String} nodeId
+ */
+const zoomToNodeId = nodeId => {
+    network.focus(nodeId, { scale: 2, animation: true })
+    const selectedNode = nodesData.filter(node => node.id === nodeId.toString())[0] // nodeId comes as Number, node.id is a String
+    populateSidebarRight(selectedNode)
+    showSidebarRight()
+}
+
+/**
+ * Format as CNAE - xxxx-x/xx
+ * @param {String} cnae
+ */
+const formatCNAE = cnae => {
+    return `${cnae.substr(0,4)}-${cnae.substr(4,1)}/${cnae.substr(5)}`
+}
+
+/**
+ * Formats as CNPJ - xx.xxx.xxx/xxxx-xx
+ * @param {String} cnpj
+ */
+const formatCNPJ = cnpj => {
+    if (cnpj.length === 14) {
+        return `${cnpj.substr(0,2)}.${cnpj.substr(2,3)}.${cnpj.substr(5,3)}/${cnpj.substr(8,4)}-${cnpj.substr(12)}`
+    }
+    return cnpj
+}
+
+/**
+ * Formats as CPF - xxx.xxx.xxx-xx
+ * @param {String} cpf
+ */
+const formatCPF = cpf => {
+    if (cpf.length === 11) {
+        return `${cpf.substr(0,3)}.${cpf.substr(3,3)}.${cpf.substr(6,3)}-${cpf.substr(9)}`
+    }
+    return cpf
+}
+
+/**
+ * Formats as Date - from yyyymmdd to dd/mm/yyyy
+ * @param {String} date
+ */
+const formatDate = date => {
+    if (date.length === 8) {
+        return `${date.substr(6)}/${date.substr(4,2)}/${date.substr(0,4)}`
+    }
+    return date
+}
+
+/**
+ * Formats Gender string
+ * @param {String} genderId
+ */
+const formatGender = genderId => {
+    switch (genderId) {
+        case "1":
+            return "Masculino"
+        case "2":
+            return "Feminino"
+        default:
+            return genderId
+    }
+}
+
+/**
+ * Format RG on Detran format - xx.xxx.xxx-x
+ * @param {String} rg
+ */
+const formatRG = rg => {
+    if (rg.length === 9) {
+        return `${rg.substr(0,2)}.${rg.substr(2,3)}.${rg.substr(5,3)}-${rg.substr(-1)}`
+    }
+    return rg
+}
+
+/**
+ * Format Vehicle Ident as CPF or CNPJ
+ * @param {String} ident Vehicle owner ident
+ */
+const formatVehicleIdent = ident => {
+    // ident is the PK of vehicle owner, either CPF or CNPJ
+    // we will naively assume that if it starts with three zeroes, its a CPF, otherwise, it should be a CNPJ
+    if (ident.substr(0,3) === '000') {
+        return formatCPF(ident.substr(3))
+    }
+    formatCNPJ(ident)
+}
+
+/**
+ * Format as Vehicle Plate - XXX-XXXX
+ * @param {String} plate
+ */
+const formatVehiclePlate = plate => {
+    if (plate.length === 7) {
+        return `${plate.substr(0,3)}-${plate.substr(3)}`
+    }
+    return plate
 }
 
 // Finally, declare init function to run when the page loads.

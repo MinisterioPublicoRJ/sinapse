@@ -146,6 +146,12 @@
   height: 150px;
   background-repeat: no-repeat;
   background-position: center;
+  padding: 10px;
+  text-align: center;
+}
+
+.header img {
+  height: 100%;
 }
 
 .personagem .header {
