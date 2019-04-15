@@ -2,19 +2,22 @@ import json
 import re
 import requests
 
+from datetime import datetime
+
 from decouple import config
 
 from sinapse.buildup import (
     _ENDERECO_NEO4J,
     _AUTH,
     _HEADERS,
+    _LOG_SOLR
 )
 
 
-def find_next_nodes(node_id, rel_types=''):
+def find_next_nodes(node_id, rel_types='', path_size=1):
     query = {"statements": [{
-        "statement": "MATCH r = (n)-[%s*..1]-(x) where id(n) = %s"
-        " return r,n,x limit 100" % (rel_types, node_id),
+        "statement": "MATCH r = (n)-[%s*..%s]-(x) where id(n) = %s"
+        " return r,n,x limit 100" % (rel_types, path_size, node_id),
         "resultDataContents": ["row", "graph"]
     }]}
     response = requests.post(
@@ -40,17 +43,18 @@ def get_node_from_id(node_id):
 
     return response
 
-def search_info(q):
+def search_info(q, solr_queries):
     f_q = re.sub(r'\s+', '+', q)
-    person = _search_person(f_q)
-    auto = _search_auto(f_q)
-    company = _search_company(f_q)
-    return person, auto, company
+    resp = dict()
+    for label, query in solr_queries.items():
+        if query:
+            resp[label] = _solr_search(f_q, query)
+    return resp
 
 
 def clean_info(func):
-    def wrapper(f_q):
-        resp = func(f_q)
+    def wrapper(f_q, query):
+        resp = func(f_q, query)
         resp_copy = resp.json().copy()
         resp_copy.pop('responseHeader')
         return resp_copy
@@ -58,21 +62,15 @@ def clean_info(func):
 
 
 @clean_info
-def _search_person(f_q):
-    query = """pessoa_fisica_shard1_replica1/select?q=%22{f_q}%22&wt=json&indent=true&defType=edismax&qf=nome%5E10+nome_mae%5E5&qs=1&stopwords=true&lowercaseOperators=true&hl=true&hl.simple.pre=%3Cem%3E&hl.simple.post=%3C%2Fem%3E""".format(f_q=f_q)
-    query += config('HOST_SOLR')
+def _solr_search(f_q, query):
+    query = config('HOST_SOLR') + query.format(f_q=f_q)
     return requests.get(query)
 
 
-@clean_info
-def _search_auto(f_q):
-    query = """veiculos_shard1_replica1/select?q=%22{f_q}%22&wt=json&indent=true&defType=edismax&qf=descricao+proprietario&qs=5&stopwords=true&lowercaseOperators=true&hl=true""".format(f_q=f_q)
-    query += config('HOST_SOLR')
-    return requests.get(query)
-
-
-@clean_info
-def _search_company(f_q):
-    query = """pessoa_fisica_shard1_replica1/select?q=%22{f_q}%22&fl=uuid+nome+nome_mae&wt=json&indent=true&defType=edismax&qf=nome%5E10+nome_mae%5E5&qs=1&stopwords=true&lowercaseOperators=true&hl=true&hl.simple.pre=%3Cem%3E&hl.simple.post=%3C%2Fem%3E""".format(f_q=f_q)
-    query += config('HOST_SOLR')
-    return requests.get(query)
+def log_solr_response(user, sessionid, query):
+    _LOG_SOLR.insert_one({
+        'usuario': user,
+        'sessionid': sessionid,
+        'datahora': datetime.now(),
+        'resposta': query
+    })

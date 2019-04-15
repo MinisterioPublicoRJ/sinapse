@@ -49,9 +49,21 @@ class Photo(unittest.TestCase):
 
 
 class Utils(unittest.TestCase):
-    def test_paser_xml_content(self):
-        foto_civil = parse_content(response_processado_rg)
+    def test_paser_xml_content_fotoCivil(self):
+        foto_civil = parse_content(
+            response_processado_rg,
+            tag_name='fotoCivil'
+        )
         expected = 'abcd'
+
+        self.assertEqual(foto_civil, expected)
+
+    def test_paser_xml_content_NoCidadao(self):
+        foto_civil = parse_content(
+            response_processado_rg,
+            tag_name='NoCidadao'
+        )
+        expected = 'Nome Cidadao'
 
         self.assertEqual(foto_civil, expected)
 
