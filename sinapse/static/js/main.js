@@ -59,6 +59,14 @@ const initVisjs = () => {
             addNode: false,
             enabled: true,
         },
+        physics: {
+            solver: 'forceAtlas2Based',
+            stabilization: {
+                enabled: true,
+                iterations: 1000,
+                updateInterval: 25
+            },
+        },
     }
     network = new vis.Network(container, data, options)
     
