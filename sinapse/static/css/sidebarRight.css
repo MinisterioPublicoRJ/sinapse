@@ -2,26 +2,24 @@
   font-family: 'Roboto', sans-serif;
 }
 
-
-
-#fullSidebarRight {
-    background-color:#FFFFFF;
-    background-position: top center;
-    background-repeat: no-repeat;
-    border-radius: 36px;
-    border: none;
-    position: absolute;
-    width: 80px;
-    height: 40px;
-    bottom: 20px;
-    right: 0;
-    margin-right: 45vw;
-    transition: right .2s ease-in-out;
-    outline-style: none;
-}
-
 /* smartshone */
 @media all and (max-width:30em) {
+  #fullSidebarRight {
+      background-color:#FFFFFF;
+      background-position: top center;
+      background-repeat: no-repeat;
+      border-radius: 36px;
+      border: none;
+      position: absolute;
+      width: 80px;
+      height: 40px;
+      bottom: 20px;
+      right: 0;
+      margin-right: 45vw;
+      transition: right .2s ease-in-out;
+      outline-style: none;
+  }
+
   #sidebarRight {
     display: none;
     z-index: 2;
@@ -52,6 +50,10 @@
 
 /* computer */
 @media all and (min-width:30em) {
+  #fullSidebarRight {
+    display: none;
+  }  
+  
   #sidebarRight {
     display: none;
     height: 100%;
