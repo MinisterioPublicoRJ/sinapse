@@ -523,8 +523,14 @@ const populateSidebarRight = node => {
     let closeButton = document.createElement("button")
     closeButton.addEventListener("click", (e) => hideSidebarRight(), false)
     closeButton.setAttribute("id", "closeSidebarRight")
+
+    let fullButton = document.createElement("button")
+    fullButton.addEventListener("click", (e) => fullSidebarRight(), false)
+    fullButton.setAttribute("id", "fullSidebarRight")
+    
     content.appendChild(valuesContainer)
     content.appendChild(closeButton)
+    content.appendChild(fullButton)
 
     sidebarRight.appendChild(content)
 }
@@ -535,13 +541,25 @@ const populateSidebarRight = node => {
 const showSidebarRight = () => {
     sidebarRight.style.display = "block"
     document.getElementsByTagName('body')[0].className = 'showingSidebarRight'
-
 }
 
 /** Hides the Right Sidebar. */
 const hideSidebarRight = () => {
+    document.getElementById('sidebarRight').style.display = "none"
     sidebarRight.style.display = "none"
     document.getElementsByTagName('body')[0].className = ''
+}
+
+/** Full/Hide the Right Sidebar. */
+const fullSidebarRight = () => {
+    var x = document.getElementById("sidebarRight");
+    if (x.style.width === "") {
+        x.style.width = "100%";
+    } else if (x.style.width === "0%") {
+        x.style.width = "100%";
+    } else {
+        x.style.width = "0%";
+    }
 }
 
 /**
