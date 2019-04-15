@@ -746,6 +746,7 @@ const zoomToNodeId = nodeId => {
     const selectedNode = nodesData.filter(node => node.id === nodeId.toString())[0] // nodeId comes as Number, node.id is a String
     populateSidebarRight(selectedNode)
     showSidebarRight()
+    network.selectNodes([nodeId.toString()])
 }
 
 /**
