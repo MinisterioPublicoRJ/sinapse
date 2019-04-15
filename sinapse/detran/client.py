@@ -91,17 +91,11 @@ def get_photos(node_id):
 
     successes = []
     for info in infos:
-        photo_document = _FOTOS_DETRAN.find_one(
-            {'rg': info.rg,
-             'node_id': info.node_id,
-             'foto': {'$exists': True}}
-        )
-        if photo_document is None or photo_document['foto'] == '':
-            status, content = send_rg_query(info.rg)
-            if b'sucesso' in content.lower()\
-                    or b'foi finalizada' in content.lower():
-                successes.append(info)
-                update_photo_status(info.node_id, 'searching')
+        status, content = send_rg_query(info.rg)
+        if b'sucesso' in content.lower()\
+                or b'foi finalizada' in content.lower():
+            successes.append(info)
+            update_photo_status(info.node_id, 'searching')
 
     for success in successes:
         status, content = get_processed_rg(success.rg)
