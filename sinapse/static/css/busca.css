@@ -762,26 +762,57 @@ span.tooltip:after {
     background-color: #fff;
 }
 
-#step3 {
-    padding-top: 20px;
-    position: absolute;
-    right: 20px;
-    text-align: right;
-    z-index: 2;
+/* smartshone */
+@media all and (max-width:30em) {
+    #step3 {
+        padding-top: 20px;
+        position: absolute;
+        right: 20px;
+        text-align: right;
+        z-index: 2;
+    }    
+
+    .showingSidebarRight #step3 {
+        margin-right: 0%;
+    }
+
+    #step3 #clear {
+        width: 50px;
+        height: 40px;
+        background: url('/static/img/icon/menu.svg') no-repeat;
+        border: none;
+        margin-top: 10px;
+    }
+
+    #step3 #clear span {
+        display: none;
+    }
+
 }
 
-.showingSidebarRight #step3 {
-    margin-right: 15%;
-}
+/* computer */
+@media all and (min-width:30em) {
+    #step3 {
+        padding-top: 20px;
+        position: absolute;
+        right: 20px;
+        text-align: right;
+        z-index: 2;
+    }    
 
-#step3 #clear {
-    width: 64px;
-    height: 64px;
-    background: url('/static/img/icon/menu.svg') no-repeat;
-    border: none;
-}
+    .showingSidebarRight #step3 {
+        margin-right: 15%;
+    }
 
-#step3 #clear span {
-    display: none;
+    #step3 #clear {
+        width: 64px;
+        height: 64px;
+        background: url('/static/img/icon/menu.svg') no-repeat;
+        border: none;
+    }
+
+    #step3 #clear span {
+        display: none;
+    }
 }
 

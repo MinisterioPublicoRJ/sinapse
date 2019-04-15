@@ -17,7 +17,7 @@ def parse_content(content, tag_name):
 
 
 def get_node_id(response_json):
-    return response_json['nodes'][0]['id']
+    return response_json['results'][0]['data'][0]['graph']['nodes'][0]['id']
 
 
 def find_relations_info(response_json):

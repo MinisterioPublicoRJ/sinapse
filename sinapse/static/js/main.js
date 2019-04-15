@@ -32,6 +32,7 @@ const initVisjs = () => {
     // initialize everything as empty (we don't have data yet)
     nodesData = []
     edgesData = []
+    photosData = {}
     filteredEntityTypes = []
     nodes = new vis.DataSet([])
     edges = new vis.DataSet([])
@@ -79,7 +80,6 @@ const initVisjs = () => {
     network.on('oncontext', function(params) {
         container.oncontextmenu = () => false // Cancels right click menu
     })
-    network.on('zoom', handleZoomChange)
 }
 
 /**
@@ -335,6 +335,17 @@ const updateNodes = data => {
                 nodesData.push(formattedNode)
                 nodes.add(formattedNode)
             }
+            // if it's a person, check if we can add it to our photos array
+            if (node.type[0] === 'pessoa' && node.properties.rg && !photosData[node.id]) {
+                get(`/api/foto?rg=${node.properties.rg}`, data => {
+                    if (data.node_id && data.foto) {
+                        if (!photosData[data.node_id]) {
+                            photosData[data.node_id] = data
+                            nodes.update({id: data.node_id, shape: 'circularImage', image: `data:image/png;base64,${data.foto}`})
+                        }
+                    }
+                })
+            }
         }
     }
     if (data.edges) {
@@ -442,9 +453,11 @@ const formatKeyString = (prop, key) => {
         case 'cpf':
         case 'cpf_responsavel':
             return formatCPF(key)
-        case 'dt_nasc':
-        case 'data_inicio':
         case 'data':
+        case 'data_inicio':
+        case 'dt_criacao':
+        case 'dt_extincao':
+        case 'dt_nasc':
             return formatDate(key)
         case 'ident':
             return formatVehicleIdent(key)
@@ -452,6 +465,8 @@ const formatKeyString = (prop, key) => {
             return formatVehiclePlate(key)
         case 'rg':
             return formatRG(key)
+        case 'sexo':
+            return formatGender(key)
         default:
             return key
     }
@@ -507,6 +522,13 @@ const populateSidebarRight = node => {
     let valuesContainer = document.createElement('div')
     valuesContainer.setAttribute('id', 'valuesContainer')
 
+    // Add person photo
+    if (node.type[0] === 'pessoa' && node.properties.rg && photosData[node.id]) {
+        let img = document.createElement('img')
+        img.setAttribute('src', `data:image/png;base64,${photosData[node.id].foto}`)
+        headerSidebarRight.appendChild(img)
+    }
+
     Object.keys(node.properties).forEach(function(property) {
 
         let labelSpan = document.createElement('span')
@@ -528,8 +550,14 @@ const populateSidebarRight = node => {
     let closeButton = document.createElement("button")
     closeButton.addEventListener("click", (e) => hideSidebarRight(), false)
     closeButton.setAttribute("id", "closeSidebarRight")
+
+    let fullButton = document.createElement("button")
+    fullButton.addEventListener("click", (e) => fullSidebarRight(), false)
+    fullButton.setAttribute("id", "fullSidebarRight")
+    
     content.appendChild(valuesContainer)
     content.appendChild(closeButton)
+    content.appendChild(fullButton)
 
     sidebarRight.appendChild(content)
 }
@@ -540,13 +568,25 @@ const populateSidebarRight = node => {
 const showSidebarRight = () => {
     sidebarRight.style.display = "block"
     document.getElementsByTagName('body')[0].className = 'showingSidebarRight'
-
 }
 
 /** Hides the Right Sidebar. */
 const hideSidebarRight = () => {
+    document.getElementById('sidebarRight').style.display = "none"
     sidebarRight.style.display = "none"
     document.getElementsByTagName('body')[0].className = ''
+}
+
+/** Full/Hide the Right Sidebar. */
+const fullSidebarRight = () => {
+    var x = document.getElementById("sidebarRight");
+    if (x.style.width === "") {
+        x.style.width = "100%";
+    } else if (x.style.width === "0%") {
+        x.style.width = "100%";
+    } else {
+        x.style.width = "0%";
+    }
 }
 
 /**
@@ -600,14 +640,6 @@ const updateFilteredEntityTypes = () => {
         })
     })
     nodes.update(filteredNodes)
-}
-
-/**
- * Handles zoom change
- * @param {Object} params 
- */
-const handleZoomChange = params => {
-    console.log(params)
 }
 
 /**
@@ -747,6 +779,21 @@ const formatDate = date => {
         return `${date.substr(6)}/${date.substr(4,2)}/${date.substr(0,4)}`
     }
     return date
+}
+
+/**
+ * Formats Gender string
+ * @param {String} genderId
+ */
+const formatGender = genderId => {
+    switch (genderId) {
+        case "1":
+            return "Masculino"
+        case "2":
+            return "Feminino"
+        default:
+            return genderId
+    }
 }
 
 /**

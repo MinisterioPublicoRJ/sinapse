@@ -13,17 +13,41 @@ request_node_ok = {
 }
 
 resposta_node_ok = {
-    'nodes': [
+    'results': [
         {
-            'id': '395989945',
-            'type': ['personagem'],
-            'properties': {
-                'cpf': '11452244740',
-                'nome': 'DANIEL CARVALHO BELCHIOR',
-                'pess_dk': 15535503
-            }
-        }],
-    'edges': []
+            'columns': ['a'],
+            'data': [
+                {
+                    'graph': {
+                        'nodes': [
+                            {
+                                'id': '140885160',
+                                'labels': ['pessoa'],
+                                'properties': {
+                                    'nome_pai': 'FRANCISCO IVAN FONTELE BELCHIOR',
+                                    'filho_rel_status_pai': 1,
+                                    'nome': 'DANIEL CARVALHO BELCHIOR',
+                                    'uuid': '607056258864169709',
+                                    'idade': 36,
+                                    'uf': 'RJ',
+                                    'rg': '131242950',
+                                    'visitado': False,
+                                    'cpf': '11452244740',
+                                    'filho_rel_status': 1,
+                                    'nome_mae': 'MARTA CARVALHO BELCHIOR',
+                                    'sexo': '1',
+                                    'nome_rg': 'DANIEL CARVALHO BELCHIOR',
+                                    'dt_nasc': '19850522'
+                                }
+                            }
+                        ],
+                        'relationships': []
+                    }
+                }
+            ]
+        }
+    ],
+    'errors': []
 }
 
 resposta_node_sensivel_ok = {

@@ -18,26 +18,60 @@
     z-index: 2;
 }
 
-.mprj {
-    background-color: white;
-    background-image: url('/static/img/Logo-mpemmapas.svg');
-    background-position: top center;
-    background-repeat: no-repeat;
-    border-radius: 36px;
-    position: absolute;
-    width: 140px;
-    height: 72px;
-    bottom: 20px;
-    right: 0;
-    margin-right: 20px;
-    transition: right .2s ease-in-out;
+/* smartshone */
+@media all and (max-width:30em) {
+    .mprj {
+        background-color: white;
+        background-image: url('/static/img/Logo-mpemmapas.svg');
+        background-position: top center;
+        background-repeat: no-repeat;
+        border-radius: 36px;
+        position: absolute;
+        width: 140px;
+        height: 40px;
+        bottom: 20px;
+        right: 0;
+        z-index: 2;
+        /* margin-right: 20px;
+        transition: right .2s ease-in-out; */
+    }    
+
+    .showingSidebarRight .mprj {
+        right: 0%;
+    }
+
+    .mprj span {
+        display: none;
+    }
 }
-.showingSidebarRight .mprj {
-    right: 15%;
+
+/* computer */
+@media all and (min-width:30em) {
+    .mprj {
+        background-color: white;
+        background-image: url('/static/img/Logo-mpemmapas.svg');
+        background-position: top center;
+        background-repeat: no-repeat;
+        border-radius: 36px;
+        position: absolute;
+        width: 140px;
+        height: 72px;
+        bottom: 20px;
+        right: 0;
+        margin-right: 20px;
+        transition: right .2s ease-in-out;
+    }
+
+    .showingSidebarRight .mprj {
+        right: 15%;
+    }
+
+    .mprj span {
+        display: none;
+    }
+
 }
-.mprj span {
-    display: none;
-}
+
 
 /* Vis CSS overload */
 
