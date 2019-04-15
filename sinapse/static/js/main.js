@@ -436,6 +436,12 @@ const formatPropString = text => {
             return 'Data de Nascimento'
         case 'nome_mae':
             return 'Nome da Mãe'
+        case 'nome_pai':
+            return 'Nome do Pai'
+        case 'nome_rg':
+            return 'Nome no RG'
+        case 'rg':
+            return 'RG'
         // Telefone
         case 'numero':
             return 'Número'
@@ -508,11 +514,6 @@ const get = (url, callback) => {
  * @param {Object} node A node from Neo4J.
  */
 const populateSidebarRight = node => {
-
-    // Deleting fields from object to not shown to user
-    delete node.properties['filho_rel_status']
-    delete node.properties['filho_rel_status_pai']
-
     sidebarRight.setAttribute('class', node.type[0])
 
     // empty sidebarRight
@@ -537,7 +538,15 @@ const populateSidebarRight = node => {
         headerSidebarRight.appendChild(img)
     }
 
-    Object.keys(node.properties).forEach(function(property) {
+    // Add properties
+    Object.keys(node.properties).forEach(property => {
+
+        if (property === 'filho_rel_status' ||
+            property === 'filho_rel_status_pai' ||
+            property === 'uuid' ||
+            property.substr(0,1) === '_') {
+                return // skip this property
+            }
 
         let labelSpan = document.createElement('span')
         labelSpan.className = 'sidebarRight-label'
@@ -551,16 +560,14 @@ const populateSidebarRight = node => {
 
         dataSpan.appendChild(dataContent)
         valuesContainer.appendChild(dataSpan)
-
-        // console.log(property, node.properties[property])
     });
 
     let closeButton = document.createElement("button")
-    closeButton.addEventListener("click", (e) => hideSidebarRight(), false)
+    closeButton.addEventListener("click", e => hideSidebarRight(), false)
     closeButton.setAttribute("id", "closeSidebarRight")
 
     let fullButton = document.createElement("button")
-    fullButton.addEventListener("click", (e) => fullSidebarRight(), false)
+    fullButton.addEventListener("click", e => fullSidebarRight(), false)
     fullButton.setAttribute("id", "fullSidebarRight")
     
     content.appendChild(valuesContainer)
