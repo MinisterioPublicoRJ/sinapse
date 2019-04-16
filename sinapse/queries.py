@@ -1,8 +1,11 @@
 import json
 import re
 import requests
+import urllib
 
 from datetime import datetime
+from urllib.parse import quote
+from urllib.request import Request, urlopen
 
 from decouple import config
 
@@ -12,6 +15,12 @@ from sinapse.buildup import (
     _HEADERS,
     _LOG_SOLR
 )
+
+
+IMG_HEADERS = {}
+IMG_HEADERS['User-Agent'] = "Mozilla/5.0 (Windows NT 6.1)"\
+    " AppleWebKit/537.36 (KHTML, like Gecko)"\
+    " Chrome/41.0.2228.0 Safari/537.36"
 
 
 def find_next_nodes(node_id, rel_types='', path_size=1):
@@ -77,3 +86,56 @@ def update_photo_status(node_id, status):
         auth=_AUTH,
         headers=_HEADERS
     )
+
+
+def download_google_image(term):
+    url = 'https://www.google.com/search?q='\
+        + quote(term)\
+        + '&espv=2&biw=1366&bih=667&site=webhp&source=lnms&tbm=isch'\
+        + '&tbs=isz:l&sa=X&ei=XosDVaCXD8TasATItgE&ved=0CAcQ_AUoAg'
+
+    req = urllib.request.Request(url, headers=IMG_HEADERS)
+    resp = urllib.request.urlopen(req)
+    content = str(resp.read())
+    return extact_img(content)
+
+
+def extact_img(content):
+    limit = 1000
+    count = 1
+    while count < limit + 1:
+        obj_content, end_content = _get_next_item(content)
+        img_url = obj_content['ou']
+
+        img = download_image(img_url)
+        if img != '':
+            return img
+
+        content = content[end_content:]
+        count += 1
+
+    return ''
+
+
+def download_image(image_url):
+    req = Request(image_url, headers=IMG_HEADERS)
+    response = urlopen(req, None, timeout=10)
+    data = response.read()
+    return data
+
+
+def _get_next_item(s):
+    start_line = s.find('rg_meta notranslate')
+    if start_line == -1:  # If no links are found then give an error!
+        end_quote = 0
+        link = "no_links"
+        return link, end_quote
+    else:
+        start_line = s.find('class="rg_meta notranslate">')
+        start_object = s.find('{', start_line + 1)
+        end_object = s.find('</div>', start_object + 1)
+        object_raw = str(s[start_object:end_object])
+        object_decode = bytes(
+            object_raw, "utf-8").decode("unicode_escape")
+        final_object = json.loads(object_decode)
+        return final_object, end_object
