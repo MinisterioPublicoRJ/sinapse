@@ -125,49 +125,7 @@ const setLabels = data => {
     // hides loading
     document.getElementById('loading').className = 'hidden'
     if (!window.filtroInicial) {
-        document.getElementById('step1').className = ''
-    }
-    // create labels dynamically
-    let labelsMenu = document.getElementById('opcoes')
-    labels.sort().map(label => {
-        if (label !== 'teste') {
-            // <span>
-            let labelTooltipEl = document.createElement('span')
-            let labelTooltipStr = document.createTextNode(formatPropString(label))
-            labelTooltipEl.appendChild(labelTooltipStr)
-            labelTooltipEl.className = 'tooltip'
-            // <img>
-            let labelImg = document.createElement('img')
-            labelImg.setAttribute('src', `/static/img/icon/${label}.svg`)
-            labelImg.dataset.label = label
-            // <div>
-            //   <img>
-            //   <span/>
-            // </div>
-            let labelEl = document.createElement('div')
-            labelEl.appendChild(labelImg)
-            labelEl.appendChild(labelTooltipEl)
-            labelEl.className = label
-            labelEl.onclick = getNodeProperties
-            // append to DOM
-            labelsMenu.appendChild(labelEl)
-        }
-    })
-    // init comece-aqui button
-    let comeceAquiEl = document.getElementById('comece-aqui')
-    let opcoesEl = document.getElementById('opcoes')
-    comeceAquiEl.onclick = () => {
-        if (opcoesEl.className === 'opcoes') {
-            opcoesEl.className = 'opcoes hidden'
-        } else {
-            opcoesEl.className = 'opcoes'
-        }
-    }
-    // step2 back button
-    document.getElementById('step2img').onclick = e => {
-        document.getElementById('step1').className = ''
-        document.getElementById('step2').className = 'hidden'
-        document.getElementById('textBusca').style = 'hidden'
+        document.getElementById('search-area').className = ''
     }
 }
 
@@ -232,26 +190,92 @@ const setProps = nodeProperties => {
 }
 
 /**
- * Adds the events to initialize search: button click and Enter keypress.
+ * Initialize search
  */
 const initSearch = () => {
-    // Step 1 Search button
-    document.getElementById('buttonBusca').onclick = findNodes
-    // Step 2 Input Search Enter Event
-    document.getElementById('textVal').addEventListener('keypress', e => {
-        let key = e.keyCode
-        if (key === 13) { // 13 is enter
-            findNodes()
-        }
+    document.getElementById('form-search-area').addEventListener('submit', e => {
+        e.preventDefault()
+        
+        get(`/api/search?q=${sanitizeQuery(e.target[0].value)}`, searchCallback)
     })
-    // Step 3 Clear Search button
-    document.getElementById('clear').onclick = e => {
-        // show search form
-        document.getElementById('step1').className = ''
-        document.getElementById('step3').className = 'hidden'
-        // hide sidebar
-        hideSidebarRight()
+}
+
+const sanitizeQuery = string => {
+    return string.toUpperCase()
+}
+
+const searchCallback = data => {
+
+    // labels.forEach(type => {
+    //     let nodesForThisType = sortByType(nodesData.filter(node => node.type[0] === type), type)
+    //     if (nodesForThisType.length) {
+    //         entityListToWrite += `<h2>${type}</h2>`
+    //         nodesForThisType.forEach(node => {
+    //             entityListToWrite += nodeToDOMString(node)
+    //         })
+    //     }
+    // })
+    let templateString = `<div>
+        <h2>data.key</h2>
+        <div id="searchTab-data.key" class="data.key">
+            <h3>Propriedade Principal</h3>
+            <p>Propriedades secundárias</p>
+        </div>
+    </div>`
+    let finalHTML = ''
+
+    Object.keys(data).forEach(key => {
+        finalHTML += `<div><h2>${key} - ${data[key].response.numFound}</h2>`
+        console.log(key, data[key])
+        data[key].response.docs.forEach(doc => {
+            switch(key) {
+                case 'pessoa':
+                    finalHTML += `
+                        <dl>
+                            <dt>Nome: </dt>
+                            <dd>${returnHighlightedProperty(doc, 'nome', data[key].highlighting)}</dd>
+                            <dt>Nome da mãe: </dt>
+                            <dd>${returnHighlightedProperty(doc, 'nome_mae', data[key].highlighting)}</dd>
+                            <dt>CPF: </dt>
+                            <dd>${formatCPF(doc.num_cpf)}</dd>
+                            <dt>Data de nascimento: </dt>
+                            <dd>${formatDate(doc.data_nascimento)}</dd>
+                        </dl>
+                    `
+                    break
+                case 'veiculo':
+                    finalHTML += `
+                    <dl>
+                        <dt>Veículo: </dt>
+                        <dd>${returnHighlightedProperty(doc, 'descricao', data[key].highlighting)}</dd>
+                        <dt>Proprietário: </dt>
+                        <dd>${returnHighlightedProperty(doc, 'proprietario', data[key].highlighting)}</dd>
+                    </dl>
+                    `
+            }
+        })
+        finalHTML += '</div>'
+    })
+    document.querySelector('#search-result').innerHTML = finalHTML
+    
+    console.log(Object.keys(data))
+}
+
+/**
+ * 
+ * @param {Object} doc 
+ * @param {String} doc.uuid
+ * @param {String} doc[prop]
+ * @param {String} prop 
+ * @param {Object} highlighting 
+ * @param {Object} highlighting[uuid]
+ * @param {String[]} highlighting[uuid][prop]
+ */
+const returnHighlightedProperty = (doc, prop, highlighting) => {
+    if (highlighting[doc.uuid] && highlighting[doc.uuid][prop]) {
+        return highlighting[doc.uuid][prop][0]
     }
+    return doc[prop]
 }
 
 const checkRadio = () => {
@@ -788,6 +812,7 @@ const formatCNPJ = cnpj => {
  * @param {String} cpf
  */
 const formatCPF = cpf => {
+    cpf = cpf.toString().padStart(11, "0")
     if (cpf.length === 11) {
         return `${cpf.substr(0,3)}.${cpf.substr(3,3)}.${cpf.substr(6,3)}-${cpf.substr(9)}`
     }
@@ -800,9 +825,9 @@ const formatCPF = cpf => {
  */
 const formatDate = date => {
     if (date.length === 8) {
-        return `${date.substr(6)}/${date.substr(4,2)}/${date.substr(0,4)}`
+        return `${date.substr(6,2)}/${date.substr(4,2)}/${date.substr(0,4)}`
     }
-    return date
+    return `${date.substr(8,2)}/${date.substr(5,2)}/${date.substr(0,4)}`
 }
 
 /**

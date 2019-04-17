@@ -29,32 +29,17 @@
             <div id="loading">
                 <img src="/static/img/icon/Loading_icon.gif">
             </div>
-            <div id="step1" class="hidden">
-                <div class="comece-aqui" id="comece-aqui">
-                    <img src="/static/img/icon/menu.svg" alt="Comece aqui">
-                    <span class="tooltip">Comece aqui</span>
-                </div>
-                <div class="opcoes hidden" id="opcoes"></div>
-            </div>
 
-
-            
-            <div id="step2" class="hidden">
-                <div id="form-step2">
-                    <input type="hidden" id="selectLabel">
-                    <div class="step2-avatar">
-                        <img id="step2img">
+            <div id="search-area" class="hidden">
+                <form id="form-search-area">
+                    <div id="textBusca">
+                        <input type="text" placeholder="Digite aqui o valor que deseja buscar" id="textVal">
+                        <button id="buttonBusca">Localizar 🔎</button>
                     </div>
-                        <div id="selectProp" class="containermenu"></div>
-                        <div id="textBusca">
-                            <input type="text" placeholder="Digite aqui o valor que deseja buscar" id="textVal">
-                            <button id="buttonBusca">Localizar 🔎</button>
-                        </div>
-                </div>
-                    <!-- </div> -->
+                </form>
             </div>
 
-
+            <div id="search-result"></div>
 
             <div id="step3" class="hidden">
                 <button id="clear">

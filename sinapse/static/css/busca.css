@@ -37,265 +37,9 @@ span.tooltip:after {
     margin-top: -32px;
 }
 
-.comece-aqui {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    margin-left: -37px;
-    margin-top: -37px;
-    z-index: 10;
-}
-
-.comece-aqui img {
-    width: 72px;
-    height: 72px;
-}
-
-.busca .hidden {
-    display: none;   
-}
-
-#textBusca {
-    display: none;
-}
-
-.busca img {
-    cursor: pointer;
-}
-
-.comece-aqui:hover span.tooltip,
-.empresa:hover span.tooltip,
-.mgp:hover span.tooltip,
-.multa:hover span.tooltip,
-.orgao:hover span.tooltip,
-.personagem:hover span.tooltip,
-.pessoa:hover span.tooltip,
-.telefone:hover span.tooltip,
-.veiculo:hover span.tooltip {
-    display: block;
-    margin-top: 15px;
-    margin-left: -18px;
-}
-
-.comece-aqui:hover span.tooltip {
-    background: #7bb3ff;
-}
-.comece-aqui:hover span.tooltip:after {
-    border-bottom-color: #7bb3ff;
-}
-#step2 .empresa,
-#step2 .empresa input,
-#step2 .empresa select {
-    color: #51c881;
-}
-#step2 .empresa input {
-    border-bottom-color: #51c881;
-}
-.empresa:hover span.tooltip,
-#step2 .empresa button {
-    background: #51c881;
-}
-.empresa:hover span.tooltip:after {
-    border-bottom-color: #51c881;
-}
-#step2 .mgp,
-#step2 .mgp input,
-#step2 .mgp select {
-    color: #ab897f;
-}
-#step2 .mgp input {
-    border-bottom-color: #ab897f;
-}
-.mgp:hover span.tooltip,
-#step2 .mgp button {
-    background: #ab897f;
-}
-.mgp:hover span.tooltip:after {
-    border-bottom-color: #ab897f;
-}
-#step2 .multa,
-#step2 .multa input,
-#step2 .multa select {
-    color: #ff524e;
-}
-#step2 .multa input {
-    border-bottom-color: #ff524e;
-}
-#step2 .multa button,
-.multa:hover span.tooltip {
-    background: #ff524e;
-}
-.multa:hover span.tooltip:after {
-    border-bottom-color: #ff524e;
-}
-#step2 .orgao,
-#step2 .orgao input,
-#step2 .orgao select {
-    color: #ffb842;
-}
-#step2 .orgao input {
-    border-bottom-color: #ffb842;
-}
-#step2 .orgao button,
-.orgao:hover span.tooltip {
-    background: #ffb842;
-}
-.orgao:hover span.tooltip:after {
-    border-bottom-color: #ffb842;
-}
-#step2 .personagem,
-#step2 .personagem input,
-#step2 .personagem select {
-    color: #a176d1;
-}
-#step2 .personagem input {
-    border-bottom-color: #a176d1;
-}
-#step2 .personagem button,
-.personagem:hover span.tooltip {
-    background: #a176d1;
-}
-.personagem:hover span.tooltip:after {
-    border-bottom-color: #a176d1;
-}
-#step2 .pessoa,
-#step2 .pessoa input,
-#step2 .pessoa select {
-    color: #00d1e2;
-}
-#step2 .pessoa input {
-    border-bottom-color: #00d1e2;
-}
-#step2 .pessoa button,
-.pessoa:hover span.tooltip {
-    background: #00d1e2;
-}
-.pessoa:hover span.tooltip:after {
-    border-bottom-color: #00d1e2;
-}
-#step2 .telefone,
-#step2 .telefone input,
-#step2 .telefone select {
-    color: #324eb6;
-}
-#step2 .telefone input {
-    border-bottom-color: #324eb6;
-}
-#step2 .telefone button,
-.telefone:hover span.tooltip {
-    background: #324eb6;
-}
-.telefone:hover span.tooltip:after {
-    border-bottom-color: #324eb6;
-}
-#step2 .veiculo,
-#step2 .veiculo input,
-#step2 .veiculo select {
-    color: #ff8b63;
-}
-#step2 .veiculo input {
-    border-bottom-color: #ff8b63;
-}
-#step2 .veiculo button,
-.veiculo:hover span.tooltip {
-    background: #ff8b63;
-}
-
-.veiculo:hover span.tooltip:after {
-    border-bottom-color: #ff8b63;
-}
-
-.opcoes div {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    margin-top: -32px;
-    margin-left: -32px;
-}
-@keyframes empresa {
-    to {
-        margin-top: -160px;
-        margin-left: -32px;
-    }
-}
-.opcoes .empresa {
-    animation: empresa .5s 0s 1 ease forwards;
-    z-index: 9;
-}
-@keyframes mgp {
-    to {
-        margin-top: -123px;
-        margin-left: 59px;
-    }
-}
-.opcoes .mgp {
-    animation: mgp .5s .05s 1 ease forwards;
-    z-index: 8;
-}
-@keyframes multa {
-    to {
-        margin-top: -32px;
-        margin-left: 96px;
-    }
-}
-.opcoes .multa {
-    animation: multa .5s .1s 1 ease forwards;
-    z-index: 7;
-}
-@keyframes orgao {
-    to {
-        margin-top: 59px;
-        margin-left: 59px;
-    }
-}
-.opcoes .orgao {
-    animation: orgao .5s .15s 1 ease forwards;
-    z-index: 6;
-}
-@keyframes personagem {
-    to {
-        margin-top: 96px;
-        margin-left: -32px;
-    }
-}
-.opcoes .personagem {
-    animation: personagem .5s .2s 1 ease forwards;
-    z-index: 5;
-}
-@keyframes pessoa {
-    to {
-        margin-top: 59px;
-        margin-left: -123px;
-    }
-}
-.opcoes .pessoa {
-    animation: pessoa .5s .25s 1 ease forwards;
-    z-index: 4;
-}
-@keyframes telefone {
-    to {
-        margin-top: -32px;
-        margin-left: -160px;
-    }
-}
-.opcoes .telefone {
-    animation: telefone .5s .3s 1 ease forwards;
-    z-index: 3;
-}
-@keyframes veiculo {
-    to {
-        margin-top: -123px;
-        margin-left: -123px;
-    }
-}
-.opcoes .veiculo {
-    animation: veiculo .5s .35s 1 ease forwards;
-    z-index: 2;
-}
-
-/* smartshone */
+/* smartphone */
 @media all and (max-width:30em) {
-    #step2 {
+    #search-area {
         position: absolute;
         width: 100%;
         top: 50%;
@@ -309,7 +53,7 @@ span.tooltip:after {
 
 /* computer */
 @media all and (min-width:30em) {
-    #step2 {
+    #search-area {
         position: absolute;
         width: 500px;
         top: 50%;
@@ -321,37 +65,7 @@ span.tooltip:after {
     }
 }
 
-#step2 .select-wrapper {
-    background-color: #FFF;
-    display: block;
-    width: 250px;
-    position: relative;
-    margin: 0 auto;
-}
-#step2 .select-wrapper:after {
-    content:"▾";
-    position: absolute;
-    top: 5px;
-    right: 0;
-    z-index: 5;
-}
-#step2 select {
-    padding: 10px 40px 10px 10px;
-    -webkit-appearance: none;
-    -ms-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
-    background-color: transparent;
-    border-radius: 0;
-    border: 0;
-    position: relative;
-    cursor: pointer;
-    z-index: 10;
-    width: 100%;
-    font-weight: bold;
-    font-size: 14px;
-}
-#step2 #textVal {
+#search-area #textVal {
     border: none;
     border-bottom-style: solid;
     border-bottom-width: 1px;
@@ -361,16 +75,15 @@ span.tooltip:after {
     text-align: center;
     width: 100%;
 }
-#step2 select:focus,
-#step2 #textVal:focus {
+#search-area #textVal:focus {
     outline: none;
 }
-#step2 #textVal::placeholder {
+#search-area #textVal::placeholder {
     color: gray;
     font-size: 20px;
 }
-#step2 #buttonBusca {
-    color: white;
+#search-area #buttonBusca {
+    color: black;
     padding: 0px 10px;
     font-size: 14px;
     margin-top: 10px;
@@ -378,7 +91,7 @@ span.tooltip:after {
 
 /** Botoes dinamicos **/
 /** style button initial **/
-#step2 .empresa .btnRadio {
+#search-area .empresa .btnRadio {
   background-color: transparent;
   border: 1px solid #cccccc;
   border-radius: 50px;
@@ -388,12 +101,12 @@ span.tooltip:after {
   margin-top: 5px;
 }
 
-#step2 .empresa .btnRadio:hover {
+#search-area .empresa .btnRadio:hover {
     cursor: pointer;
 }
 
 /* show SVG */
-#step2 .empresa .badge2 {
+#search-area .empresa .badge2 {
     background-color: transparent;
     color:transparent;
     border-radius: 100%;
@@ -405,7 +118,7 @@ span.tooltip:after {
 }
 
 /* style button */
-#step2 .empresa .badgebox:checked + .btnRadio {
+#search-area .empresa .badgebox:checked + .btnRadio {
     border: 3px solid #51c881;
     border-radius: 50px;
     -webkit-transition: all .15s ease-in-out;
@@ -415,13 +128,13 @@ span.tooltip:after {
 }
 
 /* style SVG */
-#step2 .empresa .badgebox:checked + label .cls {
+#search-area .empresa .badgebox:checked + label .cls {
     fill: #51c881;
     fill-opacity: 1;
 }
 
 /** style button initial **/
-#step2 .mgp .btnRadio {
+#search-area .mgp .btnRadio {
   background-color: transparent;
   border: 1px solid #cccccc;
   border-radius: 50px;
@@ -431,12 +144,12 @@ span.tooltip:after {
   margin-top: 5px;
 }
 
-#step2 .mgp .btnRadio:hover {
+#search-area .mgp .btnRadio:hover {
     cursor: pointer;
 }
 
 /* show SVG */
-#step2 .mgp .badge2 {
+#search-area .mgp .badge2 {
     background-color: transparent;
     color:transparent;
     border-radius: 100%;
@@ -448,7 +161,7 @@ span.tooltip:after {
 }
 
 /* style button */
-#step2 .mgp .badgebox:checked + .btnRadio {
+#search-area .mgp .badgebox:checked + .btnRadio {
     border: 3px solid #ab897f;
     border-radius: 50px;
     -webkit-transition: all .15s ease-in-out;
@@ -458,13 +171,13 @@ span.tooltip:after {
 }
 
 /* style SVG */
-#step2 .mgp .badgebox:checked + label .cls {
+#search-area .mgp .badgebox:checked + label .cls {
     fill: #ab897f;
     fill-opacity: 1;
 }
 
 /** style button initial **/
-#step2 .multa .btnRadio {
+#search-area .multa .btnRadio {
   background-color: transparent;
   border: 1px solid #cccccc;
   border-radius: 50px;
@@ -474,12 +187,12 @@ span.tooltip:after {
   margin-top: 5px;
 }
 
-#step2 .multa .btnRadio:hover {
+#search-area .multa .btnRadio:hover {
     cursor: pointer;
 }
 
 /* show SVG */
-#step2 .multa .badge2 {
+#search-area .multa .badge2 {
     background-color: transparent;
     color:transparent;
     border-radius: 100%;
@@ -491,7 +204,7 @@ span.tooltip:after {
 }
 
 /* style button */
-#step2 .multa .badgebox:checked + .btnRadio {
+#search-area .multa .badgebox:checked + .btnRadio {
     border: 3px solid #ff524e;
     border-radius: 50px;
     -webkit-transition: all .15s ease-in-out;
@@ -501,13 +214,13 @@ span.tooltip:after {
 }
 
 /* style SVG */
-#step2 .multa .badgebox:checked + label .cls {
+#search-area .multa .badgebox:checked + label .cls {
     fill: #ff524e;
     fill-opacity: 1;
 }
 
 /** style button initial **/
-#step2 .orgao .btnRadio {
+#search-area .orgao .btnRadio {
   background-color: transparent;
   border: 1px solid #cccccc;
   border-radius: 50px;
@@ -517,12 +230,12 @@ span.tooltip:after {
   margin-top: 5px;
 }
 
-#step2 .orgao .btnRadio:hover {
+#search-area .orgao .btnRadio:hover {
     cursor: pointer;
 }
 
 /* show SVG */
-#step2 .orgao .badge2 {
+#search-area .orgao .badge2 {
     background-color: transparent;
     color:transparent;
     border-radius: 100%;
@@ -534,7 +247,7 @@ span.tooltip:after {
 }
 
 /* style button */
-#step2 .orgao .badgebox:checked + .btnRadio {
+#search-area .orgao .badgebox:checked + .btnRadio {
     border: 3px solid #ffb842;
     border-radius: 50px;
     -webkit-transition: all .15s ease-in-out;
@@ -544,13 +257,13 @@ span.tooltip:after {
 }
 
 /* style SVG */
-#step2 .orgao .badgebox:checked + label .cls {
+#search-area .orgao .badgebox:checked + label .cls {
     fill: #ffb842;
     fill-opacity: 1;
 }
 
 /** style button initial **/
-#step2 .personagem .btnRadio {
+#search-area .personagem .btnRadio {
   background-color: transparent;
   border: 1px solid #cccccc;
   border-radius: 50px;
@@ -560,12 +273,12 @@ span.tooltip:after {
   margin-top: 5px;
 }
 
-#step2 .personagem .btnRadio:hover {
+#search-area .personagem .btnRadio:hover {
     cursor: pointer;
 }
 
 /* show SVG */
-#step2 .personagem .badge2 {
+#search-area .personagem .badge2 {
     background-color: transparent;
     color:transparent;
     border-radius: 100%;
@@ -577,7 +290,7 @@ span.tooltip:after {
 }
 
 /* style button */
-#step2 .personagem .badgebox:checked + .btnRadio {
+#search-area .personagem .badgebox:checked + .btnRadio {
     border: 3px solid #a176d1;
     border-radius: 50px;
     -webkit-transition: all .15s ease-in-out;
@@ -587,13 +300,13 @@ span.tooltip:after {
 }
 
 /* style SVG */
-#step2 .personagem .badgebox:checked + label .cls {
+#search-area .personagem .badgebox:checked + label .cls {
     fill: #a176d1;
     fill-opacity: 1;
 }
 
 /** style button initial **/
-#step2 .pessoa .btnRadio {
+#search-area .pessoa .btnRadio {
   background-color: transparent;
   border: 1px solid #cccccc;
   border-radius: 50px;
@@ -603,12 +316,12 @@ span.tooltip:after {
   margin-top: 5px;
 }
 
-#step2 .pessoa .btnRadio:hover {
+#search-area .pessoa .btnRadio:hover {
     cursor: pointer;
 }
 
 /* show SVG */
-#step2 .pessoa .badge2 {
+#search-area .pessoa .badge2 {
     background-color: transparent;
     color:transparent;
     border-radius: 100%;
@@ -620,7 +333,7 @@ span.tooltip:after {
 }
 
 /* style button */
-#step2 .pessoa .badgebox:checked + .btnRadio {
+#search-area .pessoa .badgebox:checked + .btnRadio {
     border: 3px solid #00d1e2;
     border-radius: 50px;
     -webkit-transition: all .15s ease-in-out;
@@ -630,13 +343,13 @@ span.tooltip:after {
 }
 
 /* style SVG */
-#step2 .pessoa .badgebox:checked + label .cls {
+#search-area .pessoa .badgebox:checked + label .cls {
     fill: #00d1e2;
     fill-opacity: 1;
 }
 
 /** style button initial **/
-#step2 .telefone .btnRadio {
+#search-area .telefone .btnRadio {
   background-color: transparent;
   border: 1px solid #cccccc;
   border-radius: 50px;
@@ -646,12 +359,12 @@ span.tooltip:after {
   margin-top: 5px;
 }
 
-#step2 .telefone .btnRadio:hover {
+#search-area .telefone .btnRadio:hover {
     cursor: pointer;
 }
 
 /* show SVG */
-#step2 .telefone .badge2 {
+#search-area .telefone .badge2 {
     background-color: transparent;
     color:transparent;
     border-radius: 100%;
@@ -663,7 +376,7 @@ span.tooltip:after {
 }
 
 /* style button */
-#step2 .telefone .badgebox:checked + .btnRadio {
+#search-area .telefone .badgebox:checked + .btnRadio {
     border: 3px solid #324eb6;
     border-radius: 50px;
     -webkit-transition: all .15s ease-in-out;
@@ -673,13 +386,13 @@ span.tooltip:after {
 }
 
 /* style SVG */
-#step2 .telefone .badgebox:checked + label .cls {
+#search-area .telefone .badgebox:checked + label .cls {
     fill: #324eb6;
     fill-opacity: 1;
 }
 
 /** style button initial **/
-#step2 .veiculo .btnRadio {
+#search-area .veiculo .btnRadio {
   background-color: transparent;
   border: 1px solid #cccccc;
   border-radius: 50px;
@@ -689,12 +402,12 @@ span.tooltip:after {
   margin-top: 5px;
 }
 
-#step2 .veiculo .btnRadio:hover {
+#search-area .veiculo .btnRadio:hover {
     cursor: pointer;
 }
 
 /* show SVG */
-#step2 .veiculo .badge2 {
+#search-area .veiculo .badge2 {
     background-color: transparent;
     color:transparent;
     border-radius: 100%;
@@ -706,7 +419,7 @@ span.tooltip:after {
 }
 
 /* style button */
-#step2 .veiculo .badgebox:checked + .btnRadio {
+#search-area .veiculo .badgebox:checked + .btnRadio {
     border: 3px solid #ff8b63;
     border-radius: 50px;
     -webkit-transition: all .15s ease-in-out;
@@ -716,7 +429,7 @@ span.tooltip:after {
 }
 
 /* style SVG */
-#step2 .veiculo .badgebox:checked + label .cls {
+#search-area .veiculo .badgebox:checked + label .cls {
     fill: #ff8b63;
     fill-opacity: 1;
 }
@@ -816,3 +529,7 @@ span.tooltip:after {
     }
 }
 
+.busca em {
+    background-color: yellow;
+    font-style: normal;
+}
