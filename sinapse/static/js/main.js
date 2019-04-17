@@ -59,6 +59,14 @@ const initVisjs = () => {
             addNode: false,
             enabled: true,
         },
+        nodes: {
+            chosen: {
+                node(values) {
+                    values.borderWidth = 10
+                    values.size = 30
+                },
+            },
+        },
         physics: {
             solver: 'forceAtlas2Based',
             stabilization: {
