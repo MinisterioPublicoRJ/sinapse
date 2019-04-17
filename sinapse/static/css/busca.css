@@ -535,6 +535,19 @@ span.tooltip:after {
     font-style: normal;
 }
 
+.custom-tab {
+    text-align: center;
+}
+
+.custom-tab img {
+    margin-bottom: 5px;
+    max-width: 60% !important; /* Brute force on Bootstrap */
+}
+
+.custom-tab p {
+    margin: 0;
+}
+
 .card-resultado {
     background: #f9f9f9;
     margin-top: 15px;
@@ -552,12 +565,29 @@ span.tooltip:after {
 }
 
 .busca .pessoa h3,
-.busca .pessoa dd {
+.busca .pessoa dd,
+.busca .pessoa p {
     color: #72d8f2;
 }
 
 .busca .veiculo h3,
-.busca .veiculo dd {
+.busca .veiculo dd,
+.busca .veiculo p {
     color: #f2727b;
 }
 
+.busca .empresa h3,
+.busca .empresa dd,
+.busca .empresa p {
+    color: #60b87f;
+}
+
+/* Bootstrap overload */
+.nav-tabs {
+    border-bottom: 1px solid transparent;
+}
+
+.nav-tabs > li.active > a,
+.nav-tabs > li.active > a:hover {
+    border: 1px solid transparent;
+}

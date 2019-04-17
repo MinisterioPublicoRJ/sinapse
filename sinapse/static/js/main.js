@@ -226,7 +226,11 @@ const searchCallback = data => {
 
     Object.keys(data).forEach((key, index) => {
         finalHTML += `<li role="presentation" ${index === 1 ? 'class="active"' : ''}>
-            <a href="#${key}" role="tab" data-toggle="tab">${key} - ${data[key].response.numFound}</a>
+            <a href="#${key}" role="tab" class="custom-tab ${key}" data-toggle="tab">
+                <img src="/static/img/icon/${key}.svg" />
+                <p>${data[key].response.numFound}</p>
+                <p>${key}s</p>
+            </a>
         </li>`
     })
 
