@@ -53,8 +53,7 @@ span.tooltip:after {
 /* computer */
 @media all and (min-width:30em) {
     #search-area {
-        width: 500px;
-        margin: 0 auto;
+        margin: 0 auto 30px;
         text-align: center;
         z-index: 2;
     }
@@ -64,6 +63,7 @@ span.tooltip:after {
     border: none;
     border-bottom-style: solid;
     border-bottom-width: 1px;
+    color: #72d8f2;
     font-size: 50px;
     font-weight: bold;
     opacity: .8;
@@ -74,8 +74,8 @@ span.tooltip:after {
     outline: none;
 }
 #search-area #textVal::placeholder {
-    color: gray;
-    font-size: 20px;
+    color: #72d8f2;
+    font-size: 50px;
 }
 #search-area #buttonBusca {
     color: black;
