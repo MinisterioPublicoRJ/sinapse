@@ -222,44 +222,99 @@ const searchCallback = data => {
             <p>Propriedades secundárias</p>
         </div>
     </div>`
-    let finalHTML = ''
+    let finalHTML = '<ul class="nav nav-tabs" role="tablist">'
 
-    Object.keys(data).forEach(key => {
-        finalHTML += `<div><h2>${key} - ${data[key].response.numFound}</h2>`
+    Object.keys(data).forEach((key, index) => {
+        finalHTML += `<li role="presentation" ${index === 1 ? 'class="active"' : ''}>
+            <a href="#${key}" role="tab" data-toggle="tab">${key} - ${data[key].response.numFound}</a>
+        </li>`
+    })
+
+    finalHTML += '</ul> <div class="tab-content">'
+
+    
+    Object.keys(data).forEach((key, indexKey) => {
         console.log(key, data[key])
+        finalHTML += `<div role="tabpanel" class="tab-pane ${indexKey === 1 ? 'active' : ''} ${key}" id="${key}">`
         data[key].response.docs.forEach(doc => {
-            switch(key) {
-                case 'pessoa':
-                    finalHTML += `
-                        <dl>
-                            <dt>Nome: </dt>
-                            <dd>${returnHighlightedProperty(doc, 'nome', data[key].highlighting)}</dd>
-                            <dt>Nome da mãe: </dt>
-                            <dd>${returnHighlightedProperty(doc, 'nome_mae', data[key].highlighting)}</dd>
-                            <dt>CPF: </dt>
-                            <dd>${formatCPF(doc.num_cpf)}</dd>
-                            <dt>Data de nascimento: </dt>
-                            <dd>${formatDate(doc.data_nascimento)}</dd>
-                        </dl>
-                    `
-                    break
-                case 'veiculo':
-                    finalHTML += `
-                    <dl>
-                        <dt>Veículo: </dt>
-                        <dd>${returnHighlightedProperty(doc, 'descricao', data[key].highlighting)}</dd>
-                        <dt>Proprietário: </dt>
-                        <dd>${returnHighlightedProperty(doc, 'proprietario', data[key].highlighting)}</dd>
-                    </dl>
-                    `
-            }
+            finalHTML += entityCard(doc, key, data)
         })
         finalHTML += '</div>'
     })
+    finalHTML += '</div>'
     document.querySelector('#search-result').innerHTML = finalHTML
     
     console.log(Object.keys(data))
 }
+
+const entityCard = (entity, key, data) => {
+    switch(key) {
+        case 'pessoa':
+            return pessoaCard(entity, key, data)
+        case 'veiculo':
+            return veiculoCard(entity, key, data)
+        default:
+            return JSON.stringify(entity)
+    }
+}
+
+const pessoaCard = (doc, key, data) => `
+    <div class="card-resultado clearfix">
+        <div class="col-lg-2">
+            <img src="/static/img/icon/${key}.svg" />
+        </div>
+        <div class="col-lg-10">
+            <div class="row">
+                <div class="col-lg-12">
+                    <h3>${returnHighlightedProperty(doc, 'nome', data['pessoa'].highlighting)}</h3>
+                </div>
+                <dl>
+                    <div class="col-lg-4">
+                        <dt>CPF: </dt>
+                        <dd>${formatCPF(doc.num_cpf)}</dd>
+                    </div>
+                    <div class="col-lg-4">
+                        <dt>Nome da mãe: </dt>
+                        <dd>${returnHighlightedProperty(doc, 'nome_mae', data['pessoa'].highlighting)}</dd>
+                    </div>
+                    <div class="col-lg-4">
+                        <dt>Data de nascimento: </dt>
+                        <dd>${formatDate(doc.data_nascimento)}</dd>
+                    </div>
+                </dl>
+            </div>
+        </div>
+    </div>
+`
+
+const veiculoCard = (doc, key, data) => `
+    <div class="card-resultado clearfix">
+        <div class="col-lg-2">
+            <img src="/static/img/icon/${key}.svg" />
+        </div>
+        <div class="col-lg-10">
+            <div class="row">
+                <div class="col-lg-12">
+                    <h3>${returnHighlightedProperty(doc, 'proprietario', data['veiculo'].highlighting)}</h3>
+                </div>
+                <dl>
+                    <div class="col-lg-3">
+                        <dt>Chassis: </dt>
+                        <dd>${returnHighlightedProperty(doc, 'chassi', data['veiculo'].highlighting)}</dd>
+                    </div>
+                    <div class="col-lg-2">
+                        <dt>Renavam: </dt>
+                        <dd>${returnHighlightedProperty(doc, 'renavam', data['veiculo'].highlighting)}</dd>
+                    </div>
+                    <div class="col-lg-7">
+                        <dt>Marca - Modelo - Ano - Cor - Placa: </dt>
+                        <dd>${returnHighlightedProperty(doc, 'descricao', data['veiculo'].highlighting)}</dd>
+                    </div>
+                </dl>
+            </div>
+        </div>
+    </div>
+`
 
 /**
  * 

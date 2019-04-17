@@ -22,87 +22,97 @@
             }
         </style>
     </head>
-    <body>
-        <div class="logo"></div>
-        <div class="busca">
-
-            <div id="loading">
-                <img src="/static/img/icon/Loading_icon.gif">
+    <body class="container-fluid">
+        <div class="col-lg-2">
+            <div class="entitylist">
+                <p>As entidades exibidas no grafo serão exibidas nesta barra lateral.</p>
+                <div id="entitylist"></div>
             </div>
-
-            <div id="search-area" class="hidden">
-                <form id="form-search-area">
-                    <div id="textBusca">
-                        <input type="text" placeholder="Digite aqui o valor que deseja buscar" id="textVal">
-                        <button id="buttonBusca">Localizar 🔎</button>
-                    </div>
-                </form>
-            </div>
-
-            <div id="search-result"></div>
-
-            <div id="step3" class="hidden">
-                <button id="clear">
-                    <span>Voltar para a busca</span>
-                </button>
-            </div>
-
         </div>
-        <div id="graph"></div>
-        <div id="graph-popup"></div>
-        <aside id="sidebarRight"></aside>
-        <div class="footer">
-            <div class="filter">
-                <div class="hidden" id="filter-expanded">
-                    <div class="entity empresa">
-                        <span class="ball"></span>
-                        <span class="text">Empresa</span>
+        <div class="col-lg-8">  
+            <header>
+                <p id="version">
+                    <span id="version_number"></span><span id="version_username">{{session['usuario']}}</span>
+                </p>
+                <div class="logo"></div>
+            </header>
+            <main>
+                <div class="busca">
+                    <div id="loading">
+                        <img src="/static/img/icon/Loading_icon.gif">
                     </div>
-                    <div class="entity mgp">
-                        <span class="ball"></span>
-                        <span class="text">MGP</span>
+                    <div id="search-area" class="hidden">
+                        <form id="form-search-area">
+                            <div id="textBusca">
+                                <input type="text" placeholder="Digite aqui o valor que deseja buscar" id="textVal">
+                                <button id="buttonBusca">Localizar 🔎</button>
+                            </div>
+                        </form>
                     </div>
-                    <div class="entity multa">
-                        <span class="ball"></span>
-                        <span class="text">Multa</span>
-                    </div>
-                    <div class="entity orgao">
-                        <span class="ball"></span>
-                        <span class="text">Órgão</span>
-                    </div>
-                    <div class="entity personagem">
-                        <span class="ball"></span>
-                        <span class="text">Personagem</span>
-                    </div>
-                    <div class="entity pessoa">
-                        <span class="ball"></span>
-                        <span class="text">Pessoa</span>
-                    </div>
-                    <div class="entity telefone">
-                        <span class="ball"></span>
-                        <span class="text">Telefone</span>
-                    </div>
-                    <div class="entity veiculo">
-                        <span class="ball"></span>
-                        <span class="text">Veículo</span>
+                    <div id="search-result"></div>
+                    <div id="step3" class="hidden">
+                        <button id="clear">
+                            <span>Voltar para a busca</span>
+                        </button>
                     </div>
                 </div>
-                <div id="filter-call">
-                    <span class="ball"></span>
-                    <!-- <span class="text">Clique para filtrar tipos de entidades</span> -->
+                <div id="graph"></div>
+                <div id="graph-popup"></div>
+            </main>
+            <footer>
+                <div class="footer">
+                    <div class="col-lg-1">
+                        <div class="filter">
+                            <div class="hidden" id="filter-expanded">
+                                <div class="entity empresa">
+                                    <span class="ball"></span>
+                                    <span class="text">Empresa</span>
+                                </div>
+                                <div class="entity mgp">
+                                    <span class="ball"></span>
+                                    <span class="text">MGP</span>
+                                </div>
+                                <div class="entity multa">
+                                    <span class="ball"></span>
+                                    <span class="text">Multa</span>
+                                </div>
+                                <div class="entity orgao">
+                                    <span class="ball"></span>
+                                    <span class="text">Órgão</span>
+                                </div>
+                                <div class="entity personagem">
+                                    <span class="ball"></span>
+                                    <span class="text">Personagem</span>
+                                </div>
+                                <div class="entity pessoa">
+                                    <span class="ball"></span>
+                                    <span class="text">Pessoa</span>
+                                </div>
+                                <div class="entity telefone">
+                                    <span class="ball"></span>
+                                    <span class="text">Telefone</span>
+                                </div>
+                                <div class="entity veiculo">
+                                    <span class="ball"></span>
+                                    <span class="text">Veículo</span>
+                                </div>
+                            </div>
+                            <div id="filter-call">
+                                <span class="ball"></span>
+                                <!-- <span class="text">Clique para filtrar tipos de entidades</span> -->
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-1 col-lg-offset-10">
+                        <a href="http://apps.mprj.mp.br/sistema/cadg/" class="mprj">
+                            <span><abbr title="Ministério Público">MP</abbr> em Mapas</span>
+                        </a>
+                    </div>
                 </div>
-            </div>
-
-            <a href="http://apps.mprj.mp.br/sistema/cadg/" class="mprj">
-                <span><abbr title="Ministério Público">MP</abbr> em Mapas</span>
-            </a>
+            </footer>
         </div>
-        <div class="entitylist">
-            <p>As entidades exibidas no grafo serão exibidas nesta barra lateral.</p>
-            <div id="entitylist"></div>
-        </div>
-        <div id="version">
-            <span id="version_number"></span><span id="version_username">{{session['usuario']}}</span>
+        <div class="col-lg-2">
+            <aside id="sidebarRight"></aside>
         </div>
         {% assets "js" %}
             <script type="text/javascript" src="{{ ASSET_URL }}"></script>

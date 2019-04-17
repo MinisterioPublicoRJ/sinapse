@@ -1,6 +1,5 @@
 span.tooltip {
     display: none;
-    position: absolute;
     width: 100px;
     height: 15px;
     line-height: 15px;
@@ -54,12 +53,8 @@ span.tooltip:after {
 /* computer */
 @media all and (min-width:30em) {
     #search-area {
-        position: absolute;
         width: 500px;
-        top: 50%;
-        left: 47%;
-        margin-left: -200px;
-        margin-top: -120px;
+        margin: 0 auto;
         text-align: center;
         z-index: 2;
     }
@@ -529,7 +524,40 @@ span.tooltip:after {
     }
 }
 
+
+
+
+
+
+
 .busca em {
     background-color: yellow;
     font-style: normal;
 }
+
+.card-resultado {
+    background: #f9f9f9;
+    margin-top: 15px;
+    padding: 10px;
+}
+
+.card-resultado h3 {
+    margin: 0 0 5px;
+    text-align: left;
+}
+
+.card-resultado dt {
+    color: #9c9c9c;
+    font-weight: normal;
+}
+
+.busca .pessoa h3,
+.busca .pessoa dd {
+    color: #72d8f2;
+}
+
+.busca .veiculo h3,
+.busca .veiculo dd {
+    color: #f2727b;
+}
+
