@@ -288,34 +288,32 @@ const entityCard = (entity, key, data) => {
  * @param {Object} data.pessoa.highlighting.uuid a object that has a highlighted term
  * @param {String[]} data.pessoa.highlighting.uuid.prop the terms that matches the searched term
  */
-const pessoaCard = (doc, data) => {
-    return `
-        <div class="col-lg-2">
-            <img src="/static/img/icon/pessoa.svg" />
-        </div>
-        <div class="col-lg-10">
-            <div class="row">
-                <div class="col-lg-12">
-                    <h3>${returnHighlightedProperty(doc, 'nome', data.pessoa.highlighting)}</h3>
-                </div>
-                <dl>
-                    <div class="col-lg-4">
-                        <dt>CPF: </dt>
-                        <dd>${formatCPF(doc.num_cpf)}</dd>
-                    </div>
-                    <div class="col-lg-4">
-                        <dt>Nome da mãe: </dt>
-                        <dd>${returnHighlightedProperty(doc, 'nome_mae', data.pessoa.highlighting)}</dd>
-                    </div>
-                    <div class="col-lg-4">
-                        <dt>Data de nascimento: </dt>
-                        <dd>${formatDate(doc.data_nascimento)}</dd>
-                    </div>
-                </dl>
+const pessoaCard = (doc, data) => `
+    <div class="col-lg-2">
+        <img src="/static/img/icon/pessoa.svg" />
+    </div>
+    <div class="col-lg-10">
+        <div class="row">
+            <div class="col-lg-12">
+                <h3>${returnHighlightedProperty(doc, 'nome', data.pessoa.highlighting)}</h3>
             </div>
+            <dl>
+                <div class="col-lg-4">
+                    <dt>CPF: </dt>
+                    <dd>${formatCPF(doc.num_cpf)}</dd>
+                </div>
+                <div class="col-lg-4">
+                    <dt>Nome da mãe: </dt>
+                    <dd>${returnHighlightedProperty(doc, 'nome_mae', data.pessoa.highlighting)}</dd>
+                </div>
+                <div class="col-lg-4">
+                    <dt>Data de nascimento: </dt>
+                    <dd>${formatDate(doc.data_nascimento)}</dd>
+                </div>
+            </dl>
         </div>
-    `
-}
+    </div>
+`
 
 /**
  * Creates a card for a given vehicle
@@ -330,34 +328,32 @@ const pessoaCard = (doc, data) => {
  * @param {Object} data.veiculo.highlighting.uuid a object that has a highlighted term
  * @param {String[]} data.veiculo.highlighting.uuid.prop the terms that matches the searched term
  */
-const veiculoCard = (doc, data) => {
-    return
-        `<div class="col-lg-2">
-            <img src="/static/img/icon/veiculo.svg" />
-        </div>
-        <div class="col-lg-10">
-            <div class="row">
-                <div class="col-lg-12">
-                    <h3>${returnHighlightedProperty(doc, 'proprietario', data.veiculo.highlighting)}</h3>
-                </div>
-                <dl>
-                    <div class="col-lg-3">
-                        <dt>Chassis: </dt>
-                        <dd>${returnHighlightedProperty(doc, 'chassi', data.veiculo.highlighting)}</dd>
-                    </div>
-                    <div class="col-lg-2">
-                        <dt>Renavam: </dt>
-                        <dd>${returnHighlightedProperty(doc, 'renavam', data.veiculo.highlighting)}</dd>
-                    </div>
-                    <div class="col-lg-7">
-                        <dt>Marca - Modelo - Ano - Cor - Placa: </dt>
-                        <dd>${returnHighlightedProperty(doc, 'descricao', data.veiculo.highlighting)}</dd>
-                    </div>
-                </dl>
+const veiculoCard = (doc, data) => `
+    <div class="col-lg-2">
+        <img src="/static/img/icon/veiculo.svg" />
+    </div>
+    <div class="col-lg-10">
+        <div class="row">
+            <div class="col-lg-12">
+                <h3>${returnHighlightedProperty(doc, 'proprietario', data.veiculo.highlighting)}</h3>
             </div>
+            <dl>
+                <div class="col-lg-3">
+                    <dt>Chassis: </dt>
+                    <dd>${returnHighlightedProperty(doc, 'chassi', data.veiculo.highlighting)}</dd>
+                </div>
+                <div class="col-lg-2">
+                    <dt>Renavam: </dt>
+                    <dd>${returnHighlightedProperty(doc, 'renavam', data.veiculo.highlighting)}</dd>
+                </div>
+                <div class="col-lg-7">
+                    <dt>Marca - Modelo - Ano - Cor - Placa: </dt>
+                    <dd>${returnHighlightedProperty(doc, 'descricao', data.veiculo.highlighting)}</dd>
+                </div>
+            </dl>
         </div>
-    `
-}
+    </div>
+`
 
 /**
  * Returns a matching highlighting property value from the document, or the value itself
