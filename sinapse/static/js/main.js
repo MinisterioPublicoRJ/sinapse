@@ -200,46 +200,49 @@ const initSearch = () => {
     })
 }
 
+/**
+ * Sanitizes a string to use on search API - removes diacritics (á, ç etc.) and makes it uppercase
+ * @param {String} string A string to be sanitized
+ */
 const sanitizeQuery = string => {
+    if (string.normalize) {
+        return string.normalize('NFD').replace(/[\u0300-\u036f]/g, "").toUpperCase()
+    }
     return string.toUpperCase()
 }
 
+/**
+ * Function called when search call is returned from API
+ * @param {Object} data data from API
+ * @param {Object} data.object_type objects of a given type that matches this search term. currently supported are: empresa, pessoa, veiculo
+ * @param {Object} data.object_type.highlighting highlighted terms returned by search
+ * @param {Object} data.object_type.highlighting.uuid a object that has a highlighted term
+ * @param {String[]} data.object_type.highlighting.uuid.prop the terms that matches the searched term
+ * @param {Object} data.object_type.response the data that matches the searched term
+ * @param {Object[]} data.object_type.response.docs each matched object data (entity)
+ * @param {Number} data.object_type.respose.numFound the quantity of items matching this search
+ * @param {Number} data.object_type.response.start first item, should be 0 unless making pagination
+ */
 const searchCallback = data => {
-
-    // labels.forEach(type => {
-    //     let nodesForThisType = sortByType(nodesData.filter(node => node.type[0] === type), type)
-    //     if (nodesForThisType.length) {
-    //         entityListToWrite += `<h2>${type}</h2>`
-    //         nodesForThisType.forEach(node => {
-    //             entityListToWrite += nodeToDOMString(node)
-    //         })
-    //     }
-    // })
-    let templateString = `<div>
-        <h2>data.key</h2>
-        <div id="searchTab-data.key" class="data.key">
-            <h3>Propriedade Principal</h3>
-            <p>Propriedades secundárias</p>
-        </div>
-    </div>`
     let finalHTML = '<ul class="nav nav-tabs" role="tablist">'
 
+    // first it iterates each 'object_type' (empresa, pessoa, veiculo) to create tabs
     Object.keys(data).forEach((key, index) => {
         finalHTML += `<li role="presentation" ${index === 1 ? 'class="active"' : ''}>
             <a href="#${key}" role="tab" class="custom-tab ${key}" data-toggle="tab">
                 <img src="/static/img/icon/${key}.svg" />
                 <p>${data[key].response.numFound}</p>
-                <p>${key}s</p>
+                <p>${key}${data[key].response.numFound > 1 ? 's' : ''}</p>
             </a>
         </li>`
     })
 
     finalHTML += '</ul> <div class="tab-content">'
 
-    
+    // then, for each 'object_type', create a tab panel
     Object.keys(data).forEach((key, indexKey) => {
-        console.log(key, data[key])
         finalHTML += `<div role="tabpanel" class="tab-pane ${indexKey === 1 ? 'active' : ''} ${key}" id="${key}">`
+        // and for each 'doc', create a card
         data[key].response.docs.forEach(doc => {
             finalHTML += entityCard(doc, key, data)
         })
@@ -251,26 +254,46 @@ const searchCallback = data => {
     console.log(Object.keys(data))
 }
 
+/**
+ * Creates a card for a doc/entity
+ * @param {Object} entity data for this entity
+ * @param {String} key the entity type (empresa, pessoa, veiculo)
+ * @param {*} data The whole data returned from API, to get highlight information
+ */
 const entityCard = (entity, key, data) => {
     switch(key) {
         case 'pessoa':
-            return pessoaCard(entity, key, data)
+            return pessoaCard(entity, data)
         case 'veiculo':
-            return veiculoCard(entity, key, data)
+            return veiculoCard(entity, data)
         default:
+            // just spit it out
             return JSON.stringify(entity)
     }
 }
 
-const pessoaCard = (doc, key, data) => `
+/**
+ * Creates a card for a given person
+ * @param {Object} doc a entity document representing a person
+ * @param {String} doc.nome Person's name
+ * @param {Number} doc.num_cpf Person's CPF number, as a Number (so without leading zero)
+ * @param {String} doc.nome_mae Person's mother's name
+ * @param {String} doc.data_nascimento Person's born date, as a string on the format: YYYY-MM-DD
+ * @param {Object} data data from API
+ * @param {Object} data.pessoa 
+ * @param {Object} data.pessoa.highlighting highlighted terms returned by search
+ * @param {Object} data.pessoa.highlighting.uuid a object that has a highlighted term
+ * @param {String[]} data.pessoa.highlighting.uuid.prop the terms that matches the searched term
+ */
+const pessoaCard = (doc, data) => `
     <div class="card-resultado clearfix">
         <div class="col-lg-2">
-            <img src="/static/img/icon/${key}.svg" />
+            <img src="/static/img/icon/pessoa.svg" />
         </div>
         <div class="col-lg-10">
             <div class="row">
                 <div class="col-lg-12">
-                    <h3>${returnHighlightedProperty(doc, 'nome', data['pessoa'].highlighting)}</h3>
+                    <h3>${returnHighlightedProperty(doc, 'nome', data.pessoa.highlighting)}</h3>
                 </div>
                 <dl>
                     <div class="col-lg-4">
@@ -279,7 +302,7 @@ const pessoaCard = (doc, key, data) => `
                     </div>
                     <div class="col-lg-4">
                         <dt>Nome da mãe: </dt>
-                        <dd>${returnHighlightedProperty(doc, 'nome_mae', data['pessoa'].highlighting)}</dd>
+                        <dd>${returnHighlightedProperty(doc, 'nome_mae', data.pessoa.highlighting)}</dd>
                     </div>
                     <div class="col-lg-4">
                         <dt>Data de nascimento: </dt>
@@ -291,28 +314,41 @@ const pessoaCard = (doc, key, data) => `
     </div>
 `
 
-const veiculoCard = (doc, key, data) => `
+/**
+ * Creates a card for a given vehicle
+ * @param {Object} doc a entity document representing a vehicle
+ * @param {String} doc.proprietario Vehicle owner's name
+ * @param {Number} doc.chassi Vehicle unique chassi number
+ * @param {String} doc.renavam Vehicle unique Renavam number
+ * @param {String} doc.descricao Vehicle description, with brand, model, year and color
+ * @param {Object} data data from API
+ * @param {Object} data.veiculo 
+ * @param {Object} data.veiculo.highlighting highlighted terms returned by search
+ * @param {Object} data.veiculo.highlighting.uuid a object that has a highlighted term
+ * @param {String[]} data.veiculo.highlighting.uuid.prop the terms that matches the searched term
+ */
+const veiculoCard = (doc, data) => `
     <div class="card-resultado clearfix">
         <div class="col-lg-2">
-            <img src="/static/img/icon/${key}.svg" />
+            <img src="/static/img/icon/veiculo.svg" />
         </div>
         <div class="col-lg-10">
             <div class="row">
                 <div class="col-lg-12">
-                    <h3>${returnHighlightedProperty(doc, 'proprietario', data['veiculo'].highlighting)}</h3>
+                    <h3>${returnHighlightedProperty(doc, 'proprietario', data.veiculo.highlighting)}</h3>
                 </div>
                 <dl>
                     <div class="col-lg-3">
                         <dt>Chassis: </dt>
-                        <dd>${returnHighlightedProperty(doc, 'chassi', data['veiculo'].highlighting)}</dd>
+                        <dd>${returnHighlightedProperty(doc, 'chassi', data.veiculo.highlighting)}</dd>
                     </div>
                     <div class="col-lg-2">
                         <dt>Renavam: </dt>
-                        <dd>${returnHighlightedProperty(doc, 'renavam', data['veiculo'].highlighting)}</dd>
+                        <dd>${returnHighlightedProperty(doc, 'renavam', data.veiculo.highlighting)}</dd>
                     </div>
                     <div class="col-lg-7">
                         <dt>Marca - Modelo - Ano - Cor - Placa: </dt>
-                        <dd>${returnHighlightedProperty(doc, 'descricao', data['veiculo'].highlighting)}</dd>
+                        <dd>${returnHighlightedProperty(doc, 'descricao', data.veiculo.highlighting)}</dd>
                     </div>
                 </dl>
             </div>
@@ -321,7 +357,7 @@ const veiculoCard = (doc, key, data) => `
 `
 
 /**
- * 
+ * Returns a matching highlighting property value from the document, or the value itself
  * @param {Object} doc 
  * @param {String} doc.uuid
  * @param {String} doc[prop]
