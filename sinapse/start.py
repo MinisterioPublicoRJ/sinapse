@@ -25,9 +25,11 @@ from sinapse.buildup import (
     _AUTH_MPRJ,
     _USERINFO_MPRJ,
 )
-from sinapse.detran.tasks import get_photos_asynch
+from sinapse.tasks import (get_person_photo_asynch,
+                           get_vehicle_photo_asynch)
 from sinapse.detran.utils import get_node_id
 from sinapse.queries import find_next_nodes
+
 
 def parse_json_to_visjs(json):
     nodes = {}
