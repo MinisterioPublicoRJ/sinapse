@@ -2,7 +2,7 @@ import requests
 
 from decouple import config
 
-from sinapse.buildup import _FOTOS_DETRAN
+from sinapse.buildup import _IMAGENS
 from sinapse.detran.utils import find_relations_info, parse_content
 from sinapse.queries import find_next_nodes, update_photo_status
 
