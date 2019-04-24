@@ -250,8 +250,6 @@ const searchCallback = data => {
     })
     finalHTML += '</div>'
     document.querySelector('#search-result').innerHTML = finalHTML
-    
-    console.log(Object.keys(data))
 }
 
 /**
@@ -261,15 +259,20 @@ const searchCallback = data => {
  * @param {*} data The whole data returned from API, to get highlight information
  */
 const entityCard = (entity, key, data) => {
+    let ret = `<div class="card-resultado clearfix" onclick="showEntity(${entity.uuid})">`
     switch(key) {
         case 'pessoa':
-            return pessoaCard(entity, data)
+            ret += pessoaCard(entity, data)
+            break
         case 'veiculo':
-            return veiculoCard(entity, data)
+            ret += veiculoCard(entity, data)
+            break
         default:
             // just spit it out
-            return JSON.stringify(entity)
+            ret += JSON.stringify(entity)
     }
+    ret += `</div>`
+    return ret
 }
 
 /**
@@ -285,8 +288,8 @@ const entityCard = (entity, key, data) => {
  * @param {Object} data.pessoa.highlighting.uuid a object that has a highlighted term
  * @param {String[]} data.pessoa.highlighting.uuid.prop the terms that matches the searched term
  */
-const pessoaCard = (doc, data) => `
-    <div class="card-resultado clearfix">
+const pessoaCard = (doc, data) => {
+    return `
         <div class="col-lg-2">
             <img src="/static/img/icon/pessoa.svg" />
         </div>
@@ -311,8 +314,8 @@ const pessoaCard = (doc, data) => `
                 </dl>
             </div>
         </div>
-    </div>
-`
+    `
+}
 
 /**
  * Creates a card for a given vehicle
@@ -327,9 +330,9 @@ const pessoaCard = (doc, data) => `
  * @param {Object} data.veiculo.highlighting.uuid a object that has a highlighted term
  * @param {String[]} data.veiculo.highlighting.uuid.prop the terms that matches the searched term
  */
-const veiculoCard = (doc, data) => `
-    <div class="card-resultado clearfix">
-        <div class="col-lg-2">
+const veiculoCard = (doc, data) => {
+    return
+        `<div class="col-lg-2">
             <img src="/static/img/icon/veiculo.svg" />
         </div>
         <div class="col-lg-10">
@@ -353,8 +356,8 @@ const veiculoCard = (doc, data) => `
                 </dl>
             </div>
         </div>
-    </div>
-`
+    `
+}
 
 /**
  * Returns a matching highlighting property value from the document, or the value itself
@@ -973,6 +976,13 @@ const formatVehiclePlate = plate => {
         return `${plate.substr(0,3)}-${plate.substr(3)}`
     }
     return plate
+}
+
+const showEntity = uuid => {
+    console.log(`showEntity(${uuid})`)
+    document.querySelector('.busca').style.display = 'none'
+    //getNextNodes(uuid)
+    getNextNodes(140885160)
 }
 
 // Finally, declare init function to run when the page loads.

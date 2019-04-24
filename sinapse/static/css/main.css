@@ -7,6 +7,14 @@ header, main {
     text-align: center
 }
 
+.container-graph, .container-sidebar {
+    height: 100%;
+}
+
+.container-graph main {
+    height: 80%;
+}
+
 .logo {
     background-color: white;
     background-image: url('/static/img/logo-conexao.svg');
