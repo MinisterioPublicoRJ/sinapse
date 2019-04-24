@@ -85,6 +85,9 @@ const initVisjs = () => {
             const selectedNode = nodesData.filter(node => node.id === selectedNodeId)[0]
             populateSidebarRight(selectedNode)
             showSidebarRight()
+        } else {
+            emptySidebarRight()
+            hideSidebarRight()
         }
     })
     network.on('doubleClick', function(params) {
@@ -634,6 +637,12 @@ const get = (url, callback) => {
     xmlhttp.send(null)
 }
 
+const emptySidebarRight = () => {
+    while (sidebarRight.hasChildNodes()) {
+        sidebarRight.removeChild(sidebarRight.firstChild)
+    }
+}
+
 /**
  * Populates Right Sidebar with data form a node.
  *
@@ -642,10 +651,7 @@ const get = (url, callback) => {
 const populateSidebarRight = node => {
     sidebarRight.setAttribute('class', node.type[0])
 
-    // empty sidebarRight
-    while (sidebarRight.hasChildNodes()) {
-        sidebarRight.removeChild(sidebarRight.firstChild)
-    }
+    emptySidebarRight()
 
     let content = document.createElement('div')
     content.setAttribute('id', 'content')
