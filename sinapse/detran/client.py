@@ -85,7 +85,7 @@ def get_processed_rg(rg):
     return response.status_code, response.content
 
 
-def get_person_photos(node_id):
+def get_person_photo(node_id):
     next_nodes = find_next_nodes(node_id, path_size=2)
     label = 'pessoa'
     infos = find_relations_info(
