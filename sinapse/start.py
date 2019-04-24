@@ -379,8 +379,10 @@ def api_findNodes():
     numero_de_nos = conta_nos(opcoes, letras)
 
     node_id = get_node_id(response.json())
-    # Call asynchronously task
-    get_photos_asynch.delay(node_id)
+
+    # Call asynchronously tasks
+    get_person_photo_asynch.delay(node_id)
+    get_vehicle_photo_asynch.delay(node_id)
 
     return respostajson_visjs(response, numero_de_nos=numero_de_nos)
 
@@ -396,8 +398,10 @@ def api_nextNodes():
     response = find_next_nodes(node_id, rel_types)
 
     numero_expansoes = conta_expansoes(node_id, rel_types)
-    # Call asynchronously task
-    get_photos_asynch.delay(node_id)
+
+    # Call asynchronously tasks
+    get_person_photo_asynch.delay(node_id)
+    get_vehicle_photo_asynch.delay(node_id)
 
     return respostajson_visjs(response, numero_de_expansoes=numero_expansoes)
 
