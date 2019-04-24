@@ -107,11 +107,12 @@ def get_person_photos(node_id):
         status, content = get_processed_rg(success.rg)
         photo = parse_content(content, 'fotoCivil')
         if photo is not None and photo != '':
-            _FOTOS_DETRAN.update(
+            _IMAGENS.update(
                 {'rg': success.rg},
                 {'$set': {
-                    'foto': photo,
-                    'node_id': success.node_id
+                    'imagem': photo,
+                    'uuid': success.node_id,
+                    'tipo': label
                 }},
                 upsert=True
             )

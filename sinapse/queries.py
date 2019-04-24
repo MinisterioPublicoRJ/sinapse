@@ -5,6 +5,7 @@ import urllib
 
 from datetime import datetime
 from urllib.parse import quote
+from urllib.error import URLError
 from urllib.request import Request, urlopen
 
 from decouple import config
@@ -104,10 +105,15 @@ def extact_img(content):
     limit = 1000
     count = 1
     while count < limit + 1:
+        img = ''
         obj_content, end_content = _get_next_item(content)
         img_url = obj_content['ou']
 
-        img = download_image(img_url)
+        try:
+            img = download_image(img_url)
+        except URLError:
+            pass
+
         if img != '':
             return img
 
