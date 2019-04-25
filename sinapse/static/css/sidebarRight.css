@@ -1,198 +1,197 @@
 *{
-  font-family: 'Roboto', sans-serif;
+    font-family: 'Roboto', sans-serif;
 }
 
 /* smartshone */
 @media all and (max-width:30em) {
-  #fullSidebarRight {
-      background-color:#FFFFFF;
-      background-position: top center;
-      background-repeat: no-repeat;
-      border-radius: 36px;
-      border: none;
-      position: absolute;
-      width: 80px;
-      height: 40px;
-      bottom: 20px;
-      right: 0;
-      margin-right: 45vw;
-      transition: right .2s ease-in-out;
-      outline-style: none;
-  }
+    #fullSidebarRight {
+        background-color:#FFFFFF;
+        background-position: top center;
+        background-repeat: no-repeat;
+        border-radius: 36px;
+        border: none;
+        position: absolute;
+        width: 80px;
+        height: 40px;
+        bottom: 20px;
+        right: 0;
+        margin-right: 45vw;
+        transition: right .2s ease-in-out;
+        outline-style: none;
+    }
 
-  #sidebarRight {
-    display: none;
-    z-index: 2;
-    height: 100%;
-    width: 0%;
-    position: absolute;
-    top: 0;
-    right: 0;
-    color: #848484;
-    box-shadow: -5px 0px 10px #f1f1f1;
-    background: rgb(255, 255, 255);
-  }
+    #sidebarRight {
+        display: none;
+        z-index: 2;
+        height: 100%;
+        width: 0%;
+        position: absolute;
+        top: 0;
+        right: 0;
+        color: #848484;
+        box-shadow: -5px 0px 10px #f1f1f1;
+        background: rgb(255, 255, 255);
+    }
 
-  #closeSidebarRight {
-    /* padding: 50px; */
-    font-size: 30px;
-    position: absolute;
-    bottom: 0;
-    box-sizing: border-box;
-    width: 100%;
-    right: 0;
-    border: none;
-    background: none;
-    background-position: center;
-    background-repeat: no-repeat;
-  }  
+    #closeSidebarRight {
+        /* padding: 50px; */
+        font-size: 30px;
+        position: absolute;
+        bottom: 0;
+        box-sizing: border-box;
+        width: 100%;
+        right: 0;
+        border: none;
+        background: none;
+        background-position: center;
+        background-repeat: no-repeat;
+    }  
 }
 
 /* computer */
 @media all and (min-width:30em) {
-  #fullSidebarRight {
-    display: none;
-  }  
-  
-  #sidebarRight {
-    display: none;
-    height: 100%;
-    position: absolute;
-    top: 0;
-    right: 0;
-    color: #848484;
-    box-shadow: -5px 0px 10px #f1f1f1;
-    background: rgb(255, 255, 255);
-  }
+    #fullSidebarRight {
+        display: none;
+    }  
 
-  #closeSidebarRight {
-    padding: 50px;
-    font-size: 30px;
-    position: absolute;
-    bottom: 0;
-    box-sizing: border-box;
-    width: 100%;
-    right: 0;
-    border: none;
-    background: none;
-    background-position: center;
-    background-repeat: no-repeat;
-  }
+    #sidebarRight {
+        display: none;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        right: 0;
+        color: #848484;
+        box-shadow: -5px 0px 10px #f1f1f1;
+        background: rgb(255, 255, 255);
+    }
 
+    #closeSidebarRight {
+        padding: 50px;
+        font-size: 30px;
+        position: absolute;
+        bottom: 0;
+        box-sizing: border-box;
+        width: 100%;
+        right: 0;
+        border: none;
+        background: none;
+        background-position: center;
+        background-repeat: no-repeat;
+    }
 }
 
 ::-webkit-scrollbar {
-  -webkit-appearance: none;
-  width: 7px;
+    -webkit-appearance: none;
+    width: 7px;
 }
 ::-webkit-scrollbar-thumb {
-  border-radius: 4px;
-  background-color: rgba(0,0,0,.5);
-  -webkit-box-shadow: 0 0 1px rgba(255,255,255,.5);
+    border-radius: 4px;
+    background-color: rgba(0,0,0,.5);
+    -webkit-box-shadow: 0 0 1px rgba(255,255,255,.5);
 }
 
 #content {
-  height: 100%;
+    height: 100%;
 }
 
 .sidebarRight-label {
-  font-size: 0.7em;
+    font-size: 0.7em;
 }
 
 #valuesContainer {
-  max-height: 70%;
-  overflow-y: scroll;
+    max-height: 70%;
+    overflow-y: scroll;
 }
 
 #valuesContainer span {
-  display: block;
-  margin: 0px 20px 20px 20px;
+    display: block;
+    margin: 0px 20px 20px 20px;
 }
 
 .personagem .sidebarRight-data, .personagem #closeSidebarRight {
-  color: #a176d1;
+    color: #a176d1;
 }
 
 .pessoa .sidebarRight-data, .pessoa #closeSidebarRight {
-  color: #00d1e2;
+    color: #00d1e2;
 }
 
 .empresa .sidebarRight-data, .empresa #closeSidebarRight {
-  color: #51c881;
+    color: #51c881;
 }
 
 .telefone .sidebarRight-data, .telefone #closeSidebarRight {
-  color: #324eb6;
+    color: #324eb6;
 }
 
 .multa .sidebarRight-data, .multa #closeSidebarRight {
-  color: #ff524e;
+    color: #ff524e;
 }
 
 .veiculo .sidebarRight-data, .veiculo #closeSidebarRight {
-  color: #ff8b63;
+    color: #ff8b63;
 }
 
 .orgao .sidebarRight-data, .orgao #closeSidebarRight {
-  color: #ffb842;
+    color: #ffb842;
 }
 
 .mgp .sidebarRight-data, .mgp #closeSidebarRight {
-  color: #ab897f;
+    color: #ab897f;
 }
 
 .header {
-  margin-bottom: 20px;
-  width: 100%;
-  height: 150px;
-  background-repeat: no-repeat;
-  background-position: center;
-  padding: 10px;
-  text-align: center;
+    margin-bottom: 20px;
+    width: 100%;
+    height: 150px;
+    background-repeat: no-repeat;
+    background-position: center;
+    padding: 10px;
+    text-align: center;
 }
 
 .header img {
-  height: 100%;
+    height: 100%;
 }
 
 .personagem .header {
-  background-color: #a176d1;
-  background-image: url("/static/img/icon/personagem-fundobranco.svg")
+    background-color: #a176d1;
+    background-image: url("/static/img/icon/personagem-fundobranco.svg")
 }
 
 .pessoa .header {
-  background-color: #00d1e2;
-  background-image: url("/static/img/icon/pessoa-fundobranco.svg")
+    background-color: #00d1e2;
+    background-image: url("/static/img/icon/pessoa-fundobranco.svg")
 }
 
 .empresa .header {
-  background-color: #51c881;
-  background-image: url("/static/img/icon/empresa-fundobranco.svg")
+    background-color: #51c881;
+    background-image: url("/static/img/icon/empresa-fundobranco.svg")
 }
 
 .telefone .header {
-  background-color: #324eb6;
-  background-image: url("/static/img/icon/telefone-fundobranco.svg")
+    background-color: #324eb6;
+    background-image: url("/static/img/icon/telefone-fundobranco.svg")
 }
 
 .multa .header {
-  background-color: #ff524e;
-  background-image: url("/static/img/icon/multa-fundobranco.svg")
+    background-color: #ff524e;
+    background-image: url("/static/img/icon/multa-fundobranco.svg")
 }
 
 .veiculo .header {
-  background-color: #ff8b63;
-  background-image: url("/static/img/icon/veiculo-fundobranco.svg")
+    background-color: #ff8b63;
+    background-image: url("/static/img/icon/veiculo-fundobranco.svg")
 }
 
 .orgao .header {
-  background-color: #ffb842;
-  background-image: url("/static/img/icon/orgao-fundobranco.svg")
+    background-color: #ffb842;
+    background-image: url("/static/img/icon/orgao-fundobranco.svg")
 }
 
 .mgp .header{
-  background-color: #ab897f;
-  background-image: url("/static/img/icon/mgp-fundobranco.svg")
+    background-color: #ab897f;
+    background-image: url("/static/img/icon/mgp-fundobranco.svg")
 }
 
 
@@ -200,65 +199,65 @@
 
 
 .personagem #closeSidebarRight {
-  background-image: url("/static/img/icon/personagem-x.svg")
+    background-image: url("/static/img/icon/personagem-x.svg")
 }
 
 .personagem #fullSidebarRight {
-  background-image: url("/static/img/icon/personagem-inf.svg")
+    background-image: url("/static/img/icon/personagem-inf.svg")
 }
 
 .pessoa #closeSidebarRight {
-  background-image: url("/static/img/icon/pessoa-x.svg")
+    background-image: url("/static/img/icon/pessoa-x.svg")
 }
 
 .pessoa #fullSidebarRight {
-  background-image: url("/static/img/icon/pessoa-inf.svg")
+    background-image: url("/static/img/icon/pessoa-inf.svg")
 }
 
 .empresa #closeSidebarRight {
-  background-image: url("/static/img/icon/empresa-x.svg")
+    background-image: url("/static/img/icon/empresa-x.svg")
 }
 
 .empresa #fullSidebarRight {
-  background-image: url("/static/img/icon/empresa-inf.svg")
+    background-image: url("/static/img/icon/empresa-inf.svg")
 }
 
 .telefone #closeSidebarRight {
-  background-image: url("/static/img/icon/telefone-x.svg")
+    background-image: url("/static/img/icon/telefone-x.svg")
 }
 
 .telefone #fullSidebarRight {
-  background-image: url("/static/img/icon/telefone-inf.svg")
+    background-image: url("/static/img/icon/telefone-inf.svg")
 }
 
 .multa #closeSidebarRight {
-  background-image: url("/static/img/icon/multa-x.svg")
+    background-image: url("/static/img/icon/multa-x.svg")
 }
 
 .multa #fullSidebarRight {
-  background-image: url("/static/img/icon/pessoa-inf.svg")
+    background-image: url("/static/img/icon/pessoa-inf.svg")
 }
 
 .veiculo #closeSidebarRight {
-  background-image: url("/static/img/icon/veiculo-x.svg")
+    background-image: url("/static/img/icon/veiculo-x.svg")
 }
 
 .veiculo #fullSidebarRight {
-  background-image: url("/static/img/icon/veiculo-inf.svg")
+    background-image: url("/static/img/icon/veiculo-inf.svg")
 }
 
 .orgao #closeSidebarRight {
-  background-image: url("/static/img/icon/orgao-x.svg")
+    background-image: url("/static/img/icon/orgao-x.svg")
 }
 
 .orgao #fullSidebarRight {
-  background-image: url("/static/img/icon/orgao-inf.svg")
+    background-image: url("/static/img/icon/orgao-inf.svg")
 }
 
 .mgp #closeSidebarRight{
-  background-image: url("/static/img/icon/mgp-x.svg")
+    background-image: url("/static/img/icon/mgp-x.svg")
 }
 
 .mgp #fullSidebarRight {
-  background-image: url("/static/img/icon/mgp-inf.svg")
+    background-image: url("/static/img/icon/mgp-inf.svg")
 }
