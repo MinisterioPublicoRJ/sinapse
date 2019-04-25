@@ -227,6 +227,7 @@ const sanitizeQuery = string => {
  * @param {Number} data.object_type.response.start first item, should be 0 unless making pagination
  */
 const searchCallback = data => {
+    document.querySelector('#balls-animation').style.display = 'none'
     let finalHTML = '<ul class="nav nav-tabs" role="tablist">'
 
     // first it iterates each 'object_type' (empresa, pessoa, veiculo) to create tabs

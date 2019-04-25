@@ -1,3 +1,10 @@
+#balls-animation {
+    margin: 30vh auto 10vh;
+    width: 50vw;
+    height: 20vh;
+    border: 1px solid red;
+}
+
 span.tooltip {
     display: none;
     width: 100px;
@@ -64,10 +71,11 @@ span.tooltip:after {
     border-bottom-style: solid;
     border-bottom-width: 1px;
     color: #72d8f2;
-    font-size: 50px;
-    font-weight: bold;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 36px;
     opacity: .8;
     text-align: center;
+    text-transform: uppercase;
     width: 100%;
 }
 #search-area #textVal:focus {
@@ -75,7 +83,7 @@ span.tooltip:after {
 }
 #search-area #textVal::placeholder {
     color: #72d8f2;
-    font-size: 50px;
+    font-size: 42px;
 }
 #search-area #buttonBusca {
     color: black;
@@ -533,6 +541,14 @@ span.tooltip:after {
 .busca em {
     background-color: yellow;
     font-style: normal;
+}
+
+.nav-tabs>li {
+    filter: grayscale(1)
+}
+
+.nav-tabs>li.active {
+    filter: grayscale(0)
 }
 
 .custom-tab {

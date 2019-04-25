@@ -8,22 +8,15 @@
         <meta name="viewport" content="width=device-width">
         <title>Conexão</title>
         <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans:300" rel="stylesheet">
         {% assets "css" %}
             <link rel="stylesheet" href="{{ ASSET_URL }}">
             
         {% endassets %}
-        
-        <style>
-            body,
-            html,
-            .graph {
-                height: 100%;
-                overflow: hidden;
-            }
-        </style>
     </head>
     <body class="container-fluid">
         <div class="col-lg-2">
+            <div class="logo"></div>
             <div class="entitylist">
                 <p>As entidades exibidas no grafo serão exibidas nesta barra lateral.</p>
                 <div id="entitylist"></div>
@@ -34,7 +27,6 @@
                 <p id="version">
                     <span id="version_number"></span><span id="version_username">{{session['usuario']}}</span>
                 </p>
-                <div class="logo"></div>
             </header>
             <main>
                 <div class="busca">
@@ -42,6 +34,7 @@
                         <img src="/static/img/icon/Loading_icon.gif">
                     </div>
                     <div id="search-area" class="hidden">
+                        <div id="balls-animation"></div>
                         <form id="form-search-area">
                             <div id="textBusca">
                                 <input type="text" placeholder="O que deseja procurar?" id="textVal">
@@ -102,15 +95,13 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-lg-1 col-lg-offset-10">
-                        <a href="http://apps.mprj.mp.br/sistema/cadg/" class="mprj">
-                            <span><abbr title="Ministério Público">MP</abbr> em Mapas</span>
-                        </a>
-                    </div>
                 </div>
             </footer>
         </div>
         <div class="col-lg-2 container-sidebar">
+            <a href="http://apps.mprj.mp.br/sistema/cadg/" class="mprj">
+                <span><abbr title="Ministério Público">MP</abbr> em Mapas</span>
+            </a>
             <aside id="sidebarRight"></aside>
         </div>
         {% assets "js" %}

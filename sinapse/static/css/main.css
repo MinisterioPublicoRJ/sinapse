@@ -1,3 +1,13 @@
+body,
+html {
+    height: 100%;
+    overflow: hidden;
+}
+
+body {
+    padding-top: 20px;
+}
+
 #graph {
     width: 100%;
     height: 100%;
@@ -39,9 +49,7 @@ header, main {
         bottom: 20px;
         right: 0;
         z-index: 2;
-        /* margin-right: 20px;
-        transition: right .2s ease-in-out; */
-    }    
+    }
 
     .showingSidebarRight .mprj {
         right: 0%;
