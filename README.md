@@ -67,5 +67,39 @@ Para instalação das dependências do projeto é necessário instalar os pacote
     venv\bin\activate.bat
     app.bat
 
-O servidor *waitress* está configurado para rodar no endereço:  
+O servidor *waitress* está configurado para rodar no endereço:
 `http://127.0.0.1:8080`
+
+
+## Endpoints
+Busca de propriedades dos nós
+```
+/api/nodeProperties?label=veiculo
+```
+Busca dos tipos de nós
+```
+/api/labels
+```
+Busca de um nó
+```
+/api/nextNodes?node_id=1234
+```
+Busca das expansões de um nó
+```
+/api/findNodes?label=pessoa&prop=nome&val=joao da silva
+```
+Busca da foto de uma pessoa no DETRAN
+```
+/api/foto?rg=12334 ou api/foto?node_id=1234
+```
+Busca da foto do veículo
+```
+/api/foto-veiculo?caracteristicas=VW/SANTANA 2000 MI 1998 CINZA
+
+# As caracteristicas são o resultado da concatenação separada por espaço
+da marca, modelo e cor do veículo
+```
+Busca do caminho mais curto entre dois nós
+```
+/api/findShortestPath?node_id1=1234&node_id2=5678&rel_types=opicional"
+```
