@@ -1,3 +1,8 @@
+footer {
+    position: absolute;
+    bottom: 0;
+}
+
 .filter {
     bottom: 20px;
     left: 15%;

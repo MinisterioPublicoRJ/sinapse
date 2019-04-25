@@ -2,7 +2,6 @@
  * Init function called on window.onload.
  */
 const init = () => {
-    // initNeo4JD3()
     getLabels()
     initSearch()
     initFilter()
@@ -126,10 +125,18 @@ const setLabels = data => {
     labels = data
 
     // hides loading
+    hideLoading()
+
+    // displays search
+    document.querySelector('#search-area').className = ''
+}
+
+const showLoading = () => {
+    document.getElementById('loading').className = ''
+}
+
+const hideLoading = () => {
     document.getElementById('loading').className = 'hidden'
-    if (!window.filtroInicial) {
-        document.getElementById('search-area').className = ''
-    }
 }
 
 /**
@@ -198,7 +205,8 @@ const setProps = nodeProperties => {
 const initSearch = () => {
     document.getElementById('form-search-area').addEventListener('submit', e => {
         e.preventDefault()
-        
+        showLoading()
+        document.querySelector('#search-result').innerHTML = ''
         get(`/api/search?q=${sanitizeQuery(e.target[0].value)}`, searchCallback)
     })
 }
@@ -227,6 +235,7 @@ const sanitizeQuery = string => {
  * @param {Number} data.object_type.response.start first item, should be 0 unless making pagination
  */
 const searchCallback = data => {
+    hideLoading()
     document.querySelector('#balls-animation').style.display = 'none'
     let finalHTML = '<ul class="nav nav-tabs" role="tablist">'
 
@@ -250,6 +259,10 @@ const searchCallback = data => {
         data[key].response.docs.forEach(doc => {
             finalHTML += entityCard(doc, key, data)
         })
+        // treat empty result
+        if (data[key].response.docs.length === 0) {
+            finalHTML += '<p>Não há resultados para este tipo de entidade para o valor pesquisado.'
+        }
         finalHTML += '</div>'
     })
     finalHTML += '</div>'
@@ -302,15 +315,15 @@ const pessoaCard = (doc, data) => `
                 <h3>${returnHighlightedProperty(doc, 'nome', data.pessoa.highlighting)}</h3>
             </div>
             <dl>
-                <div class="col-lg-4">
+                <div class="col-lg-3">
                     <dt>CPF: </dt>
                     <dd>${formatCPF(doc.num_cpf)}</dd>
                 </div>
-                <div class="col-lg-4">
+                <div class="col-lg-6">
                     <dt>Nome da mãe: </dt>
                     <dd>${returnHighlightedProperty(doc, 'nome_mae', data.pessoa.highlighting)}</dd>
                 </div>
-                <div class="col-lg-4">
+                <div class="col-lg-3">
                     <dt>Data de nascimento: </dt>
                     <dd>${formatDate(doc.data_nascimento)}</dd>
                 </div>
@@ -373,7 +386,10 @@ const returnHighlightedProperty = (doc, prop, highlighting) => {
     if (highlighting[doc.uuid] && highlighting[doc.uuid][prop]) {
         return highlighting[doc.uuid][prop][0]
     }
-    return doc[prop]
+    if (doc[prop]) {
+        return doc[prop]
+    }
+    return 'desconhecido'
 }
 
 const checkRadio = () => {
@@ -462,6 +478,7 @@ const addColorToNode = node => {
  * @param {*} data Data from API data.
  */
 const updateNodes = data => {
+    document.querySelector('footer').className = ''
     // update graph. notice we only add non-existant nodes/edges - no duplicates are allowed.
     if (data.nodes) {
         for (node of data.nodes) {
@@ -804,13 +821,14 @@ const updateLeftSidebar = () => {
     document.querySelector('.entitylist').style.display = 'block'
     let entityListToWrite = ''
 
-    labels.forEach(type => {
+    labels.sort().forEach(type => {
         let nodesForThisType = sortByType(nodesData.filter(node => node.type[0] === type), type)
         if (nodesForThisType.length) {
-            entityListToWrite += `<h2>${type}</h2>`
+            entityListToWrite += `<div><h2>${type}</h2>`
             nodesForThisType.forEach(node => {
                 entityListToWrite += nodeToDOMString(node)
             })
+            entityListToWrite += `</div>`
         }
     })
 
@@ -869,6 +887,9 @@ const nodeToDOMString = node => {
                 break
             case 'multa':
                 ret = `<p onclick="zoomToNodeId(${node.id})">${formatDate(node.properties.data)} - ${node.properties.desc}</p>`
+                break
+            case 'veiculo':
+                ret = `<p onclick="zoomToNodeId(${node.id})">${node.properties.marca} ${node.properties.ano}/${node.properties.modelo} - ${formatVehiclePlate(node.properties.placa)}</p>`
                 break
             default:
                 ret = `<p onclick="zoomToNodeId(${node.id})">${node.id}</p>`

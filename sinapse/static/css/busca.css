@@ -534,9 +534,10 @@ span.tooltip:after {
 
 
 
-
-
-
+#search-result {
+    height: 85vh;
+    overflow-y: scroll;
+}
 
 .busca em {
     background-color: yellow;
@@ -566,6 +567,7 @@ span.tooltip:after {
 
 .card-resultado {
     background: #f9f9f9;
+    cursor: pointer;
     margin-top: 15px;
     padding: 10px;
 }

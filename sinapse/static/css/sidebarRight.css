@@ -2,7 +2,7 @@
     font-family: 'Roboto', sans-serif;
 }
 
-/* smartshone */
+/* smartphone */
 @media all and (max-width:30em) {
     #fullSidebarRight {
         background-color:#FFFFFF;
@@ -57,8 +57,9 @@
     #sidebarRight {
         display: none;
         height: 100%;
+        height: calc(100% - 72px);
         position: absolute;
-        top: 0;
+        top: 72px;
         right: 0;
         color: #848484;
         box-shadow: -5px 0px 10px #f1f1f1;
