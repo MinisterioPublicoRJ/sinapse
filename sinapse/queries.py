@@ -24,10 +24,11 @@ IMG_HEADERS['User-Agent'] = "Mozilla/5.0 (Windows NT 6.1)"\
     " Chrome/41.0.2228.0 Safari/537.36"
 
 
-def find_next_nodes(node_id, rel_types='', node_type='', path_size=1):
+def find_next_nodes(node_id, rel_types='', node_type='', path_size=1,
+                    limit='limit 100'):
     query = {"statements": [{
         "statement": "MATCH r = (n)-[%s*..%s]-(x%s) where id(n) = %s"
-        " return r,n,x limit 100" % (rel_types, path_size, node_type, node_id),
+        " return r,n,x %s" % (rel_types, path_size, node_type, node_id, limit),
         "resultDataContents": ["row", "graph"]
     }]}
     response = requests.post(
