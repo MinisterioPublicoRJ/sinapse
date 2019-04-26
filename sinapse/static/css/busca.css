@@ -75,8 +75,8 @@ span.tooltip:after {
     border-bottom-style: solid;
     border-bottom-width: 1px;
     color: #72d8f2;
-    font-family: 'Open Sans', sans-serif;
     font-size: 36px;
+    font-weight: 300;
     opacity: .8;
     text-align: center;
     text-transform: uppercase;
@@ -87,7 +87,7 @@ span.tooltip:after {
 }
 #search-area #textVal::placeholder {
     color: #72d8f2;
-    font-size: 42px;
+    font-size: 36px;
 }
 #search-area #buttonBusca {
     color: black;
@@ -544,8 +544,8 @@ span.tooltip:after {
 }
 
 .busca em {
-    background-color: yellow;
     font-style: normal;
+    border-bottom: 5px solid #FFD500;
 }
 
 .nav-tabs>li {
@@ -569,16 +569,20 @@ span.tooltip:after {
     margin: 0;
 }
 
+.custom-tab p.number {
+    font-weight: 600;
+}
+
 .card-resultado {
     background: #f9f9f9;
     cursor: pointer;
     margin-top: 15px;
     padding: 10px;
+    text-align: left;
 }
 
 .card-resultado h3 {
     margin: 0 0 5px;
-    text-align: left;
 }
 
 .card-resultado dt {

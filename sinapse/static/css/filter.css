@@ -6,7 +6,7 @@ footer {
 .filter {
     bottom: 20px;
     left: 15%;
-    font: 14px Roboto;
+    font-size: 14px;
 }
 
 .filter span.text {

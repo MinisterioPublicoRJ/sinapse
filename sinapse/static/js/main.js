@@ -244,7 +244,7 @@ const searchCallback = data => {
         finalHTML += `<li role="presentation" ${index === 1 ? 'class="active"' : ''}>
             <a href="#${key}" role="tab" class="custom-tab ${key}" data-toggle="tab">
                 <img src="/static/img/icon/${key}.svg" />
-                <p>${data[key].response.numFound}</p>
+                <p class="number">${data[key].response.numFound}</p>
                 <p>${key}${data[key].response.numFound > 1 ? 's' : ''}</p>
             </a>
         </li>`
@@ -306,7 +306,7 @@ const entityCard = (entity, key, data) => {
  * @param {String[]} data.pessoa.highlighting.uuid.prop the terms that matches the searched term
  */
 const pessoaCard = (doc, data) => `
-    <div class="col-lg-2">
+    <div class="col-lg-2 text-center">
         <img src="/static/img/icon/pessoa.svg" />
     </div>
     <div class="col-lg-10">
@@ -316,15 +316,15 @@ const pessoaCard = (doc, data) => `
             </div>
             <dl>
                 <div class="col-lg-3">
-                    <dt>CPF: </dt>
+                    <dt>CPF</dt>
                     <dd>${formatCPF(doc.num_cpf)}</dd>
                 </div>
                 <div class="col-lg-6">
-                    <dt>Nome da mãe: </dt>
+                    <dt>Nome da mãe</dt>
                     <dd>${returnHighlightedProperty(doc, 'nome_mae', data.pessoa.highlighting)}</dd>
                 </div>
                 <div class="col-lg-3">
-                    <dt>Data de nascimento: </dt>
+                    <dt>Data de nascimento</dt>
                     <dd>${formatDate(doc.data_nascimento)}</dd>
                 </div>
             </dl>
@@ -346,7 +346,7 @@ const pessoaCard = (doc, data) => `
  * @param {String[]} data.veiculo.highlighting.uuid.prop the terms that matches the searched term
  */
 const veiculoCard = (doc, data) => `
-    <div class="col-lg-2">
+    <div class="col-lg-2 text-center">
         <img src="/static/img/icon/veiculo.svg" />
     </div>
     <div class="col-lg-10">
@@ -356,15 +356,15 @@ const veiculoCard = (doc, data) => `
             </div>
             <dl>
                 <div class="col-lg-3">
-                    <dt>Chassis: </dt>
+                    <dt>Chassis</dt>
                     <dd>${returnHighlightedProperty(doc, 'chassi', data.veiculo.highlighting)}</dd>
                 </div>
                 <div class="col-lg-2">
-                    <dt>Renavam: </dt>
+                    <dt>Renavam</dt>
                     <dd>${returnHighlightedProperty(doc, 'renavam', data.veiculo.highlighting)}</dd>
                 </div>
                 <div class="col-lg-7">
-                    <dt>Marca - Modelo - Ano - Cor - Placa: </dt>
+                    <dt>Marca - Modelo - Ano - Cor - Placa</dt>
                     <dd>${returnHighlightedProperty(doc, 'descricao', data.veiculo.highlighting)}</dd>
                 </div>
             </dl>
