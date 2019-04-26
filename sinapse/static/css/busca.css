@@ -1,8 +1,11 @@
 #balls-animation {
-    margin: 30vh auto 10vh;
-    width: 50vw;
-    height: 20vh;
-    border: 1px solid red;
+    background-image: url('/static/img/anim-busca.gif');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: 980px 360px;
+    margin: 10vh auto 10vh;
+    width: 100%;
+    height: 360px;
 }
 
 span.tooltip {
@@ -67,6 +70,7 @@ span.tooltip:after {
 }
 
 #search-area #textVal {
+    background: #fcfefb;
     border: none;
     border-bottom-style: solid;
     border-bottom-width: 1px;
