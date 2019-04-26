@@ -20,20 +20,22 @@ def get_node_id(response_json):
     return response_json['results'][0]['data'][0]['graph']['nodes'][0]['id']
 
 
-def find_relations_info(response_json):
-    person_info = namedtuple('Pessoa', ['rg', 'node_id'])
-    saved_rg = []
+def find_relations_info(response_json, pks, label, props):
+    info_obj = namedtuple(label.capitalize(), ['node_id'] + props)
+    saved_pk = []
     info = []
     for data in response_json['results'][0]['data']:
         for node in data['graph']['nodes']:
-            if node['labels'] == ['pessoa']:
-                rg = node['properties'].get('rg')
-                if rg is not None and rg not in saved_rg:
+            if node['labels'] == [label]:
+                pk_ = ' '.join([node['properties'].get(pk, '') for pk in pks])
+                if pk_ and pk_ not in saved_pk:
+                    props_val = [node['properties'][p] for p in props]
                     info.append(
-                        person_info(
-                            node['properties']['rg'],
-                            node['id'])
+                        info_obj(
+                            *[node['id']] +
+                            props_val
+                        )
                     )
-                    saved_rg.append(rg)
+                    saved_pk.append(pk_)
 
     return info

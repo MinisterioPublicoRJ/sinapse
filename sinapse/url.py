@@ -1,7 +1,9 @@
 from .buildup import app
 
 from .api import (
-    filtro_inicial
+    filtro_inicial,
+    api_photo,
+    api_photo_vehicle
 )
 
 from .start import (
@@ -20,8 +22,6 @@ from .auth import (
     autorizar
 )
 
-from .detran.api import api_photo
-
 
 __all__ = [
     'app',
@@ -36,5 +36,6 @@ __all__ = [
     'login',
     'autorizar',
     'filtro_inicial',
-    'api_photo'
+    'api_photo',
+    'api_photo_vehicle'
 ]

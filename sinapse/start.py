@@ -25,7 +25,8 @@ from sinapse.buildup import (
     _AUTH_MPRJ,
     _USERINFO_MPRJ,
 )
-from sinapse.detran.tasks import get_photos_asynch
+from sinapse.tasks import (get_person_photo_asynch,
+                           get_vehicle_photo_asynch)
 from sinapse.detran.utils import get_node_id
 from sinapse.queries import find_next_nodes, get_node_from_id
 from sinapse.whereabouts.whereabouts import get_whereabouts_receita, get_whereabouts_credilink
@@ -379,8 +380,10 @@ def api_findNodes():
     numero_de_nos = conta_nos(opcoes, letras)
 
     node_id = get_node_id(response.json())
-    # Call asynchronously task
-    get_photos_asynch.delay(node_id)
+
+    # Call asynchronously tasks
+    get_person_photo_asynch.delay(node_id)
+    get_vehicle_photo_asynch.delay(node_id)
 
     return respostajson_visjs(response, numero_de_nos=numero_de_nos)
 
@@ -396,8 +399,10 @@ def api_nextNodes():
     response = find_next_nodes(node_id, rel_types)
 
     numero_expansoes = conta_expansoes(node_id, rel_types)
-    # Call asynchronously task
-    get_photos_asynch.delay(node_id)
+
+    # Call asynchronously tasks
+    get_person_photo_asynch.delay(node_id)
+    get_vehicle_photo_asynch.delay(node_id)
 
     return respostajson_visjs(response, numero_de_expansoes=numero_expansoes)
 

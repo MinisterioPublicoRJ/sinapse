@@ -9,7 +9,7 @@ from flask import (
     session
 )
 from .auth import autenticadorjwt
-from .buildup import app
+from .buildup import app, _IMAGENS
 from .queries import search_info, log_solr_response
 from .start import login_necessario
 
@@ -43,3 +43,30 @@ def api_search():
     sessionid = request.cookies.get('session')
     log_solr_response(user, sessionid, info)
     return jsonify(info)
+
+
+@app.route('/api/foto', methods=['GET'])
+@login_necessario
+def api_photo():
+    node_id = request.args.get('node_id', '')
+    rg = request.args.get('rg', '')
+
+    photo_doc = _IMAGENS.find_one(
+        {'$or': [{'rg': rg}, {'node_id': node_id}], 'tipo': 'pessoa'},
+        {'_id': 0}
+    ) or {}
+
+    return jsonify(photo_doc)
+
+
+@app.route('/api/foto-veiculo', methods=['GET'])
+@login_necessario
+def api_photo_vehicle():
+    characteristics = request.args.get('caracteristicas', '')
+
+    photo_doc = _IMAGENS.find_one(
+        {'caracteristicas': characteristics, 'tipo': 'veiculo'},
+        {'_id': 0}
+    ) or {}
+
+    return jsonify(photo_doc)

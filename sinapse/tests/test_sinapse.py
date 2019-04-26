@@ -144,8 +144,9 @@ class CasoGlobal(unittest.TestCase):
 
         assert resposta.status_code == 302
 
-    @mock.patch('sinapse.start.get_photos_asynch')
-    def test_autorizacao_da_api(self, _gpa):
+    @mock.patch('sinapse.start.get_vehicle_photo_asynch')
+    @mock.patch('sinapse.start.get_person_photo_asynch')
+    def test_autorizacao_da_api(self, _gpa, _gva):
         api_node = self.app.get('/api/node')
         api_findNodes = self.app.get('/api/findNodes')
         api_nextNodes = self.app.get('/api/nextNodes')
@@ -215,12 +216,15 @@ class MetodosConsulta(unittest.TestCase):
                 "/login",
                 data={
                     "usuario": "usuario",
-                    "senha": "senha"})
+                    "senha": "senha"
+                }
+            )
 
     @mock.patch('sinapse.start.conta_nos')
-    @mock.patch('sinapse.start.get_photos_asynch')
+    @mock.patch('sinapse.start.get_vehicle_photo_asynch')
+    @mock.patch('sinapse.start.get_person_photo_asynch')
     @logresponse
-    def test_monta_query_dinamica(self, _gpa, _conta_nos):
+    def test_monta_query_dinamica(self, _gpa, _gva, _conta_nos):
         _conta_nos.return_value = 10
         _gpa.__name__ = 'Response'
         query_string = {
@@ -277,9 +281,10 @@ class MetodosConsulta(unittest.TestCase):
                 _ENDERECO_NEO4J % caso['endereco']
             )
 
-    @mock.patch('sinapse.start.get_photos_asynch')
+    @mock.patch('sinapse.start.get_vehicle_photo_asynch')
+    @mock.patch('sinapse.start.get_person_photo_asynch')
     @logresponse
-    def test_resposta_nos(self, _gpa):
+    def test_resposta_nos(self, _gpa, _gva):
         _gpa.__name__ = 'Response'
         responses.add(
             responses.POST,
@@ -336,11 +341,13 @@ class MetodosConsulta(unittest.TestCase):
 
         self.assertEqual(numero_nos, 3)
 
-    @mock.patch('sinapse.start.get_photos_asynch')
+    @mock.patch('sinapse.start.get_vehicle_photo_asynch')
+    @mock.patch('sinapse.start.get_person_photo_asynch')
     @mock.patch('sinapse.start.get_node_id', return_value=12345)
     @mock.patch('sinapse.start.conta_nos', return_value=101)
     @logresponse
-    def test_conta_numero_de_nos_antes_da_busca(self, _conta_nos, _gni, _gpa):
+    def test_conta_numero_de_nos_antes_da_busca(self, _conta_nos, _gni, _gpa,
+                                                _gva):
         _gni.__name__ = 'Return'
         _gpa.__name__ = 'Return'
         mock_resposta = mock.MagicMock()
@@ -375,9 +382,10 @@ class MetodosConsulta(unittest.TestCase):
         )
         self.assertEqual(resposta.json['numero_de_nos'], 101)
 
-    @mock.patch('sinapse.start.get_photos_asynch')
+    @mock.patch('sinapse.start.get_vehicle_photo_asynch')
+    @mock.patch('sinapse.start.get_person_photo_asynch')
     @logresponse
-    def test_resposta_expansoes(self, _gpa):
+    def test_resposta_expansoes(self, _gpa, _gva):
         responses.add(
             responses.POST,
             _ENDERECO_NEO4J % '/db/data/transaction/commit',
@@ -429,10 +437,12 @@ class MetodosConsulta(unittest.TestCase):
                          ' (n)-[*..1]-(x) where id(n) = 1234 return count(r),'
                          ' count(n), count(x)"}]}')
 
-    @mock.patch('sinapse.start.get_photos_asynch')
+    @mock.patch('sinapse.start.get_vehicle_photo_asynch')
+    @mock.patch('sinapse.start.get_person_photo_asynch')
     @mock.patch('sinapse.start.conta_expansoes', return_value=[1, 1, 1])
     @logresponse
-    def test_conta_numero_de_expansoes_antes_da_busca(self, _conta_expansoes, _gfa):
+    def test_conta_numero_de_expansoes_antes_da_busca(self, _conta_expansoes, _gfa,
+                                                      _gva):
         mock_resposta = mock.MagicMock()
         responses.add(
             responses.POST,

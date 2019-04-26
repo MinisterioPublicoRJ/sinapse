@@ -78,18 +78,18 @@ No segundo:
     venv\bin\activate.bat
     app.bat
 
-O servidor *waitress* está configurado para rodar no endereço:  
+O servidor *waitress* está configurado para rodar no endereço:
 `http://127.0.0.1:8080`
 
 ## Endpoints
 
 A API exposta pelo backend tem os seguintes endpoints:
 
-### /labels
+### /api/labels
 
 Retorna array de strings com os tipos de entidades disponíveis.
 
-### /search?q=
+### /api/search?q=
 
 Retorna entidades que contenham os termos buscados.
 
@@ -115,7 +115,7 @@ Retorna entidades que contenham os termos buscados.
         }
     }
 
-### /nodeProperties?label=
+### /api/nodeProperties?label=
 
 Retorna objeto com as propriedades disponíveis para a entidade buscada, no formato:
 
@@ -132,7 +132,7 @@ Retorna objeto com as propriedades disponíveis para a entidade buscada, no form
         ]
     }
 
-### /findNodes?label=&prop=&val=
+### /api/findNodes?label=&prop=&val=
 
 Retorna as propriedades de uma dada entidade, em um objeto no formato:
 
@@ -148,7 +148,7 @@ Retorna as propriedades de uma dada entidade, em um objeto no formato:
         ]
     }
 
-### /nextNodes?node_id=
+### /api/nextNodes?node_id=
 
 Retorna as ligações de uma dada entiade, em um objeto no formato:
 
@@ -178,3 +178,15 @@ Retorna as ligações de uma dada entiade, em um objeto no formato:
             }
         ]
     }
+
+### /api/foto?rg=1234 ou api/foto?node_id=1234
+
+Busca da foto de uma pessoa no DETRAN
+
+### /api/foto-veiculo?caracteristicas=VW/SANTANA 2000 MI 1998 CINZA
+
+Busca da foto do veículo. As caracteristicas são o resultado da concatenação separada por espaço da marca, modelo e cor do veículo
+
+### /api/findShortestPath?node_id1=1234&node_id2=5678&rel_types=opcional"
+
+Busca do caminho mais curto entre dois nós

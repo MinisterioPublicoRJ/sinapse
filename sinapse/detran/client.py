@@ -2,9 +2,9 @@ import requests
 
 from decouple import config
 
-from sinapse.buildup import _FOTOS_DETRAN
+from sinapse.buildup import _IMAGENS
 from sinapse.detran.utils import find_relations_info, parse_content
-from sinapse.queries import find_next_nodes
+from sinapse.queries import find_next_nodes, update_photo_status
 
 
 RG_BODY = """<?xml version="1.0" encoding="utf-8"?>
@@ -85,32 +85,37 @@ def get_processed_rg(rg):
     return response.status_code, response.content
 
 
-def get_photos(node_id):
+def get_person_photo(node_id):
     next_nodes = find_next_nodes(node_id, path_size=2)
-    infos = find_relations_info(next_nodes.json())
+    label = 'pessoa'
+    infos = find_relations_info(
+        next_nodes.json(),
+        pks=['rg'],
+        label=label,
+        props=['rg']
+    )
 
     successes = []
     for info in infos:
-        photo_document = _FOTOS_DETRAN.find_one(
-            {'rg': info.rg,
-             'node_id': node_id,
-             'foto': {'$exists': True}}
-        )
-        if photo_document is None or photo_document['foto'] == '':
-            status, content = send_rg_query(info.rg)
-            if b'sucesso' in content.lower()\
-                    or b'foi finalizada' in content.lower():
-                successes.append(info)
+        status, content = send_rg_query(info.rg)
+        if b'sucesso' in content.lower()\
+                or b'foi finalizada' in content.lower():
+            successes.append(info)
+            update_photo_status(info.node_id, 'searching')
 
     for success in successes:
         status, content = get_processed_rg(success.rg)
         photo = parse_content(content, 'fotoCivil')
-        if photo is not None:
-            _FOTOS_DETRAN.update(
+        if photo is not None and photo != '':
+            _IMAGENS.update(
                 {'rg': success.rg},
                 {'$set': {
-                    'foto': photo,
-                    'node_id': success.node_id
+                    'imagem': photo,
+                    'uuid': success.node_id,
+                    'tipo': label
                 }},
                 upsert=True
             )
+            update_photo_status(info.node_id, 'found')
+        else:
+            update_photo_status(info.node_id, 'not found')
