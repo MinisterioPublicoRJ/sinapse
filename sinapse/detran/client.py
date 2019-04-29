@@ -86,7 +86,7 @@ def get_processed_rg(rg):
 
 
 def get_person_photo(node_id):
-    next_nodes = find_next_nodes(node_id, path_size=2)
+    next_nodes = find_next_nodes(node_id, rel_types='', path_size=1, limit='')
     label = 'pessoa'
     infos = find_relations_info(
         next_nodes.json(),
