@@ -244,7 +244,7 @@ const searchCallback = data => {
         finalHTML += `<li role="presentation" ${index === 1 ? 'class="active"' : ''}>
             <a href="#${key}" role="tab" class="custom-tab ${key}" data-toggle="tab">
                 <img src="/static/img/icon/${key}.svg" />
-                <p class="number">${data[key].response.numFound}</p>
+                <p class="number">${thousandsSeparator(data[key].response.numFound)}</p>
                 <p>${key}${data[key].response.numFound > 1 ? 's' : ''}</p>
             </a>
         </li>`
@@ -993,13 +993,23 @@ const formatVehicleIdent = ident => {
 
 /**
  * Format as Vehicle Plate - XXX-XXXX
- * @param {String} plate
+ * @param {string} plate
+ * @return {string}
  */
 const formatVehiclePlate = plate => {
     if (plate.length === 7) {
         return `${plate.substr(0,3)}-${plate.substr(3)}`
     }
     return plate
+}
+
+/**
+ * Formats number with thousands separators - NNNNN => NN.NNN
+ * @param {string|number} num number to be formatted
+ * @returns {string}
+ */
+const thousandsSeparator = num => {
+    return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')
 }
 
 const showEntity = uuid => {
