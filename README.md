@@ -67,6 +67,16 @@ No segundo:
     source venv/bin/activate
     sh app.sh
 
+Caso você tenha o erro
+
+    app.sh: line X: syntax error: unexpected end of file
+
+execute
+
+    vim app.sh
+    :set fileformat=unix
+    :wq
+
 ### Desenvolvendo no Windows
 
     virtualenv venv

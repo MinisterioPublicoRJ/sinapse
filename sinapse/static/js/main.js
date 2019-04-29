@@ -491,12 +491,12 @@ const updateNodes = data => {
                 nodes.add(formattedNode)
             }
             // if it's a person, check if we can add it to our photos array
-            if (node.type[0] === 'pessoa' && node.properties.rg && !photosData[node.id]) {
+            if (node.type[0] === 'pessoa' && node.properties.rg && !photosData[node.uuid]) {
                 get(`/api/foto?rg=${node.properties.rg}`, data => {
-                    if (data.node_id && data.foto) {
-                        if (!photosData[data.node_id]) {
-                            photosData[data.node_id] = data
-                            nodes.update({id: data.node_id, shape: 'circularImage', image: `data:image/png;base64,${data.foto}`})
+                    if (data.uuid && data.imagem) {
+                        if (!photosData[data.uuid]) {
+                            photosData[data.uuid] = data
+                            nodes.update({id: data.uuid, shape: 'circularImage', image: `data:image/png;base64,${data.imagem}`})
                         }
                     }
                 })
@@ -684,7 +684,7 @@ const populateSidebarRight = node => {
     // Add person photo
     if (node.type[0] === 'pessoa' && node.properties.rg && photosData[node.id]) {
         let img = document.createElement('img')
-        img.setAttribute('src', `data:image/png;base64,${photosData[node.id].foto}`)
+        img.setAttribute('src', `data:image/png;base64,${photosData[node.id].imagem}`)
         headerSidebarRight.appendChild(img)
     }
 
