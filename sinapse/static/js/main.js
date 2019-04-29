@@ -16,6 +16,7 @@ let nodes,               // Visjs initialized nodes
     nodesData,           // Nodes array as is from API
     edges,               // Visjs initialized edges (path between nodes)
     edgesData,           // Edges array as is from API
+    searchData,          // Data last returned by search API
     entityTypes,         // Entity types from API
     filteredEntityTypes, // Entity types we don't want on future API queries
     container,           // Visjs DOM element
@@ -236,6 +237,7 @@ const sanitizeQuery = string => {
  */
 const searchCallback = data => {
     hideLoading()
+    searchData = data
     document.querySelector('#balls-animation').style.display = 'none'
     let finalHTML = '<ul class="nav nav-tabs" role="tablist">'
 
@@ -274,15 +276,20 @@ const searchCallback = data => {
  * @param {Object} entity data for this entity
  * @param {String} key the entity type (empresa, pessoa, veiculo)
  * @param {*} data The whole data returned from API, to get highlight information
+ * @param {bool} isExtended whether the card is being called within the search list result or in the searchDetails screen
  */
-const entityCard = (entity, key, data) => {
-    let ret = `<div class="card-resultado clearfix" onclick="showEntity(${entity.uuid})">`
+const entityCard = (entity, key, data, isExtended) => {
+    let onclickFn = `onclick="searchDetailStep('${entity.uuid}', '${key}')"`
+    if (isExtended) {
+        onclickFn = ''
+    }
+    let ret = `<div class="card-resultado clearfix" ${onclickFn}>`
     switch(key) {
         case 'pessoa':
-            ret += pessoaCard(entity, data)
+            ret += pessoaCard(entity, data, isExtended)
             break
         case 'veiculo':
-            ret += veiculoCard(entity, data)
+            ret += veiculoCard(entity, data, isExtended)
             break
         default:
             // just spit it out
@@ -304,33 +311,48 @@ const entityCard = (entity, key, data) => {
  * @param {Object} data.pessoa.highlighting highlighted terms returned by search
  * @param {Object} data.pessoa.highlighting.uuid a object that has a highlighted term
  * @param {String[]} data.pessoa.highlighting.uuid.prop the terms that matches the searched term
+ * @param {bool} isExtended whether the card is being called within the search list result or in the searchDetails screen
  */
-const pessoaCard = (doc, data) => `
-    <div class="col-lg-2 text-center">
-        <img src="/static/img/icon/pessoa.svg" />
-    </div>
-    <div class="col-lg-10">
-        <div class="row">
-            <div class="col-lg-12">
-                <h3>${returnHighlightedProperty(doc, 'nome', data.pessoa.highlighting)}</h3>
-            </div>
-            <dl>
-                <div class="col-lg-3">
-                    <dt>CPF</dt>
-                    <dd>${formatCPF(doc.num_cpf)}</dd>
-                </div>
-                <div class="col-lg-6">
-                    <dt>Nome da mãe</dt>
-                    <dd>${returnHighlightedProperty(doc, 'nome_mae', data.pessoa.highlighting)}</dd>
-                </div>
-                <div class="col-lg-3">
-                    <dt>Data de nascimento</dt>
-                    <dd>${formatDate(doc.data_nascimento)}</dd>
-                </div>
-            </dl>
+const pessoaCard = (doc, data, isExtended) => {
+    let titleClass = 'col-lg-2 text-center'
+    let bodyClass = 'col-lg-10'
+    let backFn = ''
+    if (isExtended) {
+        titleClass = 'col-lg-12 text-center title'
+        bodyClass = 'col-lg-12'
+        backFn = 'onclick="backToSearch()"'
+    }
+    return `
+        <div class="${titleClass}">
+            <img src="/static/img/icon/pessoa.svg" />
         </div>
-    </div>
-`
+        <div class="${bodyClass}">
+            <div class="row">
+                <div class="col-lg-12">
+                    <h3 ${backFn}>${returnHighlightedProperty(doc, 'nome', data.pessoa.highlighting)}</h3>
+                </div>
+                <div class="body col-lg-12">
+                    <div class="row">
+                        <dl>
+                            <div class="col-lg-3">
+                                <dt>CPF</dt>
+                                <dd>${formatCPF(doc.num_cpf)}</dd>
+                            </div>
+                            <div class="col-lg-6">
+                                <dt>Nome da mãe</dt>
+                                <dd>${returnHighlightedProperty(doc, 'nome_mae', data.pessoa.highlighting)}</dd>
+                            </div>
+                            <div class="col-lg-3">
+                                <dt>Data de nascimento</dt>
+                                <dd>${formatDate(doc.data_nascimento)}</dd>
+                            </div>
+                        </dl>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `
+}
 
 /**
  * Creates a card for a given vehicle
@@ -344,33 +366,44 @@ const pessoaCard = (doc, data) => `
  * @param {Object} data.veiculo.highlighting highlighted terms returned by search
  * @param {Object} data.veiculo.highlighting.uuid a object that has a highlighted term
  * @param {String[]} data.veiculo.highlighting.uuid.prop the terms that matches the searched term
+ * @param {bool} isExtended whether the card is being called within the search list result or in the searchDetails screen
  */
-const veiculoCard = (doc, data) => `
-    <div class="col-lg-2 text-center">
-        <img src="/static/img/icon/veiculo.svg" />
-    </div>
-    <div class="col-lg-10">
-        <div class="row">
-            <div class="col-lg-12">
-                <h3>${returnHighlightedProperty(doc, 'proprietario', data.veiculo.highlighting)}</h3>
-            </div>
-            <dl>
-                <div class="col-lg-3">
-                    <dt>Chassis</dt>
-                    <dd>${returnHighlightedProperty(doc, 'chassi', data.veiculo.highlighting)}</dd>
-                </div>
-                <div class="col-lg-2">
-                    <dt>Renavam</dt>
-                    <dd>${returnHighlightedProperty(doc, 'renavam', data.veiculo.highlighting)}</dd>
-                </div>
-                <div class="col-lg-7">
-                    <dt>Marca - Modelo - Ano - Cor - Placa</dt>
-                    <dd>${returnHighlightedProperty(doc, 'descricao', data.veiculo.highlighting)}</dd>
-                </div>
-            </dl>
+const veiculoCard = (doc, data, isExtended) => {
+    let titleClass = 'col-lg-2 text-center'
+    let bodyClass = 'col-lg-10'
+    let backFn = ''
+    if (isExtended) {
+        titleClass = 'col-lg-12 text-center title'
+        bodyClass = 'col-lg-12'
+        backFn = 'onclick="backToSearch()"'
+    }
+    return `
+        <div class="${titleClass}">
+            <img src="/static/img/icon/veiculo.svg" />
         </div>
-    </div>
-`
+        <div class="${bodyClass}">
+            <div class="row">
+                <div class="col-lg-12">
+                    <h3 ${backFn}>${returnHighlightedProperty(doc, 'proprietario', data.veiculo.highlighting)}</h3>
+                </div>
+                <dl>
+                    <div class="col-lg-3">
+                        <dt>Chassis</dt>
+                        <dd>${returnHighlightedProperty(doc, 'chassi', data.veiculo.highlighting)}</dd>
+                    </div>
+                    <div class="col-lg-2">
+                        <dt>Renavam</dt>
+                        <dd>${returnHighlightedProperty(doc, 'renavam', data.veiculo.highlighting)}</dd>
+                    </div>
+                    <div class="col-lg-7">
+                        <dt>Marca - Modelo - Ano - Cor - Placa</dt>
+                        <dd>${returnHighlightedProperty(doc, 'descricao', data.veiculo.highlighting)}</dd>
+                    </div>
+                </dl>
+            </div>
+        </div>
+    `
+}
 
 /**
  * Returns a matching highlighting property value from the document, or the value itself
@@ -390,6 +423,38 @@ const returnHighlightedProperty = (doc, prop, highlighting) => {
         return doc[prop]
     }
     return 'desconhecido'
+}
+
+const backToSearch = () => {
+    document.querySelector('#search-area').style.display = 'block'
+    document.querySelector('#search-result').style.display = 'block'
+    document.querySelector('#search-details').style.display = 'none'
+}
+
+const searchDetailStep = (entityUUID, entityType) => {
+    document.querySelector('#search-area').style.display = 'none'
+    document.querySelector('#search-result').style.display = 'none'
+    document.querySelector('#search-details').style.display = 'block'
+    let searchedDoc = searchData[entityType].response.docs.filter(doc => doc.uuid === entityUUID)[0]
+    console.log(entityUUID, entityType, searchedDoc)
+
+    let searchDetailsHTML = `<div class="${entityType}">
+        ${entityCard(searchedDoc, entityType, searchData, true)}
+        <div class="col-lg-4 action busca-paradeiro" onclick="alert('Função ainda não implementada')">
+            Busca<br>
+            <b>Paradeiro</b>
+        </div>
+        <div class="col-lg-4 action caminho-exploratorio" onclick="showEntity('${entityUUID}')">
+            Caminho<br>
+            <b>Exploratório</b>
+        </div>
+        <div class="col-lg-4 action analise-de-vinculos" onclick="alert('Função ainda não implementada')">
+            Análise de<br>
+            <b>Vínculos</b>
+        </div>
+    </div>`
+
+    document.querySelector('#search-details').innerHTML = searchDetailsHTML
 }
 
 const checkRadio = () => {
@@ -515,7 +580,7 @@ const updateNodes = data => {
     }
 
     // show back button
-    document.getElementById('step3').className = ''
+    document.getElementById('step4').className = ''
 
     updateLeftSidebar()
 }

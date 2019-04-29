@@ -617,3 +617,34 @@ span.tooltip:after {
 .nav-tabs > li.active > a:hover {
     border: 1px solid transparent;
 }
+
+#search-details .card-resultado {
+    background: initial;
+    cursor: initial;
+}
+
+#search-details .card-resultado .title img {
+    width: 100px;
+}
+
+#search-details .card-resultado h3 {
+    cursor: pointer;
+    font-size: 32px;
+    font-weight: 300;
+    margin: 20px 0;
+    text-align: center;
+}
+
+#search-details .card-resultado .body {
+    background: #f9f9f9;
+    padding: 20px 40px;
+}
+
+#search-details .action {
+    cursor: pointer;
+    text-transform: uppercase;
+}
+
+#search-details .busca-paradeiro { color: #72A5F2; }
+#search-details .caminho-exploratorio { color: #93F272; }
+#search-details .analise-de-vinculos { color: #F2727B; }
