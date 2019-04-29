@@ -6,7 +6,8 @@ from sinapse.queries import find_next_nodes, download_google_image
 
 
 def get_vehicle_photo(node_id):
-    next_nodes = find_next_nodes(node_id, node_type=':veiculo', path_size=2)
+    next_nodes = find_next_nodes(node_id, node_type=':veiculo', path_size=1,
+                                 limit='')
     label = 'veiculo'
     infos = find_relations_info(
         next_nodes.json(),
@@ -27,6 +28,7 @@ def get_vehicle_photo(node_id):
                     {'caracteristicas': vehicle_characteristic},
                     {'$set': {
                         'imagem': base64.encodestring(img).decode(),
+                        'uuid': info.node_id,
                         'tipo': label
                     }},
                     upsert=True
