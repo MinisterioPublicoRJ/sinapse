@@ -191,11 +191,25 @@ Retorna as ligações de uma dada entiade, em um objeto no formato:
 
 ### /api/foto?rg=1234 ou api/foto?node_id=1234
 
-Busca da foto de uma pessoa no DETRAN
+Busca da foto de uma pessoa no DETRAN. A resposta é objeto vazio (```{}```) ou um objeto no formato:
+
+    {
+        "imagem": "foto em base 64",
+        "rg": "número do rg",
+        "tipo": "pessoa",
+        "uuid": "identificador único da pessoa no banco"
+    }
 
 ### /api/foto-veiculo?caracteristicas=VW/SANTANA 2000 MI 1998 CINZA
 
-Busca da foto do veículo. As caracteristicas são o resultado da concatenação separada por espaço da marca, modelo e cor do veículo
+Busca da foto do veículo. As caracteristicas são o resultado da concatenação separada por espaço da marca, modelo e cor do veículo. A resposta é um objeto vazio (```{}```) ou um objeto no formato:
+
+    {
+        "caracteristicas": "string passada",
+        "imagem": "foto em base64",
+        "tipo": "veiculo",
+        "uuid": "identificador único do veículo no banco"
+    }
 
 ### /api/findShortestPath?node_id1=1234&node_id2=5678&rel_types=opcional"
 

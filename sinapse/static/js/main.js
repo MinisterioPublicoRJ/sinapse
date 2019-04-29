@@ -555,9 +555,24 @@ const updateNodes = data => {
                 nodesData.push(formattedNode)
                 nodes.add(formattedNode)
             }
-            // if it's a person, check if we can add it to our photos array
-            if (node.type[0] === 'pessoa' && node.properties.rg && !photosData[node.uuid]) {
-                get(`/api/foto?rg=${node.properties.rg}`, data => {
+            // if it's a person or vehicle, check if we can add it to our photos array
+            if (
+                (
+                    (node.type[0] === 'pessoa' && node.properties.rg) ||
+                    (node.type[0] === 'veiculo')
+                )
+                && !photosData[node.uuid]
+            ) {
+                let imageEndpoint
+                switch (node.type[0]) {
+                    case 'pessoa':
+                        imageEndpoint = `/api/foto?rg=${node.properties.rg}`
+                        break;
+                    case 'veiculo':
+                        imageEndpoint = `/api/foto-veiculo?caracteristicas=${node.properties.marca} ${node.properties.modelo} ${node.properties.cor}`
+                        break;
+                }
+                get(imageEndpoint, data => {
                     if (data.uuid && data.imagem) {
                         if (!photosData[data.uuid]) {
                             photosData[data.uuid] = data
@@ -747,7 +762,12 @@ const populateSidebarRight = node => {
     valuesContainer.setAttribute('id', 'valuesContainer')
 
     // Add person photo
-    if (node.type[0] === 'pessoa' && node.properties.rg && photosData[node.id]) {
+    if (
+        (
+            (node.type[0] === 'pessoa' && node.properties.rg) ||
+            (node.type[0] === 'veiculo')
+        )
+        && photosData[node.id]) {
         let img = document.createElement('img')
         img.setAttribute('src', `data:image/png;base64,${photosData[node.id].imagem}`)
         headerSidebarRight.appendChild(img)
