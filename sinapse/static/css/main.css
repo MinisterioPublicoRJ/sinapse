@@ -17,6 +17,9 @@ body {
     width: 100%;
     height: 100%;
 }
+.graphhidden {
+    visibility: hidden;
+}
 
 header {
     position: absolute;

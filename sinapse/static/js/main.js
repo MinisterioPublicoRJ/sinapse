@@ -440,7 +440,7 @@ const searchDetailStep = (entityUUID, entityType) => {
 
     let searchDetailsHTML = `<div class="${entityType}">
         ${entityCard(searchedDoc, entityType, searchData, true)}
-        <div class="col-lg-4 action busca-paradeiro" onclick="alert('Função ainda não implementada')">
+        <div class="col-lg-4 action busca-paradeiro" onclick="searchWhereabouts('${entityUUID}')">
             Busca<br>
             <b>Paradeiro</b>
         </div>
@@ -448,7 +448,7 @@ const searchDetailStep = (entityUUID, entityType) => {
             Caminho<br>
             <b>Exploratório</b>
         </div>
-        <div class="col-lg-4 action analise-de-vinculos" onclick="alert('Função ainda não implementada')">
+        <div class="col-lg-4 action analise-de-vinculos" onclick="bondAnalysis('${entityUUID}')">
             Análise de<br>
             <b>Vínculos</b>
         </div>
@@ -544,6 +544,7 @@ const addColorToNode = node => {
  */
 const updateNodes = data => {
     document.querySelector('footer').className = ''
+    document.querySelector('#graph').className = ''
     // update graph. notice we only add non-existant nodes/edges - no duplicates are allowed.
     if (data.nodes) {
         for (node of data.nodes) {
@@ -1101,7 +1102,81 @@ const showEntity = uuid => {
     console.log(`showEntity(${uuid})`)
     document.querySelector('.busca').style.display = 'none'
     //getNextNodes(uuid)
+    
+    // hardcoded
     getNextNodes(140885160)
+}
+
+const bondAnalysis = nodeId1 => {
+    alert('Função ainda não implementada')
+
+    // hardcoded, falta interface
+    getShortestPath(140885160, 81208568)
+}
+
+const getShortestPath = (nodeId1, nodeId2) => {
+    document.querySelector('#search-details').style.display = 'none'
+    get(`/api/findShortestPath?node_id1=${nodeId1}&node_id2=${nodeId2}`, updateNodes)
+}
+
+const searchWhereabouts = nodeId => {
+    document.querySelector('#search-details').style.display = 'none'
+
+    //get(`/api/whereabouts?node_id=${nodeId}`, displayWhereabouts)
+
+    // hardcoded
+    get(`/api/whereabouts?node_id=140885160`, displayWhereabouts)
+    showLoading()
+}
+
+const displayWhereabouts = data => {
+    hideLoading()
+    console.log(data)
+
+    let credilinkAddresses = data.filter(addresses => addresses.type === 'credilink')
+    let credilinkAddressesCount = credilinkAddresses[0].formatted_addresses
+    let receitaFederalAddresses = data.filter(addresses => addresses.type === 'receita_federal')
+    let receitaFederalAddressesCount = receitaFederalAddresses[0].formatted_addresses
+
+    document.querySelector('#whereabouts').innerHTML = `
+        <div class="row pessoa">
+            <div class="col-lg-2">(foto)</div>
+            <div class="col-lg-5">
+                <h3>Credilink</h3>
+                ${formatAddresses(credilinkAddresses[0].formatted_addresses)}
+            </div>
+            <div class="col-lg-5">
+                <h3>Receita Federal</h3>
+                ${formatAddresses(receitaFederalAddresses[0].formatted_addresses)}
+            </div>
+        </div>
+    `
+}
+
+const formatAddresses = addresses => {
+    if (addresses.length === 0) {
+        return `Não há endereço cadastrado para esta pessoa.`
+    }
+    return addresses.map(address => formatAddress(address)).join('')
+}
+
+const formatAddress = address => {
+    return `<dl class="address">
+        <dt>Rua:</dt>
+        <dd>${address.endereco}</dd>
+        <dt>Número:</dt>
+        <dd>${address.numero}</dd>
+        <dt>Complemento:</dt>
+        <dd>${address.complemento}</dd>
+        <dt>Bairro:</dt>
+        <dd>${address.bairro}</dd>
+        <dt>Cidade:</dt>
+        <dd>${address.cidade}</dd>
+        <dt>UF:</dt>
+        <dd>${address.sigla_uf}</dd>
+        <dt>Telefone:</dt>
+        <dd>${address.telefone}</dd>
+    </dl>`
 }
 
 // Finally, declare init function to run when the page loads.

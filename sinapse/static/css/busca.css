@@ -641,10 +641,48 @@ span.tooltip:after {
 }
 
 #search-details .action {
+    background-position: top center;
+    background-repeat: no-repeat;
     cursor: pointer;
+    height: 140px;
+    padding-top: 120px;
     text-transform: uppercase;
 }
 
-#search-details .busca-paradeiro { color: #72A5F2; }
-#search-details .caminho-exploratorio { color: #93F272; }
-#search-details .analise-de-vinculos { color: #F2727B; }
+#search-details .busca-paradeiro {
+    background-image: url('/static/img/icon/icon_paradeiro.svg');
+    color: #72A5F2;
+}
+
+#search-details .caminho-exploratorio {
+    background-image: url('/static/img/icon/icon_exploratorio.svg');
+    color: #93F272;
+}
+
+#search-details .analise-de-vinculos {
+    background-image: url('/static/img/icon/icon_vinculos.svg');
+    color: #F2727B;
+}
+
+#whereabouts {
+    text-align: left;
+}
+
+#whereabouts dl {
+    border-bottom: 1px solid #ddd;
+    margin-bottom: 10px;
+}
+
+#whereabouts dl:last-child {
+    border-bottom: none;
+}
+
+#whereabouts dt {
+    font-size: .9em;
+    font-weight: normal;
+}
+
+#whereabouts dd {
+    font-weight: 700;
+    margin-bottom: 10px;
+}

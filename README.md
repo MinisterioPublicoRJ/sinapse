@@ -211,6 +211,31 @@ Busca da foto do veículo. As caracteristicas são o resultado da concatenação
         "uuid": "identificador único do veículo no banco"
     }
 
-### /api/findShortestPath?node_id1=1234&node_id2=5678&rel_types=opcional"
+### /api/findShortestPath?node_id1=140885160&node_id2=81208568&rel_types=opcional"
 
-Busca do caminho mais curto entre dois nós
+Busca do caminho mais curto entre dois nós, no mesmo formato do endpoint `/api/nextNodes`.
+
+    {
+        "edges": [],
+        "nodes": []
+    }
+
+### /api/whereabouts?node_id=140885160
+
+Faz busca dos endereços em diferentes bases.
+
+    [
+        {
+            "formatted_addresses": [
+                "bairro": "",
+                "cep": "",
+                "cidade": "",
+                "complemento": "",
+                "endereco": "",
+                "numero": "",
+                "sigla_uf": "",
+                "telefone": ""
+            ]
+            "type": "receita_federal ou credilink"
+        }
+    ]
