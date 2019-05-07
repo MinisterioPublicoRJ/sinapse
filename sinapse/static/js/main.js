@@ -377,9 +377,12 @@ const veiculoCard = (doc, data, isExtended) => {
         bodyClass = 'col-lg-12'
         backFn = 'onclick="backToSearch()"'
     }
+    const caracteristicaVeiculo = `${doc.marca} ${doc.modelo} ${doc.cor}`
+
+    get(`/api/foto-veiculo?caracteristicas=${caracteristicaVeiculo}`, addVeiculoFoto)
     return `
         <div class="${titleClass}">
-            <img src="/static/img/icon/veiculo.svg" />
+            <img data-caracteristica="${caracteristicaVeiculo}" src="/static/img/icon/veiculo.svg" />
         </div>
         <div class="${bodyClass}">
             <div class="row">
@@ -403,6 +406,10 @@ const veiculoCard = (doc, data, isExtended) => {
             </div>
         </div>
     `
+}
+
+const addVeiculoFoto = data => {
+    console.log(data)
 }
 
 /**
@@ -485,11 +492,13 @@ const _findNodes = (label, prop, val) => {
     if (!label || !prop || !val) {
         return alert('ERRO: É preciso escolher o tipo, a propriedade e preencher um valor para realizar uma busca.')
     }
-    get(`/api/findNodes?label=${label}&prop=${prop}&val=${val}`, updateNodes)
+    get(`/api/findNodes?label=${label}&prop=${prop}&val=${val}`, updateFromFindNodes)
+}
 
-    // hide form
-    document.getElementById('step1').className = 'hidden'
-    document.getElementById('step2').className = 'hidden'
+const updateFromFindNodes = data => {
+    if (data.nodes[0]) {
+        getNextNodes(data.nodes[0].id)
+    }
 }
 
 /**
@@ -545,6 +554,7 @@ const addStyleToNode = node => {
  * @param {*} data Data from API data.
  */
 const updateNodes = data => {
+    document.querySelector('.busca').style.display = 'none'
     document.querySelector('footer').className = ''
     document.querySelector('#graph').className = ''
     // update graph. notice we only add non-existant nodes/edges - no duplicates are allowed.
