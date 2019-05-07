@@ -501,7 +501,7 @@ const getNodeType = node => {
     return node.labels[0]
 }
 
-const addColorToNode = node => {
+const addStyleToNode = node => {
     let color = '#7bb3ff'
 
     switch (node.type[0]) {
@@ -534,6 +534,8 @@ const addColorToNode = node => {
     return {
         ...node,
         color,
+        shape: 'circularImage',
+        image: `/static/img/icon/${node.type[0]}.svg`,
     }
 }
 
@@ -552,7 +554,7 @@ const updateNodes = data => {
             let filteredNode = nodesData.filter(n => n.id === node.id)
             if (filteredNode.length === 0) {
                 // doesn't exist, add it
-                let formattedNode = addColorToNode(node)
+                let formattedNode = addStyleToNode(node)
                 nodesData.push(formattedNode)
                 nodes.add(formattedNode)
             }
