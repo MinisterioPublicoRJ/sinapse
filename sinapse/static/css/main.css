@@ -44,9 +44,11 @@ header, main {
     background-position: top center;
     background-repeat: no-repeat;
     border-radius: 50px;
+    display: block;
     margin: 0 auto;
     width: 200px;
     height: 64px;
+    text-indent: -9999px;
 }
 
 /* smartshone */
