@@ -1108,8 +1108,6 @@ const showEntity = uuid => {
 }
 
 const bondAnalysis = nodeId1 => {
-    alert('Função ainda não implementada')
-
     // hardcoded, falta interface
     getShortestPath(140885160, 81208568)
 }
