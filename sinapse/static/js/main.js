@@ -384,7 +384,7 @@ const veiculoCard = (doc, data, isExtended) => {
         <div class="${bodyClass}">
             <div class="row">
                 <div class="col-lg-12">
-                    <h3 ${backFn}>${returnHighlightedProperty(doc, 'proprietario', data.veiculo.highlighting)}</h3>
+                    <h3 ${backFn}>${returnHighlightedProperty(doc, 'descricao', data.veiculo.highlighting)}</h3>
                 </div>
                 <dl>
                     <div class="col-lg-3">
@@ -396,8 +396,8 @@ const veiculoCard = (doc, data, isExtended) => {
                         <dd>${returnHighlightedProperty(doc, 'renavam', data.veiculo.highlighting)}</dd>
                     </div>
                     <div class="col-lg-7">
-                        <dt>Marca - Modelo - Ano - Cor - Placa</dt>
-                        <dd>${returnHighlightedProperty(doc, 'descricao', data.veiculo.highlighting)}</dd>
+                        <dt>Proprietário</dt>
+                        <dd>${returnHighlightedProperty(doc, 'proprietario', data.veiculo.highlighting)}</dd>
                     </div>
                 </dl>
             </div>
