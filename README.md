@@ -48,9 +48,10 @@ Para instalação das dependências do projeto é necessário instalar os pacote
 
 ### Configurando ambiente no Mac
 
-    brew install redis
+    brew install python redis
     brew services start redis
-    virtualenv --python=$(which python3.6) venv
+    pip3 install virtualenv cython
+    virtualenv --python=$(which python3) venv
     source venv/bin/activate
     pip install -r dev-requirements.txt
 
