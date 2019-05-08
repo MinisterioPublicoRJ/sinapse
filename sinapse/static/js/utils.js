@@ -1,3 +1,180 @@
+export const addStyleToNode = node => {
+    let color = '#7bb3ff'
+
+    switch (getNodeType(node)) {
+        case 'empresa':
+            color = '#51c881'
+            break
+        case 'mgp':
+            color = '#ab897f'
+            break
+        case 'multa':
+            color = '#ff524e'
+            break
+        case 'orgao':
+            color = '#ffb842'
+            break
+        case 'personagem':
+            color = '#a176d1'
+            break
+        case 'pessoa':
+            color = '#00d1e2'
+            break
+        case 'telefone':
+            color = '#324eb6'
+            break
+        case 'veiculo':
+            color = '#ff8b63'
+            break
+    }
+
+    return {
+        ...node,
+        color,
+        shape: 'circularImage',
+        image: `/static/img/icon/${getNodeType(node)}.svg`,
+    }
+}
+
+/**
+ * Format a given key according to a given property
+ * @param {String} prop property to format
+ * @param {String} key key to format
+ */
+export const formatKeyString = (prop, key) => {
+    switch (prop) {
+        case 'cnae':
+            return formatCNAE(key)
+        case 'cnpj':
+            return formatCNPJ(key)
+        case 'cpf':
+        case 'cpf_responsavel':
+            return formatCPF(key)
+        case 'data':
+        case 'data_inicio':
+        case 'dt_criacao':
+        case 'dt_extincao':
+        case 'dt_nasc':
+            return formatDate(key)
+        case 'ident':
+            return formatVehicleIdent(key)
+        case 'placa':
+            return formatVehiclePlate(key)
+        case 'rg':
+            return formatRG(key)
+        case 'sexo':
+            return formatGender(key)
+        default:
+            return key
+    }
+}
+
+/**
+ * Adds diacritics (a => á) and formats props case.
+ *
+ * @param {string} text The prop string to be formatted.
+ */
+export const formatPropString = text => {
+    switch (text) {
+        // 1st Level
+        case 'veiculo':
+            return 'Veículo'
+        case 'orgao':
+            return 'Órgão'
+        case 'mgp':
+            return 'MGP'
+        // Empresa
+        case 'cnae':
+            return 'CNAE'
+        case 'cnpj':
+            return 'CNPJ'
+        case 'cpf_responsavel':
+            return 'CPF do Responsável'
+        case 'data_inicio':
+            return 'Data de Início'
+        case 'municipio':
+            return 'Município'
+        case 'nome_responsavel':
+            return 'Nome do Responsável'
+        case 'razao_social':
+            return 'Razão Social'
+        case 'uf':
+            return 'UF'
+        // MGP
+        case 'cdorgao':
+            return 'Código do Órgão'
+        case 'docu_dk':
+            return 'ID do Documento'
+        case 'dt_cadastro':
+            return 'Data do Cadastro'
+        case 'nr_ext':
+            return 'Número Externo'
+        case 'nr_mprj':
+            return 'Número MPRJ'
+        // Multa
+        case 'desc':
+            return 'Descrição'
+        // Órgão
+        case 'craai':
+            return 'CRAAI'
+        case 'dt_criacao':
+            return 'Data de Criação'
+        case 'dt_extincao':
+            return 'Data de Extinção'
+        case 'sensivel':
+            return 'Sensível'
+        case 'situacao':
+            return 'Situação'
+        // Pessoa
+        case 'cpf':
+            return 'CPF'
+        case 'dt_nasc':
+            return 'Data de Nascimento'
+        case 'nome_mae':
+            return 'Nome da Mãe'
+        case 'nome_pai':
+            return 'Nome do Pai'
+        case 'nome_rg':
+            return 'Nome no RG'
+        case 'rg':
+            return 'RG'
+        // Telefone
+        case 'numero':
+            return 'Número'
+        // Veículo
+        case 'cpfcnpj':
+            return 'CPF/CNPJ'
+        default:
+            return text.split('_').map(word => word.substr(0, 1).toUpperCase() + word.substr(1)).join(' ')
+    }
+}
+
+export const formatAddresses = addresses => {
+    if (addresses.length === 0) {
+        return `Não há endereço cadastrado para esta pessoa.`
+    }
+    return addresses.map(address => formatAddress(address)).join('')
+}
+
+const formatAddress = address => {
+    return `<dl class="address">
+        <dt>Rua:</dt>
+        <dd>${address.endereco}</dd>
+        <dt>Número:</dt>
+        <dd>${address.numero}</dd>
+        <dt>Complemento:</dt>
+        <dd>${address.complemento}</dd>
+        <dt>Bairro:</dt>
+        <dd>${address.bairro}</dd>
+        <dt>Cidade:</dt>
+        <dd>${address.cidade}</dd>
+        <dt>UF:</dt>
+        <dd>${address.sigla_uf}</dd>
+        <dt>Telefone:</dt>
+        <dd>${address.telefone}</dd>
+    </dl>`
+}
+
 /**
  * Format as CNAE - xxxx-x/xx
  * @param {String} cnae
@@ -92,10 +269,60 @@ export const formatVehiclePlate = plate => {
 }
 
 /**
+ * Make a HTTP GET call and returns the data.
+ *
+ * @param {String} url The URL to GET.
+ * @param {Function} callback A function to be executed with the returned data.
+ */
+export const get = (url, callback) => {
+    var xmlhttp = new XMLHttpRequest()
+    xmlhttp.open('GET', url, true)
+    xmlhttp.onreadystatechange = function() {
+        if (xmlhttp.readyState == 4) {
+            if(xmlhttp.status == 200) {
+                var obj = JSON.parse(xmlhttp.responseText)
+                if (callback) {
+                    callback(obj)
+                }
+            }
+        }
+    }
+    xmlhttp.send(null)
+}
+
+/**
+ * Returns a node type.
+ *
+ * @param {*} node 
+ */
+export const getNodeType = node => {
+    return node.type[0]
+}
+
+/**
+ * Sanitizes a string to use on search API - removes diacritics (á, ç etc.) and makes it uppercase
+ * @param {String} string A string to be sanitized
+ */
+export const sanitizeQuery = string => {
+    if (string.normalize) {
+        return string.normalize('NFD').replace(/[\u0300-\u036f]/g, "").toUpperCase()
+    }
+    return string.toUpperCase()
+}
+
+/**
  * Formats number with thousands separators - NNNNN => NN.NNN
  * @param {string|number} num number to be formatted
  * @returns {string}
  */
 export const thousandsSeparator = num => {
     return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')
+}
+
+export const showLoading = () => {
+    document.getElementById('loading').className = ''
+}
+
+export const hideLoading = () => {
+    document.getElementById('loading').className = 'hidden'
 }

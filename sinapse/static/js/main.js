@@ -1,14 +1,21 @@
 import {
-    formatCNAE,
+    addStyleToNode,
+    formatKeyString,
+    formatPropString,
+    formatAddresses,
     formatCNPJ,
     formatCPF,
     formatDate,
-    formatGender,
-    formatRG,
-    formatVehicleIdent,
     formatVehiclePlate,
+    get,
+    getNodeType,
+    sanitizeQuery,
+    showLoading,
+    hideLoading,
     thousandsSeparator,
 } from '/static/js/utils.js'
+
+import { entityCard } from '/static/js/cards.js'
 
 /**
  * Init function called on window.onload.
@@ -29,7 +36,6 @@ let nodes,               // Visjs initialized nodes
     edges,               // Visjs initialized edges (path between nodes)
     edgesData,           // Edges array as is from API
     searchData,          // Data last returned by search API
-    entityTypes,         // Entity types from API
     filteredEntityTypes, // Entity types we don't want on future API queries
     container,           // Visjs DOM element
     data,                // Object with nodes and edges
@@ -137,81 +143,13 @@ const getLabels = () => {
  */
 const setLabels = data => {
     // store it
-    let labels = data
+    labels = data
 
     // hides loading
     hideLoading()
 
     // displays search
     document.querySelector('#search-area').className = ''
-}
-
-const showLoading = () => {
-    document.getElementById('loading').className = ''
-}
-
-const hideLoading = () => {
-    document.getElementById('loading').className = 'hidden'
-}
-
-/**
- * Gets node properties from the API.
- *
- * @param {Element} e the clicked node DOM Element.
- */
-const getNodeProperties = e => {
-    let label = e.target.dataset.label
-    document.getElementById('step2img').setAttribute('src', `/static/img/icon/${label}.svg`)
-    document.getElementById('selectLabel').value = label
-    document.getElementById('form-step2').className = label
-    get(`api/nodeProperties?label=${label}`, setProps)
-}
-
-/**
- * Append an option to a given select.
- *
- * @param {string} optionValue The <option> value and innerHTML.
- */
-const appendOption = optionValue => {
-    var mylist = document.getElementById('selectProp');
-    mylist.insertAdjacentHTML('beforeend', `
-        <input type="radio" class="badgebox" name="test" id="` + optionValue + `" value="` + optionValue + `" onclick="checkRadio()">
-        <label for="` + optionValue + `" class="btnRadio">
-            <span class="txtButton">` + formatPropString(optionValue) + `</span>
-            <label class="badge2">            
-                <svg xmlns="http://www.w3.org/2000/svg"  class="cls" viewBox="0 0 18.91 18.91">
-                    <path d="M17.64,4.71A9.31,9.31,0,0,0,14.2,1.27,9.21,9.21,0,0,0,9.45,0,9.2,9.2,0,0,0,4.71,1.27,9.31,9.31,0,0,0,1.27,4.71,9.2,9.2,0,0,0,0,9.45,9.21,9.21,0,0,0,1.27,14.2a9.31,9.31,0,0,0,3.44,3.44,9.2,9.2,0,0,0,4.74,1.27,9.21,9.21,0,0,0,4.75-1.27,9.31,9.31,0,0,0,3.44-3.44,9.21,9.21,0,0,0,1.27-4.75,9.2,9.2,0,0,0-1.27-4.74ZM15.59,8,8.9,14.7a.79.79,0,0,1-.57.23.78.78,0,0,1-.55-.23L3.32,10.24a.78.78,0,0,1-.22-.55.81.81,0,0,1,.22-.57L4.44,8A.79.79,0,0,1,5,7.78.76.76,0,0,1,5.55,8L8.33,10.8l5-5a.74.74,0,0,1,.55-.24.77.77,0,0,1,.56.24l1.12,1.1a.81.81,0,0,1,.22.57.76.76,0,0,1-.22.55Z"/>
-                </svg>
-            </label>
-        </label>`);
-}
-
-/**
- * Sets node properties from the API.
- *
- * @param {Array.<string>} nodeProperties
- */
-const setProps = nodeProperties => {
-    
-    // hide step1, show step2
-    document.getElementById('step1').className = 'hidden'
-    document.getElementById('step2').className = ''
-    document.getElementById('textVal').value = null
-
-    let props = nodeProperties.data[0][0]
-    //Deleting fields from object to not shown to user
-    delete props[4]
-    delete props[6]
-    
-    let selectProp = document.getElementById('selectProp')
-    
-    // remove children option
-    while (selectProp.firstChild) {
-        selectProp.removeChild(selectProp.firstChild);
-    }
-
-    // add options
-    props.sort().map(prop => appendOption(prop))
 }
 
 /**
@@ -224,17 +162,6 @@ const initSearch = () => {
         document.querySelector('#search-result').innerHTML = ''
         get(`/api/search?q=${sanitizeQuery(e.target[0].value)}`, searchCallback)
     })
-}
-
-/**
- * Sanitizes a string to use on search API - removes diacritics (á, ç etc.) and makes it uppercase
- * @param {String} string A string to be sanitized
- */
-const sanitizeQuery = string => {
-    if (string.normalize) {
-        return string.normalize('NFD').replace(/[\u0300-\u036f]/g, "").toUpperCase()
-    }
-    return string.toUpperCase()
 }
 
 /**
@@ -285,165 +212,8 @@ const searchCallback = data => {
     document.querySelector('#search-result').innerHTML = finalHTML
 }
 
-/**
- * Creates a card for a doc/entity
- * @param {Object} entity data for this entity
- * @param {String} key the entity type (empresa, pessoa, veiculo)
- * @param {*} data The whole data returned from API, to get highlight information
- * @param {bool} isExtended whether the card is being called within the search list result or in the searchDetails screen
- */
-const entityCard = (entity, key, data, isExtended) => {
-    let onclickFn = `onclick="searchDetailStep('${entity.uuid}', '${key}')"`
-    if (isExtended) {
-        onclickFn = ''
-    }
-    let ret = `<div class="card-resultado clearfix" ${onclickFn}>`
-    switch(key) {
-        case 'pessoa':
-            ret += pessoaCard(entity, data, isExtended)
-            break
-        case 'veiculo':
-            ret += veiculoCard(entity, data, isExtended)
-            break
-        default:
-            // just spit it out
-            ret += JSON.stringify(entity)
-    }
-    ret += `</div>`
-    return ret
-}
-
-/**
- * Creates a card for a given person
- * @param {Object} doc a entity document representing a person
- * @param {String} doc.nome Person's name
- * @param {Number} doc.num_cpf Person's CPF number, as a Number (so without leading zero)
- * @param {String} doc.nome_mae Person's mother's name
- * @param {String} doc.data_nascimento Person's born date, as a string on the format: YYYY-MM-DD
- * @param {Object} data data from API
- * @param {Object} data.pessoa 
- * @param {Object} data.pessoa.highlighting highlighted terms returned by search
- * @param {Object} data.pessoa.highlighting.uuid a object that has a highlighted term
- * @param {String[]} data.pessoa.highlighting.uuid.prop the terms that matches the searched term
- * @param {bool} isExtended whether the card is being called within the search list result or in the searchDetails screen
- */
-const pessoaCard = (doc, data, isExtended) => {
-    let titleClass = 'col-lg-2 text-center'
-    let bodyClass = 'col-lg-10'
-    let backFn = ''
-    if (isExtended) {
-        titleClass = 'col-lg-12 text-center title'
-        bodyClass = 'col-lg-12'
-        backFn = 'onclick="backToSearch()"'
-    }
-    return `
-        <div class="${titleClass}">
-            <img src="/static/img/icon/pessoa.svg" />
-        </div>
-        <div class="${bodyClass}">
-            <div class="row">
-                <div class="col-lg-12">
-                    <h3 ${backFn}>${returnHighlightedProperty(doc, 'nome', data.pessoa.highlighting)}</h3>
-                </div>
-                <div class="body col-lg-12">
-                    <div class="row">
-                        <dl>
-                            <div class="col-lg-3">
-                                <dt>CPF</dt>
-                                <dd>${formatCPF(doc.num_cpf)}</dd>
-                            </div>
-                            <div class="col-lg-6">
-                                <dt>Nome da mãe</dt>
-                                <dd>${returnHighlightedProperty(doc, 'nome_mae', data.pessoa.highlighting)}</dd>
-                            </div>
-                            <div class="col-lg-3">
-                                <dt>Data de nascimento</dt>
-                                <dd>${formatDate(doc.data_nascimento)}</dd>
-                            </div>
-                        </dl>
-                    </div>
-                </div>
-            </div>
-        </div>
-    `
-}
-
-/**
- * Creates a card for a given vehicle
- * @param {Object} doc a entity document representing a vehicle
- * @param {String} doc.proprietario Vehicle owner's name
- * @param {Number} doc.chassi Vehicle unique chassi number
- * @param {String} doc.renavam Vehicle unique Renavam number
- * @param {String} doc.descricao Vehicle description, with brand, model, year and color
- * @param {Object} data data from API
- * @param {Object} data.veiculo 
- * @param {Object} data.veiculo.highlighting highlighted terms returned by search
- * @param {Object} data.veiculo.highlighting.uuid a object that has a highlighted term
- * @param {String[]} data.veiculo.highlighting.uuid.prop the terms that matches the searched term
- * @param {bool} isExtended whether the card is being called within the search list result or in the searchDetails screen
- */
-const veiculoCard = (doc, data, isExtended) => {
-    let titleClass = 'col-lg-2 text-center'
-    let bodyClass = 'col-lg-10'
-    let backFn = ''
-    if (isExtended) {
-        titleClass = 'col-lg-12 text-center title'
-        bodyClass = 'col-lg-12'
-        backFn = 'onclick="backToSearch()"'
-    }
-    const caracteristicaVeiculo = `${doc.marca} ${doc.modelo} ${doc.cor}`
-
-    get(`/api/foto-veiculo?caracteristicas=${caracteristicaVeiculo}`, addVeiculoFoto)
-    return `
-        <div class="${titleClass}">
-            <img data-caracteristica="${caracteristicaVeiculo}" src="/static/img/icon/veiculo.svg" />
-        </div>
-        <div class="${bodyClass}">
-            <div class="row">
-                <div class="col-lg-12">
-                    <h3 ${backFn}>${returnHighlightedProperty(doc, 'descricao', data.veiculo.highlighting)}</h3>
-                </div>
-                <dl>
-                    <div class="col-lg-3">
-                        <dt>Chassis</dt>
-                        <dd>${returnHighlightedProperty(doc, 'chassi', data.veiculo.highlighting)}</dd>
-                    </div>
-                    <div class="col-lg-2">
-                        <dt>Renavam</dt>
-                        <dd>${returnHighlightedProperty(doc, 'renavam', data.veiculo.highlighting)}</dd>
-                    </div>
-                    <div class="col-lg-7">
-                        <dt>Proprietário</dt>
-                        <dd>${returnHighlightedProperty(doc, 'proprietario', data.veiculo.highlighting)}</dd>
-                    </div>
-                </dl>
-            </div>
-        </div>
-    `
-}
-
 const addVeiculoFoto = data => {
     console.log(data)
-}
-
-/**
- * Returns a matching highlighting property value from the document, or the value itself
- * @param {Object} doc 
- * @param {String} doc.uuid
- * @param {String} doc[prop]
- * @param {String} prop 
- * @param {Object} highlighting 
- * @param {Object} highlighting[uuid]
- * @param {String[]} highlighting[uuid][prop]
- */
-const returnHighlightedProperty = (doc, prop, highlighting) => {
-    if (highlighting[doc.uuid] && highlighting[doc.uuid][prop]) {
-        return highlighting[doc.uuid][prop][0]
-    }
-    if (doc[prop]) {
-        return doc[prop]
-    }
-    return 'desconhecido'
 }
 
 const backToSearch = () => {
@@ -452,7 +222,7 @@ const backToSearch = () => {
     document.querySelector('#search-details').style.display = 'none'
 }
 
-window.searchDetailStep = (entityUUID, entityType) => {
+const searchDetailStep = (entityUUID, entityType) => {
     document.querySelector('#search-area').style.display = 'none'
     document.querySelector('#search-result').style.display = 'none'
     document.querySelector('#search-details').style.display = 'block'
@@ -478,23 +248,6 @@ window.searchDetailStep = (entityUUID, entityType) => {
     document.querySelector('#search-details').innerHTML = searchDetailsHTML
 }
 
-const checkRadio = () => {
-    document.getElementById('textVal').value = null
-    document.getElementById('textBusca').style.display = 'block'
-    document.getElementById("textVal").focus()
-}
-
-/**
- * Reads data from DOM to find nodes (label, prop and val)
- */
-const findNodes = () => {
-    let label = document.getElementById('selectLabel').value
-    let prop = document.querySelector('input[name="test"]:checked').value
-    let val = document.getElementById('textVal').value
-
-    _findNodes(label, prop, val)
-}
-
 /**
  * Gets from API the nodes that match the given label, prop and val.
  *
@@ -502,63 +255,22 @@ const findNodes = () => {
  * @param {string} prop
  * @param {string} val
  */
-const _findNodes = (label, prop, val) => {
+const findNodes = (label, prop, val) => {
     if (!label || !prop || !val) {
         return alert('ERRO: É preciso escolher o tipo, a propriedade e preencher um valor para realizar uma busca.')
     }
     get(`/api/findNodes?label=${label}&prop=${prop}&val=${val}`, updateFromFindNodes)
 }
 
+/**
+ * Call getNextNodes on node returned by findNodes, so the graph comes already expanded on first level (instead of a single node)
+ * @param {Object} data 
+ * @param {Object[]} data.nodes
+ * @param {String} data.nodes[].id
+ */
 const updateFromFindNodes = data => {
     if (data.nodes[0]) {
         getNextNodes(data.nodes[0].id)
-    }
-}
-
-/**
- * Returns a node type.
- *
- * @param {*} node 
- */
-const getNodeType = node => {
-    return node.labels[0]
-}
-
-const addStyleToNode = node => {
-    let color = '#7bb3ff'
-
-    switch (node.type[0]) {
-        case 'empresa':
-            color = '#51c881'
-            break
-        case 'mgp':
-            color = '#ab897f'
-            break
-        case 'multa':
-            color = '#ff524e'
-            break
-        case 'orgao':
-            color = '#ffb842'
-            break
-        case 'personagem':
-            color = '#a176d1'
-            break
-        case 'pessoa':
-            color = '#00d1e2'
-            break
-        case 'telefone':
-            color = '#324eb6'
-            break
-        case 'veiculo':
-            color = '#ff8b63'
-            break
-    }
-
-    return {
-        ...node,
-        color,
-        shape: 'circularImage',
-        image: `/static/img/icon/${node.type[0]}.svg`,
     }
 }
 
@@ -583,15 +295,16 @@ const updateNodes = data => {
                 nodes.add(formattedNode)
             }
             // if it's a person or vehicle, check if we can add it to our photos array
+            let nodeType = getNodeType(node)
             if (
                 (
-                    (node.type[0] === 'pessoa' && node.properties.rg) ||
-                    (node.type[0] === 'veiculo')
+                    (nodeType === 'pessoa' && node.properties.rg) ||
+                    (nodeType === 'veiculo')
                 )
                 && !photosData[node.uuid]
             ) {
                 let imageEndpoint
-                switch (node.type[0]) {
+                switch (nodeType) {
                     case 'pessoa':
                         imageEndpoint = `/api/foto?rg=${node.properties.rg}`
                         break;
@@ -627,141 +340,6 @@ const updateNodes = data => {
     updateLeftSidebar()
 }
 
-/**
- * Adds diacritics (a => á) and formats props case.
- *
- * @param {string} text The prop string to be formatted.
- */
-const formatPropString = text => {
-    switch (text) {
-        // 1st Level
-        case 'veiculo':
-            return 'Veículo'
-        case 'orgao':
-            return 'Órgão'
-        case 'mgp':
-            return 'MGP'
-        // Empresa
-        case 'cnae':
-            return 'CNAE'
-        case 'cnpj':
-            return 'CNPJ'
-        case 'cpf_responsavel':
-            return 'CPF do Responsável'
-        case 'data_inicio':
-            return 'Data de Início'
-        case 'municipio':
-            return 'Município'
-        case 'nome_responsavel':
-            return 'Nome do Responsável'
-        case 'razao_social':
-            return 'Razão Social'
-        case 'uf':
-            return 'UF'
-        // MGP
-        case 'cdorgao':
-            return 'Código do Órgão'
-        case 'docu_dk':
-            return 'ID do Documento'
-        case 'dt_cadastro':
-            return 'Data do Cadastro'
-        case 'nr_ext':
-            return 'Número Externo'
-        case 'nr_mprj':
-            return 'Número MPRJ'
-        // Multa
-        case 'desc':
-            return 'Descrição'
-        // Órgão
-        case 'craai':
-            return 'CRAAI'
-        case 'dt_criacao':
-            return 'Data de Criação'
-        case 'dt_extincao':
-            return 'Data de Extinção'
-        case 'sensivel':
-            return 'Sensível'
-        case 'situacao':
-            return 'Situação'
-        // Pessoa
-        case 'cpf':
-            return 'CPF'
-        case 'dt_nasc':
-            return 'Data de Nascimento'
-        case 'nome_mae':
-            return 'Nome da Mãe'
-        case 'nome_pai':
-            return 'Nome do Pai'
-        case 'nome_rg':
-            return 'Nome no RG'
-        case 'rg':
-            return 'RG'
-        // Telefone
-        case 'numero':
-            return 'Número'
-        // Veículo
-        case 'cpfcnpj':
-            return 'CPF/CNPJ'
-        default:
-            return text.split('_').map(word => word.substr(0, 1).toUpperCase() + word.substr(1)).join(' ')
-    }
-}
-
-/**
- * Format a given key according to a given property
- * @param {String} prop property to format
- * @param {String} key key to format
- */
-const formatKeyString = (prop, key) => {
-    switch (prop) {
-        case 'cnae':
-            return formatCNAE(key)
-        case 'cnpj':
-            return formatCNPJ(key)
-        case 'cpf':
-        case 'cpf_responsavel':
-            return formatCPF(key)
-        case 'data':
-        case 'data_inicio':
-        case 'dt_criacao':
-        case 'dt_extincao':
-        case 'dt_nasc':
-            return formatDate(key)
-        case 'ident':
-            return formatVehicleIdent(key)
-        case 'placa':
-            return formatVehiclePlate(key)
-        case 'rg':
-            return formatRG(key)
-        case 'sexo':
-            return formatGender(key)
-        default:
-            return key
-    }
-}
-
-/**
- * Make a HTTP GET call and returns the data.
- *
- * @param {String} url The URL to GET.
- * @param {Function} callback A function to be executed with the returned data.
- */
-const get = (url, callback) => {
-    var xmlhttp = new XMLHttpRequest()
-    xmlhttp.open('GET', url, true)
-    xmlhttp.onreadystatechange = function() {
-        if (xmlhttp.readyState == 4) {
-            if(xmlhttp.status == 200) {
-                var obj = JSON.parse(xmlhttp.responseText)
-                if (callback) {
-                    callback(obj)
-                }
-            }
-        }
-    }
-    xmlhttp.send(null)
-}
-
 const emptySidebarRight = () => {
     while (sidebarRight.hasChildNodes()) {
         sidebarRight.removeChild(sidebarRight.firstChild)
@@ -774,7 +352,7 @@ const emptySidebarRight = () => {
  * @param {Object} node A node from Neo4J.
  */
 const populateSidebarRight = node => {
-    sidebarRight.setAttribute('class', node.type[0])
+    sidebarRight.setAttribute('class', getNodeType(node))
 
     emptySidebarRight()
 
@@ -789,10 +367,11 @@ const populateSidebarRight = node => {
     valuesContainer.setAttribute('id', 'valuesContainer')
 
     // Add person photo
+    let nodeType = getNodeType(node)
     if (
         (
-            (node.type[0] === 'pessoa' && node.properties.rg) ||
-            (node.type[0] === 'veiculo')
+            (nodeType === 'pessoa' && node.properties.rg) ||
+            (nodeType === 'veiculo')
         )
         && photosData[node.id]) {
         let img = document.createElement('img')
@@ -911,7 +490,7 @@ const updateFilteredEntityTypes = () => {
     // then hide nodes with filtered types
     filteredNodes = []
     filteredEntityTypes.forEach(type => {
-        nodesData.filter(node => node.type[0] === type).forEach(node => {
+        nodesData.filter(node => getNodeType(node) === type).forEach(node => {
             filteredNodes.push({id: node.id, hidden: true})
             node.hidden = true
         })
@@ -934,7 +513,7 @@ const updateLeftSidebar = () => {
     let entityListToWrite = ''
 
     labels.sort().forEach(type => {
-        let nodesForThisType = sortByType(nodesData.filter(node => node.type[0] === type), type)
+        let nodesForThisType = sortByType(nodesData.filter(node => getNodeType(node) === type), type)
         if (nodesForThisType.length) {
             entityListToWrite += `<div><h2>${type}</h2>`
             nodesForThisType.forEach(node => {
@@ -985,7 +564,7 @@ const sortByProperty = (nodes, prop) => {
 const nodeToDOMString = node => {
     let ret = ''
     if (node) {
-        switch (node.type[0]) {
+        switch (getNodeType(node)) {
             case 'pessoa':
             case 'personagem':
                 ret = `<div onclick="zoomToNodeId(${node.id})"><h3>${node.properties.nome}</h3>`
@@ -1014,7 +593,7 @@ const nodeToDOMString = node => {
  * Zooms to a given nodeId
  * @param {String} nodeId
  */
-window.zoomToNodeId = nodeId => {
+const zoomToNodeId = nodeId => {
     network.focus(nodeId, { scale: 2, animation: true })
     const selectedNode = nodesData.filter(node => node.id === nodeId.toString())[0] // nodeId comes as Number, node.id is a String
     populateSidebarRight(selectedNode)
@@ -1022,7 +601,7 @@ window.zoomToNodeId = nodeId => {
     network.selectNodes([nodeId.toString()])
 }
 
-window.showEntity = uuid => {
+const showEntity = uuid => {
     console.log(`showEntity(${uuid})`)
     document.querySelector('.busca').style.display = 'none'
     //getNextNodes(uuid)
@@ -1031,7 +610,7 @@ window.showEntity = uuid => {
     getNextNodes(140885160)
 }
 
-window.bondAnalysis = nodeId1 => {
+const bondAnalysis = nodeId1 => {
     // hardcoded, falta interface
     getShortestPath(140885160, 81208568)
 }
@@ -1041,7 +620,7 @@ const getShortestPath = (nodeId1, nodeId2) => {
     get(`/api/findShortestPath?node_id1=${nodeId1}&node_id2=${nodeId2}`, updateNodes)
 }
 
-window.searchWhereabouts = nodeId => {
+const searchWhereabouts = nodeId => {
     document.querySelector('#search-details').style.display = 'none'
 
     //get(`/api/whereabouts?node_id=${nodeId}`, displayWhereabouts)
@@ -1056,9 +635,7 @@ const displayWhereabouts = data => {
     console.log(data)
 
     let credilinkAddresses = data.filter(addresses => addresses.type === 'credilink')
-    let credilinkAddressesCount = credilinkAddresses[0].formatted_addresses
     let receitaFederalAddresses = data.filter(addresses => addresses.type === 'receita_federal')
-    let receitaFederalAddressesCount = receitaFederalAddresses[0].formatted_addresses
 
     document.querySelector('#whereabouts').innerHTML = `
         <div class="row pessoa">
@@ -1075,31 +652,15 @@ const displayWhereabouts = data => {
     `
 }
 
-const formatAddresses = addresses => {
-    if (addresses.length === 0) {
-        return `Não há endereço cadastrado para esta pessoa.`
-    }
-    return addresses.map(address => formatAddress(address)).join('')
-}
-
-const formatAddress = address => {
-    return `<dl class="address">
-        <dt>Rua:</dt>
-        <dd>${address.endereco}</dd>
-        <dt>Número:</dt>
-        <dd>${address.numero}</dd>
-        <dt>Complemento:</dt>
-        <dd>${address.complemento}</dd>
-        <dt>Bairro:</dt>
-        <dd>${address.bairro}</dd>
-        <dt>Cidade:</dt>
-        <dd>${address.cidade}</dd>
-        <dt>UF:</dt>
-        <dd>${address.sigla_uf}</dd>
-        <dt>Telefone:</dt>
-        <dd>${address.telefone}</dd>
-    </dl>`
-}
+// Attach external functions to window
+window.addVeiculoFoto = addVeiculoFoto
+window.backToSearch = backToSearch
+window.bondAnalysis = bondAnalysis
+window.findNodes = findNodes
+window.searchDetailStep = searchDetailStep
+window.searchWhereabouts = searchWhereabouts
+window.showEntity = showEntity
+window.zoomToNodeId = zoomToNodeId
 
 // Finally, declare init function to run when the page loads.
 window.onload = init
