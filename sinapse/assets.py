@@ -8,7 +8,6 @@ bundles = {
         'js/vendor/jquery-3.4.0.min.js',
         'js/vendor/vis.min.js',
         'js/vendor/bootstrap.min.js',
-        'js/main.js',
     ),
     'css': Bundle(
         'css/vendor/bootstrap.min.css',

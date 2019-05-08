@@ -105,6 +105,7 @@
             </a>
             <aside id="sidebarRight"></aside>
         </div>
+        <script type="module" src="/static/js/main.js"></script>
         {% assets "js" %}
             <script type="text/javascript" src="{{ ASSET_URL }}"></script>
         {% endassets %}
@@ -118,7 +119,7 @@
                 
                 document.getElementById('loading').className = 'hidden'
                 
-                _findNodes(
+                findNodes(
                     filtroInicial.label,
                     filtroInicial.prop,
                     filtroInicial.val
