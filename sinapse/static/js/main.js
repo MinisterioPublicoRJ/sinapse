@@ -1,3 +1,15 @@
+import {
+    formatCNAE,
+    formatCNPJ,
+    formatCPF,
+    formatDate,
+    formatGender,
+    formatRG,
+    formatVehicleIdent,
+    formatVehiclePlate,
+    thousandsSeparator,
+} from '/static/js/utils.js'
+
 /**
  * Init function called on window.onload.
  */
@@ -22,7 +34,9 @@ let nodes,               // Visjs initialized nodes
     container,           // Visjs DOM element
     data,                // Object with nodes and edges
     options,             // Object that holds Visjs options
-    network              // Visjs Network, linking container, data and options
+    network,             // Visjs Network, linking container, data and options
+    photosData,
+    labels
 
 const baseIconsPath = '/static/img/icon/graph/'
 const sidebarRight = document.getElementById("sidebarRight")
@@ -123,7 +137,7 @@ const getLabels = () => {
  */
 const setLabels = data => {
     // store it
-    labels = data
+    let labels = data
 
     // hides loading
     hideLoading()
@@ -438,7 +452,7 @@ const backToSearch = () => {
     document.querySelector('#search-details').style.display = 'none'
 }
 
-const searchDetailStep = (entityUUID, entityType) => {
+window.searchDetailStep = (entityUUID, entityType) => {
     document.querySelector('#search-area').style.display = 'none'
     document.querySelector('#search-result').style.display = 'none'
     document.querySelector('#search-details').style.display = 'block'
@@ -559,7 +573,7 @@ const updateNodes = data => {
     document.querySelector('#graph').className = ''
     // update graph. notice we only add non-existant nodes/edges - no duplicates are allowed.
     if (data.nodes) {
-        for (node of data.nodes) {
+        for (let node of data.nodes) {
             // check if this node already exists checking its id
             let filteredNode = nodesData.filter(n => n.id === node.id)
             if (filteredNode.length === 0) {
@@ -597,7 +611,7 @@ const updateNodes = data => {
         }
     }
     if (data.edges) {
-        for (edge of data.edges) {
+        for (let edge of data.edges) {
             // the same for edges
             let filteredEdge = edgesData.filter(e => e.id === edge.id)
             if (filteredEdge.length === 0) {
@@ -1000,7 +1014,7 @@ const nodeToDOMString = node => {
  * Zooms to a given nodeId
  * @param {String} nodeId
  */
-const zoomToNodeId = nodeId => {
+window.zoomToNodeId = nodeId => {
     network.focus(nodeId, { scale: 2, animation: true })
     const selectedNode = nodesData.filter(node => node.id === nodeId.toString())[0] // nodeId comes as Number, node.id is a String
     populateSidebarRight(selectedNode)
@@ -1008,109 +1022,7 @@ const zoomToNodeId = nodeId => {
     network.selectNodes([nodeId.toString()])
 }
 
-/**
- * Format as CNAE - xxxx-x/xx
- * @param {String} cnae
- */
-const formatCNAE = cnae => {
-    return `${cnae.substr(0,4)}-${cnae.substr(4,1)}/${cnae.substr(5)}`
-}
-
-/**
- * Formats as CNPJ - xx.xxx.xxx/xxxx-xx
- * @param {String} cnpj
- */
-const formatCNPJ = cnpj => {
-    if (cnpj.length === 14) {
-        return `${cnpj.substr(0,2)}.${cnpj.substr(2,3)}.${cnpj.substr(5,3)}/${cnpj.substr(8,4)}-${cnpj.substr(12)}`
-    }
-    return cnpj
-}
-
-/**
- * Formats as CPF - xxx.xxx.xxx-xx
- * @param {String} cpf
- */
-const formatCPF = cpf => {
-    cpf = cpf.toString().padStart(11, "0")
-    if (cpf.length === 11) {
-        return `${cpf.substr(0,3)}.${cpf.substr(3,3)}.${cpf.substr(6,3)}-${cpf.substr(9)}`
-    }
-    return cpf
-}
-
-/**
- * Formats as Date - from yyyymmdd to dd/mm/yyyy
- * @param {String} date
- */
-const formatDate = date => {
-    if (date.length === 8) {
-        return `${date.substr(6,2)}/${date.substr(4,2)}/${date.substr(0,4)}`
-    }
-    return `${date.substr(8,2)}/${date.substr(5,2)}/${date.substr(0,4)}`
-}
-
-/**
- * Formats Gender string
- * @param {String} genderId
- */
-const formatGender = genderId => {
-    switch (genderId) {
-        case "1":
-            return "Masculino"
-        case "2":
-            return "Feminino"
-        default:
-            return genderId
-    }
-}
-
-/**
- * Format RG on Detran format - xx.xxx.xxx-x
- * @param {String} rg
- */
-const formatRG = rg => {
-    if (rg.length === 9) {
-        return `${rg.substr(0,2)}.${rg.substr(2,3)}.${rg.substr(5,3)}-${rg.substr(-1)}`
-    }
-    return rg
-}
-
-/**
- * Format Vehicle Ident as CPF or CNPJ
- * @param {String} ident Vehicle owner ident
- */
-const formatVehicleIdent = ident => {
-    // ident is the PK of vehicle owner, either CPF or CNPJ
-    // we will naively assume that if it starts with three zeroes, its a CPF, otherwise, it should be a CNPJ
-    if (ident.substr(0,3) === '000') {
-        return formatCPF(ident.substr(3))
-    }
-    formatCNPJ(ident)
-}
-
-/**
- * Format as Vehicle Plate - XXX-XXXX
- * @param {string} plate
- * @return {string}
- */
-const formatVehiclePlate = plate => {
-    if (plate.length === 7) {
-        return `${plate.substr(0,3)}-${plate.substr(3)}`
-    }
-    return plate
-}
-
-/**
- * Formats number with thousands separators - NNNNN => NN.NNN
- * @param {string|number} num number to be formatted
- * @returns {string}
- */
-const thousandsSeparator = num => {
-    return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')
-}
-
-const showEntity = uuid => {
+window.showEntity = uuid => {
     console.log(`showEntity(${uuid})`)
     document.querySelector('.busca').style.display = 'none'
     //getNextNodes(uuid)
@@ -1119,7 +1031,7 @@ const showEntity = uuid => {
     getNextNodes(140885160)
 }
 
-const bondAnalysis = nodeId1 => {
+window.bondAnalysis = nodeId1 => {
     // hardcoded, falta interface
     getShortestPath(140885160, 81208568)
 }
@@ -1129,7 +1041,7 @@ const getShortestPath = (nodeId1, nodeId2) => {
     get(`/api/findShortestPath?node_id1=${nodeId1}&node_id2=${nodeId2}`, updateNodes)
 }
 
-const searchWhereabouts = nodeId => {
+window.searchWhereabouts = nodeId => {
     document.querySelector('#search-details').style.display = 'none'
 
     //get(`/api/whereabouts?node_id=${nodeId}`, displayWhereabouts)
