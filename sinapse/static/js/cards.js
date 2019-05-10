@@ -10,11 +10,15 @@ import {
  * @param {String} key the entity type (empresa, pessoa, veiculo)
  * @param {*} data The whole data returned from API, to get highlight information
  * @param {bool} isExtended whether the card is being called within the search list result or in the searchDetails screen
- */
-export const entityCard = (entity, key, data, isExtended) => {
+ * @param {bool} bondSearchId wheter the card is a result of the bond search
+*/
+export const entityCard = (entity, key, data, isExtended, bondSearchId) => {
     let onclickFn = `onclick="searchDetailStep('${entity.uuid}', '${key}')"`
     if (isExtended) {
         onclickFn = ''
+    }
+    if (bondSearchId) {
+        onclickFn = `onclick="doBondSearch(${bondSearchId}, ${entity.uuid})"`
     }
     let ret = `<div class="card-resultado clearfix" ${onclickFn}>`
     switch(key) {

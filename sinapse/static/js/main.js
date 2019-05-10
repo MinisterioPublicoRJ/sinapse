@@ -8,6 +8,7 @@ import {
     formatDate,
     formatVehiclePlate,
     get,
+    getCardTitle,
     getNodeType,
     sanitizeQuery,
     showLoading,
@@ -165,6 +166,64 @@ const initSearch = () => {
 }
 
 /**
+ * Creates tabs for entity search
+ * @param {*} data The whole data returned from API, to get highlight information
+ * @param {bool} bondSearchId whether the card is being called within the bond search list result or in the main search screen
+*/
+const createSearchTabs = (data, bondSearchId) => {
+    let finalHTML = '<ul class="nav nav-tabs" role="tablist">'
+
+    // first it iterates each 'object_type' (empresa, pessoa, veiculo) to create tabs
+    Object.keys(data).forEach((key, index) => {
+        let tabLink = bondSearchId ? `bond_${key}` : key
+        finalHTML += `<li role="presentation" ${index === 1 ? 'class="active"' : ''}>
+            <a href="#${tabLink}" role="tab" class="custom-tab ${key}" data-toggle="tab">
+                <img src="/static/img/icon/${key}.svg" />
+                <p class="number">${thousandsSeparator(data[key].response.numFound)}</p>
+                <p>${key}${data[key].response.numFound > 1 ? 's' : ''}</p>
+            </a>
+        </li>`
+    })
+
+    finalHTML += '</ul>'
+    return finalHTML
+}
+
+/**
+ * Creates cards with entity search results
+ * @param {*} data The whole data returned from API, to get highlight information
+ * @param {bool} bondSearchId whether the card is being called within the bond search list result or in the main search screen
+*/
+const createSearchCards = (data, bondSearchId) => {
+    let finalHTML = '<div class="tab-content">'
+
+    // then, for each 'object_type', create a tab panel
+    Object.keys(data).forEach((key, indexKey) => {
+        let tabId = bondSearchId ? `bond_${key}` : key
+        finalHTML += `<div role="tabpanel" class="tab-pane ${indexKey === 1 ? 'active' : ''} ${key}" id="${tabId}">`
+        // and for each 'doc', create a card
+        data[key].response.docs.forEach(doc => {
+            finalHTML += entityCard(doc, key, data, false, bondSearchId)
+        })
+        // treat empty result
+        if (data[key].response.docs.length === 0) {
+            finalHTML += '<p>Não há resultados para este tipo de entidade para o valor pesquisado.'
+        }
+        finalHTML += '</div>'
+    })
+    finalHTML += '</div>'
+
+    return finalHTML
+}
+
+/**
+ * Creates entity search result
+ * @param {*} data The whole data returned from API, to get highlight information
+ * @param {Number} bondSearchId whether the card is being called within the bond search list result or in the main search screen
+*/
+const createSearchContent = (data, bondSearchId) => createSearchTabs(data, bondSearchId) + createSearchCards(data, bondSearchId)
+
+/**
  * Function called when search call is returned from API
  * @param {Object} data data from API
  * @param {Object} data.object_type objects of a given type that matches this search term. currently supported are: empresa, pessoa, veiculo
@@ -180,36 +239,7 @@ const searchCallback = data => {
     hideLoading()
     searchData = data
     document.querySelector('#balls-animation').style.display = 'none'
-    let finalHTML = '<ul class="nav nav-tabs" role="tablist">'
-
-    // first it iterates each 'object_type' (empresa, pessoa, veiculo) to create tabs
-    Object.keys(data).forEach((key, index) => {
-        finalHTML += `<li role="presentation" ${index === 1 ? 'class="active"' : ''}>
-            <a href="#${key}" role="tab" class="custom-tab ${key}" data-toggle="tab">
-                <img src="/static/img/icon/${key}.svg" />
-                <p class="number">${thousandsSeparator(data[key].response.numFound)}</p>
-                <p>${key}${data[key].response.numFound > 1 ? 's' : ''}</p>
-            </a>
-        </li>`
-    })
-
-    finalHTML += '</ul> <div class="tab-content">'
-
-    // then, for each 'object_type', create a tab panel
-    Object.keys(data).forEach((key, indexKey) => {
-        finalHTML += `<div role="tabpanel" class="tab-pane ${indexKey === 1 ? 'active' : ''} ${key}" id="${key}">`
-        // and for each 'doc', create a card
-        data[key].response.docs.forEach(doc => {
-            finalHTML += entityCard(doc, key, data)
-        })
-        // treat empty result
-        if (data[key].response.docs.length === 0) {
-            finalHTML += '<p>Não há resultados para este tipo de entidade para o valor pesquisado.'
-        }
-        finalHTML += '</div>'
-    })
-    finalHTML += '</div>'
-    document.querySelector('#search-result').innerHTML = finalHTML
+    document.querySelector('#search-result').innerHTML = createSearchContent(data)
 }
 
 const addVeiculoFoto = data => {
@@ -239,7 +269,7 @@ const searchDetailStep = (entityUUID, entityType) => {
             Caminho<br>
             <b>Exploratório</b>
         </div>
-        <div class="col-lg-4 action analise-de-vinculos" onclick="bondAnalysis('${entityUUID}')">
+        <div class="col-lg-4 action analise-de-vinculos" onclick="bondAnalysis('${entityUUID}','${entityType}','${searchedDoc[getCardTitle(entityType)]}')">
             Análise de<br>
             <b>Vínculos</b>
         </div>
@@ -610,13 +640,60 @@ const showEntity = uuid => {
     getNextNodes(140885160)
 }
 
-const bondAnalysis = nodeId1 => {
+const bondAnalysis = (nodeId1, nodeType1, nodeTitle1) => {
+    document.querySelector('#search-details').style.display = 'none'
+    let template = `
+    <div class="row">
+        <div class="col-lg-5 ${nodeType1} entity">
+            <img src="/static/img/icon/${nodeType1}.svg"/>
+            <input disabled value="${nodeTitle1}">
+        </div>
+        <div class="col-lg-2">
+            <div class="add-bond">
+                <img src="/static/img/icon/icon-vinculos.svg" />
+            </div>
+            <p class="text">
+                Análise de <br />
+                <b>Vínculos</b>
+            </p>
+        </div>
+        <div id="bond-search" class="col-lg-5 entity entity-empty">
+            <img src="/static/img/icon/vinculo-empty.svg"/>
+            <form id="form-bond-search">
+                <input value="" placeholder="Procure um vínculo">
+            </ form>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-5"></div>
+        <div class="col-lg-7">
+            <div id="bond-search-result"></div>
+        </div>
+    </div>
+    `
+    document.querySelector('#bond-analysis').innerHTML = template
+    document.getElementById('form-bond-search').addEventListener('submit', e => {
+        e.preventDefault()
+        showLoading()
+        document.querySelector('#bond-search-result').innerHTML = ''
+        get(`/api/search?q=${sanitizeQuery(e.target[0].value)}`, data => {
+            bondSearchCallback(data, nodeId1)
+        })
+    })
+}
+
+const bondSearchCallback = (data, nodeId1) => {
+    hideLoading()
+    document.querySelector('#bond-search-result').innerHTML = createSearchContent(data, nodeId1)
+}
+
+const doBondSearch = (nodeId1, nodeId2) => {
+    // getShortestPath(nodeId1, nodeId2)
     // hardcoded, falta interface
     getShortestPath(140885160, 81208568)
 }
 
 const getShortestPath = (nodeId1, nodeId2) => {
-    document.querySelector('#search-details').style.display = 'none'
     get(`/api/findShortestPath?node_id1=${nodeId1}&node_id2=${nodeId2}`, updateNodes)
 }
 
@@ -656,6 +733,7 @@ const displayWhereabouts = data => {
 window.addVeiculoFoto = addVeiculoFoto
 window.backToSearch = backToSearch
 window.bondAnalysis = bondAnalysis
+window.doBondSearch = doBondSearch
 window.findNodes = findNodes
 window.searchDetailStep = searchDetailStep
 window.searchWhereabouts = searchWhereabouts

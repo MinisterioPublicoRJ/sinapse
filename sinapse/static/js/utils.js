@@ -326,3 +326,14 @@ export const showLoading = () => {
 export const hideLoading = () => {
     document.getElementById('loading').className = 'hidden'
 }
+
+export const getCardTitle = (nodeType) => {
+    switch (nodeType) {
+        case 'pessoa':
+            return 'nome'
+        case 'veiculo':
+            return 'descricao'
+        default:
+            return null
+    }
+}
