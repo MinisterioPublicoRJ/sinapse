@@ -21,6 +21,8 @@ bundles = {
         'css/sidebarRight.css',
         'css/graph.css',
         'css/filter.css',
+        'css/entitylist.css',
+        'css/colors.css',
     ),
 }
 

@@ -1,0 +1,87 @@
+.color-pessoa,
+.color-pessoa:hover,
+.color-pessoa:focus,
+.color-pessoa::placeholder {
+    color: #72d8f2;
+}
+
+.bgcolor-pessoa {
+    background-color: #72d8f2;
+}
+
+.color-veiculo,
+.color-veiculo:hover,
+.color-veiculo:focus,
+.color-veiculo::placeholder {
+    color: #f2727b;
+}
+
+.bgcolor-veiculo {
+    background-color: #f2727b;
+}
+
+.color-empresa,
+.color-empresa:hover,
+.color-empresa:focus,
+.color-empresa::placeholder {
+    color: #60b87f;
+}
+
+.bgcolor-empresa {
+    background-color: #60b87f;
+}
+
+.color-personagem,
+.color-personagem:hover,
+.color-personagem:focus,
+.color-personagem::placeholder {
+    color: #a176d1;
+}
+
+.bgcolor-personagem {
+    background-color: #a176d1;
+}
+
+.color-telefone,
+.color-telefone:hover,
+.color-telefone:focus,
+.color-telefone::placeholder {
+    color: #324eb6;
+}
+
+.bgcolor-telefone {
+    background-color: #324eb6;
+}
+
+.color-multa,
+.color-multa:hover,
+.color-multa:focus,
+.color-multa::placeholder {
+    color: #ff524e;
+}
+
+.bgcolor-multa {
+    background-color: #ff524e;
+}
+
+.color-orgao,
+.color-orgao:hover,
+.color-orgao:focus,
+.color-orgao::placeholder {
+    color: #ffb842;
+}
+
+.bgcolor-orgao {
+    background-color: #ffb842;
+}
+
+.color-mgp,
+.color-mgp:hover,
+.color-mgp:focus,
+.color-mgp::placeholder {
+    color: #ab897f;
+}
+
+.bgcolor-mgp {
+    background-color: #ab897f;
+}

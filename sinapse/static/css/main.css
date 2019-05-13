@@ -134,21 +134,3 @@ div.vis-network div.vis-manipulation div.vis-button.vis-delete {
 #version_username {
     display: none;
 }
-
-.entitylist {
-    background: #fff;
-    display: none;
-    position: fixed;
-    left: 0;
-    z-index: 2;
-    width: 200px;
-    border-right: 1px solid black;
-    height: 100%;
-    height: calc(100% - 70px);
-    padding: 30px 10px;
-    overflow-y: scroll;
-}
-
-.entitylist h3 {
-    font-size: 1.2em
-}
