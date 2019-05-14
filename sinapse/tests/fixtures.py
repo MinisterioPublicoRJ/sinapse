@@ -141,26 +141,40 @@ request_filterNodes_ok = {
 
 
 resposta_filterNodes_ok = {
-    'nodes': [{
-        'id': '140885160',
-        'type': ['pessoa'],
-        'properties': {
-            'cpf': '11452244740',
-            'dt_nasc': '19850522',
-            'filho_rel_status': 1,
-            'filho_rel_status_pai': 1,
-            'nome': 'DANIEL CARVALHO BELCHIOR',
-            'nome_mae': 'MARTA CARVALHO BELCHIOR',
-            'nome_pai': 'FRANCISCO IVAN FONTELE BELCHIOR',
-            'nome_rg': 'DANIEL CARVALHO BELCHIOR',
-            'rg': '131242950',
-            'sexo': '1',
-            'uf': 'RJ',
-            'visitado': False,
-        }
-    }],
-    'edges': []
-}
+    'results': [
+        {
+            'columns': ['r', 'n', 'x'], 
+'data': [{
+    'graph': {
+        'nodes': [{
+            'id': '140885160',
+            'type': ['pessoa'],
+            'properties': {
+                'cpf': '11452244740',
+                'dt_nasc': '19850522',
+                'filho_rel_status': 1,
+                'filho_rel_status_pai': 1,
+                'nome': 'DANIEL CARVALHO BELCHIOR',
+                'nome_mae': 'MARTA CARVALHO BELCHIOR',
+                'nome_pai': 'FRANCISCO IVAN FONTELE BELCHIOR',
+                'nome_rg': 'DANIEL CARVALHO BELCHIOR',
+                'rg': '131242950',
+                'sexo': '1',
+                'uf': 'RJ',
+                'visitado': False,
+            },
+            'labels': [],
+        }],
+        'edges': [], 
+        'relationships': [{
+            'id': '282236618',
+            'type': 'filho',
+            'startNode': '85604696',
+            'endNode': '10844320',
+            'properties': {},
+    }]
+    }}]
+}]}
 
 request_nextNodes_ok = {
     'statements': [

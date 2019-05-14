@@ -311,7 +311,9 @@ class MetodosConsulta(unittest.TestCase):
             '/api/findNodes',
             query_string=query_string
         )
-        resposta_esperada = deepcopy(resposta_filterNodes_ok)
+        resposta_esperada = parse_json_to_visjs(
+            deepcopy(resposta_filterNodes_ok)
+        )
         resposta_esperada['numero_de_nos'] = 1
 
         self.assertEqual(resposta.get_json(), resposta_esperada)
