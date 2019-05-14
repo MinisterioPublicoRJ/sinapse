@@ -533,7 +533,7 @@ class RemoveInfoSensivel(unittest.TestCase):
     #     self.assertEqual(info, [dict()])
 
     def test_mantem_nos_nao_sensiveis(self):
-        nos = resposta_node_ok['nodes']
+        nos = resposta_node_ok['results'][0]['data'][0]['graph']['nodes']
         info = limpa_nos(nos)
 
         self.assertEqual(info, nos)
