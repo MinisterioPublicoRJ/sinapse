@@ -562,7 +562,7 @@ class RemoveInfoSensivel(unittest.TestCase):
         )
 
         resposta = self.app.get('/api/node?node_id=395989945')
-        
+
         self.assertEqual(resposta.json, parse_json_to_visjs(resposta_node_sensivel_esp))
 
     @mock.patch("sinapse.start._log_response")
@@ -576,4 +576,4 @@ class RemoveInfoSensivel(unittest.TestCase):
 
         resposta = self.app.get('/api/node?node_id=395989945')
 
-        self.assertEqual(resposta.json, resposta_node_ok)
+        self.assertEqual(resposta.json, parse_json_to_visjs(resposta_node_ok))
