@@ -525,24 +525,11 @@ class RemoveInfoSensivel(unittest.TestCase):
         self.assertNotEqual(info, nos)
         self.assertEqual(info, nos_sensiveis_esp)
 
-    # def test_remove_linhas_sensiveis(self):
-    #     linhas = resposta_node_sensivel_ok['results'][0]['data'][0]['row']
-    #     info = limpa_linhas(linhas)
-
-    #     self.assertNotEqual(info, linhas)
-    #     self.assertEqual(info, [dict()])
-
     def test_mantem_nos_nao_sensiveis(self):
         nos = resposta_node_ok['results'][0]['data'][0]['graph']['nodes']
         info = limpa_nos(nos)
 
         self.assertEqual(info, nos)
-
-    # def test_mantem_linhas_nao_sensiveis(self):
-    #     linhas = resposta_node_ok['results'][0]['data'][0]['row']
-    #     info = limpa_linhas(linhas)
-
-    #     self.assertEqual(info, linhas)
 
     def test_remove_relacoes_sensiveis(self):
         info = limpa_relacoes(relacoes_sensiveis)
