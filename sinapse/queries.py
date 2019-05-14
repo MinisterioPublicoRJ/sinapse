@@ -24,11 +24,11 @@ IMG_HEADERS['User-Agent'] = "Mozilla/5.0 (Windows NT 6.1)"\
     " Chrome/41.0.2228.0 Safari/537.36"
 
 
-def find_next_nodes(node_id, rel_types='', node_type='', path_size=1,
-                    limit='limit 100'):
+def find_next_nodes(parameters):
     query = {"statements": [{
-        "statement": "MATCH r = (n)-[%s*..%s]-(x%s) where id(n) = %s"
-        " return r,n,x %s" % (rel_types, path_size, node_type, node_id, limit),
+        "statement": "MATCH r = (n)-[{relation_type}*..{path_size}]-"
+        "(x{node_type}) where {where}"
+        " return r,n,x {limit}".format(**parameters),
         "resultDataContents": ["row", "graph"]
     }]}
     response = requests.post(
@@ -38,6 +38,7 @@ def find_next_nodes(node_id, rel_types='', node_type='', path_size=1,
         headers=_HEADERS)
 
     return response
+
 
 def get_node_from_id(node_id):
     query = {"statements": [{
@@ -53,6 +54,7 @@ def get_node_from_id(node_id):
         headers=_HEADERS)
 
     return response
+
 
 def search_info(q, solr_queries):
     f_q = re.sub(r'\s+', '+', q)
