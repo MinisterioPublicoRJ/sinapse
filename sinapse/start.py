@@ -403,7 +403,14 @@ def api_nextNodes():
     if rel_types:
         rel_types = ':' + rel_types.replace(',', '|:')
 
-    response = find_next_nodes(node_id, rel_types)
+    parameters = {
+        'where': 'id(n)={id}'.format(id=node_id),
+        'relation_type': rel_types,
+        'path_size': 1,
+        'limit': '',
+        'node_type': ''
+    }
+    response = find_next_nodes(parameters)
 
     numero_expansoes = conta_expansoes(node_id, rel_types)
 

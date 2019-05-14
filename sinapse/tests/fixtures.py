@@ -185,7 +185,11 @@ request_nextNodes_ok = {
     ]
 }
 
-resposta_nextNodes_ok = {
+resposta_nextNodes_ok = {'results': [
+        {
+            'columns': ['r', 'n', 'x'], 
+'data': [{
+    'graph': {
     'nodes': [
         {
             'id': '395989945',
@@ -194,7 +198,9 @@ resposta_nextNodes_ok = {
                 'cpf': '11452244740',
                 'nome': 'DANIEL CARVALHO BELCHIOR',
                 'pess_dk': 15535503
-            }
+            },
+            'labels': [],
+            'type': []
         },
         {
             'id': '359754850',
@@ -205,7 +211,9 @@ resposta_nextNodes_ok = {
                 'docu_dk': 17430731,
                 'dt_cadastro': '12/01/2018 15:46:42',
                 'nr_mprj': 201800032105
-            }
+            },
+            'labels': [],
+            'type': []
         },
         {
             'id': '140885160',
@@ -223,7 +231,9 @@ resposta_nextNodes_ok = {
                 'sexo': '1',
                 'uf': 'RJ',
                 'visitado': False
-            }
+            },
+            'labels': [],
+            'type': []
         }
     ],
     'edges': [
@@ -250,6 +260,15 @@ resposta_nextNodes_ok = {
             'label': 'personagem'
         }
     ],
+        'relationships': [
+            {
+                'id': 1,
+                'type': 'person',
+                'startNode': 1,
+                'endNode': 2
+            }
+        ]
+    }}]}],
     'numero_de_expansoes': [73, 73, 73]
 }
 

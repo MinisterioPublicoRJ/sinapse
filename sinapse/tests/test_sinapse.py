@@ -413,7 +413,9 @@ class MetodosConsulta(unittest.TestCase):
             '/api/nextNodes',
             query_string=query_string
         )
-        resposta_esperada = deepcopy(resposta_nextNodes_ok)
+        resposta_esperada = parse_json_to_visjs(
+            deepcopy(resposta_nextNodes_ok)
+        )
         resposta_esperada['numero_de_expansoes'] = [72, 72, 72]
 
         self.assertEqual(resposta.get_json(), resposta_esperada)
