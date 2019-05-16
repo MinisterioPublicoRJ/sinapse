@@ -1148,19 +1148,6 @@ resposta_findShortestPath_ok = {
 
 casos_servicos = [
     {
-        'nome': 'api_findShortestPath_umfiltro',
-        'endereco': '/db/data/transaction/commit',
-        'servico': '/api/findShortestPath',
-        'resposta': resposta_findShortestPath_umfiltro_ok,
-        'requisicao': request_findShortestPath_umfiltro_ok,
-        'query_string': {
-            "node_id1": 140885160,
-            "node_id2": 328898991,
-            "rel_types": "trabalha"
-        },
-        'metodo': responses.POST
-    },
-    {
         'nome': 'api_findShortestPath_doisfiltros',
         'endereco': '/db/data/transaction/commit',
         'servico': '/api/findShortestPath',
