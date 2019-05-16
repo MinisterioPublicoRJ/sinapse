@@ -41,6 +41,8 @@ from .fixtures import (
     resposta_filterNodes_ok,
     resposta_nextNodes_ok,
     request_nextNodes_ok,
+    resposta_nextNodes_umfiltro_ok,
+    request_nextNodes_umfiltro_ok,
     resposta_findShortestPath_ok,
     request_findShortestPath_umfiltro_ok,
     resposta_findShortestPath_umfiltro_ok,
@@ -370,6 +372,34 @@ class MetodosConsulta(unittest.TestCase):
         self.assertEqual(
             json.loads(responses.calls[-1].request.body),
             request_nextNodes_ok
+        )
+
+    @mock.patch('sinapse.start.conta_expansoes')
+    @mock_logresponse
+    def test_metodo_consulta_api_next_nodes_one_filter(self, _conta_expansoes):
+        _conta_expansoes.return_value = [73, 73, 73]
+        responses.add(
+            responses.POST,
+            _ENDERECO_NEO4J % '/db/data/transaction/commit',
+            json=resposta_nextNodes_umfiltro_ok
+        )
+        response = self.app.get(
+            'api/nextNodes',
+            query_string={
+                'node_id': 395989945,
+                'rel_types': 'filho'
+            }
+        )
+
+        expected_response = parse_json_to_visjs(
+            deepcopy(resposta_nextNodes_umfiltro_ok)
+        )
+        expected_response['numero_de_expansoes'] = [73, 73, 73]
+
+        self.assertEqual(response.get_json(), expected_response)
+        self.assertEqual(
+            json.loads(responses.calls[-1].request.body),
+            request_nextNodes_umfiltro_ok
         )
 
     def test_metodos_consulta(self, _conta_expansoes):
