@@ -404,10 +404,10 @@ def api_nextNodes():
         rel_types = ':' + rel_types.replace(',', '|:')
 
     parameters = {
-        'where': 'id(n)={id}'.format(id=node_id),
+        'where': 'id(n) = {id}'.format(id=node_id),
         'relation_type': rel_types,
         'path_size': 1,
-        'limit': '',
+        'limit': 'limit 100',
         'node_type': ''
     }
     response = find_next_nodes(parameters)

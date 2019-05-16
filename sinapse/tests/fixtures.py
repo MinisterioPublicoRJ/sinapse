@@ -38,10 +38,19 @@ resposta_node_ok = {
                                     'sexo': '1',
                                     'nome_rg': 'DANIEL CARVALHO BELCHIOR',
                                     'dt_nasc': '19850522'
-                                }
+                                },
+                                'type': [],
                             }
                         ],
-                        'relationships': []
+                        'relationships': [
+                            {
+                                'id': 1,
+                                'labels': [],
+                                'type': [],
+                                'startNode': 1,
+                                'endNode': 2
+                            }
+                        ]
                     }
                 }
             ]
@@ -863,7 +872,7 @@ resposta_nextNodes_umfiltro_ok = {
 request_findShortestPath_doisfiltros_ok = {
     "statements": [
         {
-        "statement": "MATCH p = shortestPath((a)-[:filho|:personagem*]-(b)) "
+        "statement": "MATCH p = allShortestPaths((a)-[:filho|:personagem*]-(b)) "
             "WHERE id(a) = 140885160 AND id(b) = 328898991 RETURN p",
         "resultDataContents": ["row", "graph"]
         }
@@ -878,7 +887,7 @@ resposta_findShortestPath_doisfiltros_ok = {
 request_findShortestPath_umfiltro_ok = {
     "statements": [
         {
-        "statement": "MATCH p = shortestPath((a)-[:trabalha*]-(b)) "
+        "statement": "MATCH p = allShortestPaths((a)-[:trabalha*]-(b)) "
             "WHERE id(a) = 140885160 AND id(b) = 328898991 RETURN p",
         "resultDataContents": ["row", "graph"]
         }
@@ -1040,7 +1049,7 @@ resposta_findShortestPath_umfiltro_ok = {
 request_findShortestPath_ok = {
     "statements": [
         {
-        "statement": "MATCH p = shortestPath((a)-[*]-(b)) "
+        "statement": "MATCH p = allShortestPaths((a)-[*]-(b)) "
             "WHERE id(a) = 140885160 AND id(b) = 328898991 RETURN p",
         "resultDataContents": ["row", "graph"]
         }

@@ -252,6 +252,7 @@ class MetodosConsulta(unittest.TestCase):
     @mock.patch('sinapse.start.conta_expansoes')
     @logresponse
     def test_metodos_consulta(self, _conta_expansoes):
+        self.maxDiff = None
         _conta_expansoes.side_effect = [[73, 73, 73]]*len(casos_servicos)
         for caso in casos_servicos:
             self._consultar(caso)
@@ -264,12 +265,17 @@ class MetodosConsulta(unittest.TestCase):
                 json=caso['resposta']
             )
 
-            resposta = self.app.get(
+            response = self.app.get(
                 caso['servico'],
                 query_string=caso['query_string']
             )
 
-            assert resposta.get_json() == caso['resposta']
+            resposta = parse_json_to_visjs(deepcopy(caso['resposta']))
+            if caso['nome'] == 'api_nextNodes':
+                resposta['numero_de_expansoes'] = [73, 73, 73]
+
+            self.assertEqual(response.get_json(), resposta)
+
             if caso['query_string']:
                 assert json.loads(
                     responses.calls[-1].request.body) == caso['requisicao']
@@ -567,7 +573,7 @@ class RemoveInfoSensivel(unittest.TestCase):
 
         resposta = self.app.get('/api/node?node_id=395989945')
 
-        self.assertEqual(resposta.json, parse_json_to_visjs(resposta_node_sensivel_esp))
+        self.assertEqual(resposta.json, parse_json_to_visjs(deepcopy(resposta_node_sensivel_esp)))
 
     @mock.patch("sinapse.start._log_response")
     @responses.activate
@@ -580,4 +586,4 @@ class RemoveInfoSensivel(unittest.TestCase):
 
         resposta = self.app.get('/api/node?node_id=395989945')
 
-        self.assertEqual(resposta.json, parse_json_to_visjs(resposta_node_ok))
+        self.assertEqual(resposta.json, parse_json_to_visjs(deepcopy(resposta_node_ok)))
