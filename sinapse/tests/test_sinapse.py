@@ -40,6 +40,8 @@ from .fixtures import (
     relacoes_sensiveis_esp,
     resposta_filterNodes_ok,
     resposta_nextNodes_ok,
+    resposta_findShortestPath_ok,
+    request_findShortestPath_ok,
     query_dinamica,
     parser_test_input,
     parser_test_output
@@ -267,6 +269,29 @@ class MetodosConsulta(unittest.TestCase):
         self.assertEqual(
             json.loads(responses.calls[-1].request.body),
             request_node_ok
+        )
+
+    @mock_logresponse
+    def test_metodo_consulta_api_find_shortest_path(self):
+        responses.add(
+            responses.POST,
+            _ENDERECO_NEO4J % '/db/data/transaction/commit',
+            json=resposta_findShortestPath_ok
+        )
+        response = self.app.get(
+            'api/findShortestPath',
+            query_string={
+                "node_id1": 140885160,
+                "node_id2": 328898991
+            }
+        )
+
+        expected_response = resposta_findShortestPath_ok
+
+        self.assertEqual(response.get_json(), expected_response)
+        self.assertEqual(
+            json.loads(responses.calls[-1].request.body),
+            request_findShortestPath_ok
         )
 
     @mock.patch('sinapse.start.conta_expansoes')
