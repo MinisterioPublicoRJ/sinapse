@@ -51,6 +51,8 @@ from .fixtures import (
     request_findShortestPath_doisfiltros_ok,
     resposta_findShortestPath_doisfiltros_ok,
     request_findShortestPath_ok,
+    resposta_nodeproperties_ok,
+    request_nodeproperties_ok,
     query_dinamica,
     parser_test_input,
     parser_test_output
@@ -430,6 +432,30 @@ class MetodosConsulta(unittest.TestCase):
         self.assertEqual(
             json.loads(responses.calls[-1].request.body),
             request_nextNodes_doisfiltros_ok
+        )
+
+    @mock_logresponse
+    def test_metodo_consulta_api_node_properties(self):
+        responses.add(
+            responses.POST,
+            _ENDERECO_NEO4J % '/db/data/cypher',
+            json=resposta_nodeproperties_ok
+        )
+        response = self.app.get(
+            'api/nodeProperties',
+            query_string={
+                'label': 'pessoa'
+            }
+        )
+
+        expected_response = parse_json_to_visjs(
+            deepcopy(resposta_nodeproperties_ok)
+        )
+
+        self.assertEqual(response.get_json(), expected_response)
+        self.assertEqual(
+            json.loads(responses.calls[-1].request.body),
+            request_nodeproperties_ok
         )
 
     @mock.patch('sinapse.start.conta_expansoes')

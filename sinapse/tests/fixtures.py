@@ -1148,17 +1148,6 @@ resposta_findShortestPath_ok = {
 
 casos_servicos = [
     {
-        'nome': 'api_nodeProperties',
-        'endereco': '/db/data/cypher',
-        'servico': '/api/nodeProperties',
-        'resposta': resposta_nodeproperties_ok,
-        'requisicao': request_nodeproperties_ok,
-        'query_string': {
-            "label": "pessoa"
-        },
-        'metodo': responses.POST
-    },
-    {
         'nome': 'api_labels',
         'endereco': '/db/data/labels',
         'servico': '/api/labels',
