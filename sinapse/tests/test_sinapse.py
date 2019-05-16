@@ -43,6 +43,8 @@ from .fixtures import (
     request_nextNodes_ok,
     resposta_nextNodes_umfiltro_ok,
     request_nextNodes_umfiltro_ok,
+    resposta_nextNodes_doisfiltros_ok,
+    request_nextNodes_doisfiltros_ok,
     resposta_findShortestPath_ok,
     request_findShortestPath_umfiltro_ok,
     resposta_findShortestPath_umfiltro_ok,
@@ -402,6 +404,36 @@ class MetodosConsulta(unittest.TestCase):
             request_nextNodes_umfiltro_ok
         )
 
+    @mock.patch('sinapse.start.conta_expansoes')
+    @mock_logresponse
+    def test_metodo_consulta_api_next_nodes_two_filters(self, _conta_expansoes):
+        _conta_expansoes.return_value = [73, 73, 73]
+        responses.add(
+            responses.POST,
+            _ENDERECO_NEO4J % '/db/data/transaction/commit',
+            json=resposta_nextNodes_doisfiltros_ok
+        )
+        response = self.app.get(
+            'api/nextNodes',
+            query_string={
+                'node_id': 395989945,
+                'rel_types': 'filho,trabalha'
+            }
+        )
+
+        expected_response = parse_json_to_visjs(
+            deepcopy(resposta_nextNodes_doisfiltros_ok)
+        )
+        expected_response['numero_de_expansoes'] = [73, 73, 73]
+
+        self.assertEqual(response.get_json(), expected_response)
+        self.assertEqual(
+            json.loads(responses.calls[-1].request.body),
+            request_nextNodes_doisfiltros_ok
+        )
+
+    @mock.patch('sinapse.start.conta_expansoes')
+    @mock_logresponse
     def test_metodos_consulta(self, _conta_expansoes):
         self.maxDiff = None
         _conta_expansoes.side_effect = [[73, 73, 73]]*len(casos_servicos)
