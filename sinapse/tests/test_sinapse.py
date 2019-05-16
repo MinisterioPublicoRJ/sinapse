@@ -28,7 +28,6 @@ from sinapse.start import (
 )
 
 from .fixtures import (
-    casos_servicos,
     resposta_node_sensivel_ok,
     nos_sensiveis_esp,
     resposta_node_sensivel_esp,
@@ -54,6 +53,7 @@ from .fixtures import (
     resposta_nodeproperties_ok,
     request_nodeproperties_ok,
     resposta_label_ok,
+    resposta_relationships_ok,
     query_dinamica,
     parser_test_input,
     parser_test_output
@@ -479,43 +479,25 @@ class MetodosConsulta(unittest.TestCase):
 
         self.assertEqual(response.get_json(), expected_response)
 
-    @mock.patch('sinapse.start.conta_expansoes')
     @mock_logresponse
-    def test_metodos_consulta(self, _conta_expansoes):
-        self.maxDiff = None
-        _conta_expansoes.side_effect = [[73, 73, 73]]*len(casos_servicos)
-        for caso in casos_servicos:
-            self._consultar(caso)
+    def test_metodo_consulta_api_relationships(self):
+        responses.add(
+            responses.GET,
+            _ENDERECO_NEO4J % '/db/data/relationship/types',
+            json=resposta_relationships_ok
+        )
+        response = self.app.get(
+            'api/relationships',
+            query_string={
+                'label': 'pessoa'
+            }
+        )
 
-    def _consultar(self, caso):
-        with self.subTest(caso['nome']):
-            responses.add(
-                caso['metodo'],
-                _ENDERECO_NEO4J % caso['endereco'],
-                json=caso['resposta']
-            )
+        expected_response = parse_json_to_visjs(
+            deepcopy(resposta_relationships_ok)
+        )
 
-            response = self.app.get(
-                caso['servico'],
-                query_string=caso['query_string']
-            )
-
-            resposta = parse_json_to_visjs(deepcopy(caso['resposta']))
-            if caso['nome'] == 'api_nextNodes':
-                resposta['numero_de_expansoes'] = [73, 73, 73]
-
-            self.assertEqual(response.get_json(), resposta)
-
-            if caso['query_string']:
-                assert json.loads(
-                    responses.calls[-1].request.body) == caso['requisicao']
-            else:
-                assert responses.calls[-1].request.body is None
-
-            responses.remove(
-                caso['metodo'],
-                _ENDERECO_NEO4J % caso['endereco']
-            )
+        self.assertEqual(response.get_json(), expected_response)
 
     @mock.patch('sinapse.start.get_vehicle_photo_asynch')
     @mock.patch('sinapse.start.get_person_photo_asynch')
