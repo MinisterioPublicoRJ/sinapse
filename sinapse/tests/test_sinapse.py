@@ -33,6 +33,7 @@ from .fixtures import (
     nos_sensiveis_esp,
     resposta_node_sensivel_esp,
     resposta_node_ok,
+    request_node_ok,
     resposta_sensivel_mista,
     resposta_sensivel_mista_esp,
     relacoes_sensiveis,
@@ -248,6 +249,25 @@ class MetodosConsulta(unittest.TestCase):
 
         statements = json.loads(responses.calls[0].request.body)
         assert statements['statements'] == query_dinamica
+
+    @mock_logresponse
+    def test_metodo_consulta_api_node(self):
+        responses.add(
+            responses.POST ,
+            _ENDERECO_NEO4J % '/db/data/transaction/commit',
+            json=resposta_node_ok
+        )
+        response = self.app.get(
+            'api/node',
+            query_string={'node_id': 395989945}
+        )
+
+        expected_response = parse_json_to_visjs(deepcopy(resposta_node_ok))
+        self.assertEqual(response.get_json(), expected_response)
+        self.assertEqual(
+            json.loads(responses.calls[-1].request.body),
+            request_node_ok
+        )
 
     @mock.patch('sinapse.start.conta_expansoes')
     @logresponse
