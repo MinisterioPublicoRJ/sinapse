@@ -53,6 +53,7 @@ from .fixtures import (
     request_findShortestPath_ok,
     resposta_nodeproperties_ok,
     request_nodeproperties_ok,
+    resposta_label_ok,
     query_dinamica,
     parser_test_input,
     parser_test_output
@@ -457,6 +458,26 @@ class MetodosConsulta(unittest.TestCase):
             json.loads(responses.calls[-1].request.body),
             request_nodeproperties_ok
         )
+
+    @mock_logresponse
+    def test_metodo_consulta_api_labels(self):
+        responses.add(
+            responses.GET,
+            _ENDERECO_NEO4J % '/db/data/labels',
+            json=resposta_label_ok
+        )
+        response = self.app.get(
+            'api/labels',
+            query_string={
+                'label': 'pessoa'
+            }
+        )
+
+        expected_response = parse_json_to_visjs(
+            deepcopy(resposta_label_ok)
+        )
+
+        self.assertEqual(response.get_json(), expected_response)
 
     @mock.patch('sinapse.start.conta_expansoes')
     @mock_logresponse

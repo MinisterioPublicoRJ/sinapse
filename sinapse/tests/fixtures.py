@@ -1148,15 +1148,6 @@ resposta_findShortestPath_ok = {
 
 casos_servicos = [
     {
-        'nome': 'api_labels',
-        'endereco': '/db/data/labels',
-        'servico': '/api/labels',
-        'resposta': resposta_label_ok,
-        'requisicao': None,
-        'query_string': {},
-        'metodo': responses.GET
-    },
-    {
         'nome': 'api_relationships',
         'endereco': '/db/data/relationship/types',
         'servico': '/api/relationships',
