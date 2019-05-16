@@ -1148,17 +1148,6 @@ resposta_findShortestPath_ok = {
 
 casos_servicos = [
     {
-        'nome': 'api_nextNodes',
-        'endereco': '/db/data/transaction/commit',
-        'servico': '/api/nextNodes',
-        'resposta': resposta_nextNodes_ok,
-        'requisicao': request_nextNodes_ok,
-        'query_string': {
-            'node_id': 395989945
-        },
-        'metodo': responses.POST
-    },
-    {
         'nome': 'api_nextNodes_umfiltro',
         'endereco': '/db/data/transaction/commit',
         'servico': '/api/nextNodes',
