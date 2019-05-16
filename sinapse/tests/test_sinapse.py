@@ -16,7 +16,6 @@ from sinapse.start import (
     _ENDERECO_NEO4J,
     _log_response,
     limpa_nos,
-    #limpa_linhas,
     remove_info_sensiveis,
     resposta_sensivel,
     limpa_relacoes,
@@ -59,9 +58,9 @@ from .fixtures import (
     parser_test_output
 )
 
+
 def test_parser_visjs():
     saida = parse_json_to_visjs(parser_test_input)
-    
     assert saida == parser_test_output
 
 
@@ -267,7 +266,7 @@ class MetodosConsulta(unittest.TestCase):
     @mock_logresponse
     def test_metodo_consulta_api_node(self):
         responses.add(
-            responses.POST ,
+            responses.POST,
             _ENDERECO_NEO4J % '/db/data/transaction/commit',
             json=resposta_node_ok
         )
@@ -370,7 +369,9 @@ class MetodosConsulta(unittest.TestCase):
             }
         )
 
-        expected_response = parse_json_to_visjs(deepcopy(resposta_nextNodes_ok))
+        expected_response = parse_json_to_visjs(
+            deepcopy(resposta_nextNodes_ok)
+        )
         expected_response['numero_de_expansoes'] = [73, 73, 73]
 
         self.assertEqual(response.get_json(), expected_response)
@@ -409,7 +410,8 @@ class MetodosConsulta(unittest.TestCase):
 
     @mock.patch('sinapse.start.conta_expansoes')
     @mock_logresponse
-    def test_metodo_consulta_api_next_nodes_two_filters(self, _conta_expansoes):
+    def test_metodo_consulta_api_next_nodes_two_filters(self,
+                                                        _conta_expansoes):
         _conta_expansoes.return_value = [73, 73, 73]
         responses.add(
             responses.POST,
@@ -663,8 +665,8 @@ class MetodosConsulta(unittest.TestCase):
     @mock.patch('sinapse.start.get_person_photo_asynch')
     @mock.patch('sinapse.start.conta_expansoes', return_value=[1, 1, 1])
     @mock_logresponse
-    def test_conta_numero_de_expansoes_antes_da_busca(self, _conta_expansoes, _gfa,
-                                                      _gva):
+    def test_conta_numero_de_expansoes_antes_da_busca(self, _conta_expansoes,
+                                                      _gfa, _gva):
         mock_resposta = mock.MagicMock()
         responses.add(
             responses.POST,
@@ -785,7 +787,10 @@ class RemoveInfoSensivel(unittest.TestCase):
 
         resposta = self.app.get('/api/node?node_id=395989945')
 
-        self.assertEqual(resposta.json, parse_json_to_visjs(deepcopy(resposta_node_sensivel_esp)))
+        self.assertEqual(
+            resposta.json,
+            parse_json_to_visjs(deepcopy(resposta_node_sensivel_esp))
+        )
 
     @mock.patch("sinapse.start._log_response")
     @responses.activate
@@ -798,4 +803,7 @@ class RemoveInfoSensivel(unittest.TestCase):
 
         resposta = self.app.get('/api/node?node_id=395989945')
 
-        self.assertEqual(resposta.json, parse_json_to_visjs(deepcopy(resposta_node_ok)))
+        self.assertEqual(
+            resposta.json,
+            parse_json_to_visjs(deepcopy(resposta_node_ok))
+        )

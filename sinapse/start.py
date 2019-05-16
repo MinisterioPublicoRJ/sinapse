@@ -31,6 +31,7 @@ from sinapse.detran.utils import get_node_id
 from sinapse.queries import find_next_nodes, get_node_from_id
 from sinapse.whereabouts.whereabouts import get_whereabouts_receita, get_whereabouts_credilink
 
+
 def parse_json_to_visjs(json, **kwargs):
     nodes = {}
     relationships = {}
@@ -58,11 +59,12 @@ def parse_json_to_visjs(json, **kwargs):
         r['to'] = r.pop('endNode')
         r['arrows'] = "to"
         r['dashes'] = False
-        
+
     json_visjs = {'nodes': nodes, 'edges': relationships}
     json_visjs.update(kwargs)
-    
+
     return json_visjs
+
 
 def redirecionar(url, code=302):
     retorno = redirect(url, code=code)
@@ -82,6 +84,7 @@ def respostajson(response, **kwargs):
         return jsonify(remove_info_sensiveis(dados))
 
     return jsonify(dados)
+
 
 def respostajson_visjs(response, **kwargs):
     usuario = session.get('usuario', "dummy")
@@ -137,7 +140,6 @@ def remove_info_sensiveis(resposta):
     resp = deepcopy(resposta)
     for data in resp['results'][0]['data']:
         data['graph']['nodes'] = limpa_nos(data['graph']['nodes'])
-        #data['row'] = limpa_linhas(data['row'])
         data['graph']['relationships'] = limpa_relacoes(
             data['graph']['relationships'])
 
@@ -307,8 +309,9 @@ def api_findShortestPath():
         rel_types = ':' + rel_types.replace(',', '|:')
 
     query = {"statements": [{
-        "statement": "MATCH p = allShortestPaths((a)-[%s*]-(b)) "
-            "WHERE id(a) = %s AND id(b) = %s RETURN p" % (rel_types, id_start, id_end),
+        "statement": "MATCH p = allShortestPaths((a)-[%s*]-(b))"
+        " WHERE id(a) = %s AND id(b) = %s RETURN p"
+        % (rel_types, id_start, id_end),
         "resultDataContents": ["row", "graph"]
     }]}
 
@@ -317,7 +320,7 @@ def api_findShortestPath():
         data=json.dumps(query),
         auth=_AUTH,
         headers=_HEADERS)
-    
+
     return respostajson_visjs(response)
 
 
@@ -455,16 +458,18 @@ def api_relationships():
         headers=_HEADERS)
     return respostajson(response)
 
+
 @app.route("/api/whereabouts")
 @login_necessario
 def api_whereabouts():
     # TODO: Hide sensitive information
     node_id = request.args.get('node_id')
-    
+
     response = get_node_from_id(node_id)
     response = remove_info_sensiveis(response.json())
-    
-    node_props = response['results'][0]['data'][0]['graph']['nodes'][0]['properties']
+
+    node_props = response['results'][0]['data'][0]['graph'][
+        'nodes'][0]['properties']
     # If information is confidential, properties will be empty
     if node_props:
         num_cpf = node_props['cpf']
