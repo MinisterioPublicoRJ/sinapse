@@ -103,7 +103,7 @@ def test_autenticar():
     assert retorno == "usuario"
 
 
-def logresponse(funcao):
+def mock_logresponse(funcao):
     @mock.patch("sinapse.start._log_response")
     @responses.activate
     @wraps(funcao)
@@ -224,7 +224,7 @@ class MetodosConsulta(unittest.TestCase):
     @mock.patch('sinapse.start.conta_nos')
     @mock.patch('sinapse.start.get_vehicle_photo_asynch')
     @mock.patch('sinapse.start.get_person_photo_asynch')
-    @logresponse
+    @mock_logresponse
     def test_monta_query_dinamica(self, _gpa, _gva, _conta_nos):
         _conta_nos.return_value = 10
         _gpa.__name__ = 'Response'
@@ -270,7 +270,7 @@ class MetodosConsulta(unittest.TestCase):
         )
 
     @mock.patch('sinapse.start.conta_expansoes')
-    @logresponse
+    @mock_logresponse
     def test_metodos_consulta(self, _conta_expansoes):
         self.maxDiff = None
         _conta_expansoes.side_effect = [[73, 73, 73]]*len(casos_servicos)
@@ -309,7 +309,7 @@ class MetodosConsulta(unittest.TestCase):
 
     @mock.patch('sinapse.start.get_vehicle_photo_asynch')
     @mock.patch('sinapse.start.get_person_photo_asynch')
-    @logresponse
+    @mock_logresponse
     def test_resposta_nos(self, _gpa, _gva):
         _gpa.__name__ = 'Response'
         responses.add(
@@ -373,7 +373,7 @@ class MetodosConsulta(unittest.TestCase):
     @mock.patch('sinapse.start.get_person_photo_asynch')
     @mock.patch('sinapse.start.get_node_id', return_value=12345)
     @mock.patch('sinapse.start.conta_nos', return_value=101)
-    @logresponse
+    @mock_logresponse
     def test_conta_numero_de_nos_antes_da_busca(self, _conta_nos, _gni, _gpa,
                                                 _gva):
         _gni.__name__ = 'Return'
@@ -412,7 +412,7 @@ class MetodosConsulta(unittest.TestCase):
 
     @mock.patch('sinapse.start.get_vehicle_photo_asynch')
     @mock.patch('sinapse.start.get_person_photo_asynch')
-    @logresponse
+    @mock_logresponse
     def test_resposta_expansoes(self, _gpa, _gva):
         responses.add(
             responses.POST,
@@ -470,7 +470,7 @@ class MetodosConsulta(unittest.TestCase):
     @mock.patch('sinapse.start.get_vehicle_photo_asynch')
     @mock.patch('sinapse.start.get_person_photo_asynch')
     @mock.patch('sinapse.start.conta_expansoes', return_value=[1, 1, 1])
-    @logresponse
+    @mock_logresponse
     def test_conta_numero_de_expansoes_antes_da_busca(self, _conta_expansoes, _gfa,
                                                       _gva):
         mock_resposta = mock.MagicMock()
