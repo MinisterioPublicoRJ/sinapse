@@ -43,6 +43,8 @@ from .fixtures import (
     resposta_findShortestPath_ok,
     request_findShortestPath_umfiltro_ok,
     resposta_findShortestPath_umfiltro_ok,
+    request_findShortestPath_doisfiltros_ok,
+    resposta_findShortestPath_doisfiltros_ok,
     request_findShortestPath_ok,
     query_dinamica,
     parser_test_input,
@@ -318,6 +320,30 @@ class MetodosConsulta(unittest.TestCase):
         self.assertEqual(
             json.loads(responses.calls[-1].request.body),
             request_findShortestPath_umfiltro_ok
+        )
+
+    @mock_logresponse
+    def test_metodo_consulta_api_find_shortest_path_two_filters(self):
+        responses.add(
+            responses.POST,
+            _ENDERECO_NEO4J % '/db/data/transaction/commit',
+            json=resposta_findShortestPath_doisfiltros_ok
+        )
+        response = self.app.get(
+            'api/findShortestPath',
+            query_string={
+                "node_id1": 140885160,
+                "node_id2": 328898991,
+                "rel_types": "filho,personagem"
+            }
+        )
+
+        expected_response = resposta_findShortestPath_doisfiltros_ok
+
+        self.assertEqual(response.get_json(), expected_response)
+        self.assertEqual(
+            json.loads(responses.calls[-1].request.body),
+            request_findShortestPath_doisfiltros_ok
         )
 
     @mock.patch('sinapse.start.conta_expansoes')
