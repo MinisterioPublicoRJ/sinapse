@@ -1,0 +1,28 @@
+.entitylist {
+    background: #fff;
+    display: none;
+    position: fixed;
+    left: 0;
+    z-index: 2;
+    width: 200px;
+    border-right: 1px solid black;
+    height: 100%;
+    height: calc(100% - 70px);
+    padding: 30px 10px;
+    overflow-y: scroll;
+}
+
+.entitylist h2 {
+    font-size: .85em;
+}
+
+.entitylist a {
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.entitylist dt,
+.entitylist dd {
+    display: block;
+    font-size: .8em
+}

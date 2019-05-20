@@ -3,10 +3,6 @@ import {
     formatKeyString,
     formatPropString,
     formatAddresses,
-    formatCNPJ,
-    formatCPF,
-    formatDate,
-    formatVehiclePlate,
     get,
     getCardTitle,
     getNodeType,
@@ -15,8 +11,8 @@ import {
     hideLoading,
     thousandsSeparator,
 } from '/static/js/utils.js'
-
 import { entityCard } from '/static/js/cards.js'
+import { updateLeftSidebar } from '/static/js/entitylist.js'
 
 /**
  * Init function called on window.onload.
@@ -47,7 +43,6 @@ let nodes,               // Visjs initialized nodes
 
 const baseIconsPath = '/static/img/icon/graph/'
 const sidebarRight = document.getElementById("sidebarRight")
-const sidebarLeft = document.getElementById("entitylist")
 
 const initVisjs = () => {
     // initialize everything as empty (we don't have data yet)
@@ -179,8 +174,8 @@ const createSearchTabs = (data, bondSearchId) => {
         finalHTML += `<li role="presentation" ${index === 1 ? 'class="active"' : ''}>
             <a href="#${tabLink}" role="tab" class="custom-tab ${key}" data-toggle="tab">
                 <img src="/static/img/icon/${key}.svg" />
-                <p class="number">${thousandsSeparator(data[key].response.numFound)}</p>
-                <p>${key}${data[key].response.numFound > 1 ? 's' : ''}</p>
+                <p class="number color-${key}">${thousandsSeparator(data[key].response.numFound)}</p>
+                <p class="color-${key}">${key}${data[key].response.numFound > 1 ? 's' : ''}</p>
             </a>
         </li>`
     })
@@ -367,7 +362,19 @@ const updateNodes = data => {
     // show back button
     document.getElementById('step4').className = ''
 
-    updateLeftSidebar()
+    updateLeftSidebar(labels, nodesData)
+}
+
+/**
+ * Zooms to a given nodeId
+ * @param {String} nodeId
+ */
+const zoomToNodeId = nodeId => {
+    network.focus(nodeId, { scale: 2, animation: true })
+    const selectedNode = nodesData.filter(node => node.id === nodeId.toString())[0] // nodeId comes as Number, node.id is a String
+    populateSidebarRight(selectedNode)
+    showSidebarRight()
+    network.selectNodes([nodeId.toString()])
 }
 
 const emptySidebarRight = () => {
@@ -390,7 +397,7 @@ const populateSidebarRight = node => {
     content.setAttribute('id', 'content')
 
     let headerSidebarRight = document.createElement('div')
-    headerSidebarRight.setAttribute('class', 'header')
+    headerSidebarRight.setAttribute('class', `header bgcolor-${getNodeType(node)}`)
     content.appendChild(headerSidebarRight)
 
     let valuesContainer = document.createElement('div')
@@ -426,7 +433,7 @@ const populateSidebarRight = node => {
         valuesContainer.appendChild(labelSpan)
 
         let dataSpan = document.createElement('span')
-        dataSpan.className = 'sidebarRight-data'
+        dataSpan.className = `sidebarRight-data color-${nodeType}`
         let dataContent = document.createTextNode(formatKeyString(property, node.properties[property]))
 
         dataSpan.appendChild(dataContent)
@@ -436,6 +443,7 @@ const populateSidebarRight = node => {
     let closeButton = document.createElement("button")
     closeButton.addEventListener("click", e => hideSidebarRight(), false)
     closeButton.setAttribute("id", "closeSidebarRight")
+    closeButton.className = `color-${nodeType}`
 
     let fullButton = document.createElement("button")
     fullButton.addEventListener("click", e => fullSidebarRight(), false)
@@ -535,102 +543,6 @@ const initVersion = () => {
     document.getElementById('version_number').innerHTML = `Versão: ${VERSION}-${btoa(document.getElementById('version_username').innerHTML)}`
 }
 
-/**
- * Updates left sidebar with entities to zoom
- */
-const updateLeftSidebar = () => {
-    document.querySelector('.entitylist').style.display = 'block'
-    let entityListToWrite = ''
-
-    labels.sort().forEach(type => {
-        let nodesForThisType = sortByType(nodesData.filter(node => getNodeType(node) === type), type)
-        if (nodesForThisType.length) {
-            entityListToWrite += `<div><h2>${type}</h2>`
-            nodesForThisType.forEach(node => {
-                entityListToWrite += nodeToDOMString(node)
-            })
-            entityListToWrite += `</div>`
-        }
-    })
-
-    sidebarLeft.innerHTML = entityListToWrite
-}
-
-/**
- *
- * @param {Object[]} nodes Array of nodes to be sorted
- * @param {String} type The type of node (which varies the key to sort them)
- */
-const sortByType = (nodes, type) => {
-    switch (type) {
-        case 'pessoa':
-            return sortByProperty(nodes, 'nome')
-        case 'empresa':
-            return sortByProperty(nodes, 'razao_social')
-        case 'multa':
-            return sortByProperty(nodes, 'data')
-        default:
-            return nodes
-    }
-}
-
-/**
- * Sorts a node Array
- * @param {Object[]} nodes Array of nodes to be sorted
- * @param {Object} nodes[].properties
- * @param {Object} nodes[].properties.prop A number of string to be sorted.
- * @param {String} prop The name of the property to sort.
- */
-const sortByProperty = (nodes, prop) => {
-    return nodes.sort((a, b) => (a.properties[prop] > b.properties[prop]) ? 1 : -1)
-}
-
-/**
- * Returns a DOM string for a node on the sidebar
- * @param {Object} node
- * @param {Object} node.properties
- * @param {String[]} node.type
- */
-const nodeToDOMString = node => {
-    let ret = ''
-    if (node) {
-        switch (getNodeType(node)) {
-            case 'pessoa':
-            case 'personagem':
-                ret = `<div onclick="zoomToNodeId(${node.id})"><h3>${node.properties.nome}</h3>`
-                if (node.properties.cpf) {
-                    ret += `<p>CPF: ${formatCPF(node.properties.cpf)}</p>`
-                }
-                ret += `</div>`
-                break
-            case 'empresa':
-                ret = `<div onclick="zoomToNodeId(${node.id})"><h3>${node.properties.razao_social}</h3><p>CNPJ: ${formatCNPJ(node.properties.cnpj)}</p></div>`
-                break
-            case 'multa':
-                ret = `<p onclick="zoomToNodeId(${node.id})">${formatDate(node.properties.data)} - ${node.properties.desc}</p>`
-                break
-            case 'veiculo':
-                ret = `<p onclick="zoomToNodeId(${node.id})">${node.properties.marca} ${node.properties.ano}/${node.properties.modelo} - ${formatVehiclePlate(node.properties.placa)}</p>`
-                break
-            default:
-                ret = `<p onclick="zoomToNodeId(${node.id})">${node.id}</p>`
-        }
-    }
-    return ret
-}
-
-/**
- * Zooms to a given nodeId
- * @param {String} nodeId
- */
-const zoomToNodeId = nodeId => {
-    network.focus(nodeId, { scale: 2, animation: true })
-    const selectedNode = nodesData.filter(node => node.id === nodeId.toString())[0] // nodeId comes as Number, node.id is a String
-    populateSidebarRight(selectedNode)
-    showSidebarRight()
-    network.selectNodes([nodeId.toString()])
-}
-
 const showEntity = uuid => {
     console.log(`showEntity(${uuid})`)
     document.querySelector('.busca').style.display = 'none'
@@ -646,7 +558,7 @@ const bondAnalysis = (nodeId1, nodeType1, nodeTitle1) => {
     <div class="row">
         <div class="col-lg-5 ${nodeType1} entity">
             <img src="/static/img/icon/${nodeType1}.svg"/>
-            <input disabled value="${nodeTitle1}">
+            <input class="color-${nodeType1}" disabled value="${nodeTitle1}">
         </div>
         <div class="col-lg-2">
             <div class="add-bond">
@@ -660,7 +572,7 @@ const bondAnalysis = (nodeId1, nodeType1, nodeTitle1) => {
         <div id="bond-search" class="col-lg-5 entity entity-empty">
             <img src="/static/img/icon/vinculo-empty.svg"/>
             <form id="form-bond-search">
-                <input value="" placeholder="Procure um vínculo">
+                <input class="color-veiculo" value="" placeholder="Procure um vínculo">
             </ form>
         </div>
     </div>

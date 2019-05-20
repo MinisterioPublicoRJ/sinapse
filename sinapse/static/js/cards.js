@@ -66,22 +66,22 @@ const pessoaCard = (doc, data, isExtended) => {
         <div class="${bodyClass}">
             <div class="row">
                 <div class="col-lg-12">
-                    <h3 ${backFn}>${returnHighlightedProperty(doc, 'nome', data.pessoa.highlighting)}</h3>
+                    <h3 class="color-pessoa" ${backFn}>${returnHighlightedProperty(doc, 'nome', data.pessoa.highlighting)}</h3>
                 </div>
                 <div class="body col-lg-12">
                     <div class="row">
                         <dl>
                             <div class="col-lg-3">
                                 <dt>CPF</dt>
-                                <dd>${formatCPF(doc.num_cpf)}</dd>
+                                <dd class="color-pessoa">${formatCPF(doc.num_cpf)}</dd>
                             </div>
                             <div class="col-lg-6">
                                 <dt>Nome da mãe</dt>
-                                <dd>${returnHighlightedProperty(doc, 'nome_mae', data.pessoa.highlighting)}</dd>
+                                <dd class="color-pessoa">${returnHighlightedProperty(doc, 'nome_mae', data.pessoa.highlighting)}</dd>
                             </div>
                             <div class="col-lg-3">
                                 <dt>Data de nascimento</dt>
-                                <dd>${formatDate(doc.data_nascimento)}</dd>
+                                <dd class="color-pessoa">${formatDate(doc.data_nascimento)}</dd>
                             </div>
                         </dl>
                     </div>
@@ -124,20 +124,20 @@ const veiculoCard = (doc, data, isExtended) => {
         <div class="${bodyClass}">
             <div class="row">
                 <div class="col-lg-12">
-                    <h3 ${backFn}>${returnHighlightedProperty(doc, 'descricao', data.veiculo.highlighting)}</h3>
+                    <h3 class="color-veiculo" ${backFn}>${returnHighlightedProperty(doc, 'descricao', data.veiculo.highlighting)}</h3>
                 </div>
                 <dl>
                     <div class="col-lg-3">
                         <dt>Chassis</dt>
-                        <dd>${returnHighlightedProperty(doc, 'chassi', data.veiculo.highlighting)}</dd>
+                        <dd class="color-veiculo">${returnHighlightedProperty(doc, 'chassi', data.veiculo.highlighting)}</dd>
                     </div>
                     <div class="col-lg-2">
                         <dt>Renavam</dt>
-                        <dd>${returnHighlightedProperty(doc, 'renavam', data.veiculo.highlighting)}</dd>
+                        <dd class="color-veiculo">${returnHighlightedProperty(doc, 'renavam', data.veiculo.highlighting)}</dd>
                     </div>
                     <div class="col-lg-7">
                         <dt>Proprietário</dt>
-                        <dd>${returnHighlightedProperty(doc, 'proprietario', data.veiculo.highlighting)}</dd>
+                        <dd class="color-veiculo">${returnHighlightedProperty(doc, 'proprietario', data.veiculo.highlighting)}</dd>
                     </div>
                 </dl>
             </div>
