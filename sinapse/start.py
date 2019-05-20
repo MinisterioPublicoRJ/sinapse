@@ -329,6 +329,13 @@ def _monta_query_filtro_opcional(label, prop, val, letra):
             prop,
             val
         )
+    elif prop == 'uuid':
+        return "optional match (%s:%s {%s:'%s'})" % (
+            letra,
+            label,
+            prop,
+            val
+        )
 
     return "optional match (%s:%s {%s:toUpper('%s')})" % (
         letra,
