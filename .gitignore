@@ -115,4 +115,4 @@ Thumbs.db
 # MacOS stuff
 .DS_Store
 
-solr_queries.json
+#solr_queries.json
