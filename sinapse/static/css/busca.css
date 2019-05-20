@@ -594,27 +594,6 @@ span.tooltip:after {
     font-weight: normal;
 }
 
-.busca .pessoa h3,
-.busca .pessoa dd,
-.busca .pessoa p,
-#bond-analysis .entity.pessoa input {
-    color: #72d8f2;
-}
-
-.busca .veiculo h3,
-.busca .veiculo dd,
-.busca .veiculo p,
-#bond-analysis .entity.veiculo input {
-    color: #f2727b;
-}
-
-.busca .empresa h3,
-.busca .empresa dd,
-.busca .empresa p,
-#bond-analysis .entity.empresa input {
-    color: #60b87f;
-}
-
 .busca h3 {
     margin-bottom: 20px;
 }
