@@ -49,9 +49,15 @@ export const formatKeyString = (prop, key) => {
             return formatCNPJ(key)
         case 'cpf':
         case 'cpf_responsavel':
+        case 'num_cpf':
             return formatCPF(key)
+        case 'cpfcnpj':
+        case 'cpfcgc':
+            return formatVehicleIdent(key)
         case 'data':
         case 'data_inicio':
+        case 'data_nascimento':
+        case 'datainfra':
         case 'dt_criacao':
         case 'dt_extincao':
         case 'dt_nasc':
@@ -61,8 +67,9 @@ export const formatKeyString = (prop, key) => {
         case 'placa':
             return formatVehiclePlate(key)
         case 'rg':
+        case 'num_rg':
             return formatRG(key)
-        case 'sexo':
+        case 'ind_sexo':
             return formatGender(key)
         default:
             return key
@@ -112,8 +119,15 @@ export const formatPropString = text => {
         case 'nr_mprj':
             return 'Número MPRJ'
         // Multa
+        case 'autoinfra':
+            return 'Número do Auto de Infração'
+        case 'datainfra':
+            return 'Data'
         case 'desc':
+        case 'descinfra':
             return 'Descrição'
+        case 'proprietario':
+            return 'Proprietário'
         // Órgão
         case 'craai':
             return 'CRAAI'
@@ -126,7 +140,9 @@ export const formatPropString = text => {
         case 'situacao':
             return 'Situação'
         // Pessoa
-        case 'cpf':
+        case 'ind_sexo':
+            return 'Sexo'
+        case 'num_cpf':
             return 'CPF'
         case 'dt_nasc':
             return 'Data de Nascimento'
@@ -136,14 +152,22 @@ export const formatPropString = text => {
             return 'Nome do Pai'
         case 'nome_rg':
             return 'Nome no RG'
-        case 'rg':
+        case 'num_rg':
             return 'RG'
+        case 'sigla_uf':
+            return 'UF'
         // Telefone
         case 'numero':
             return 'Número'
         // Veículo
-        case 'cpfcnpj':
+        case 'cpfcgc':
             return 'CPF/CNPJ'
+        case 'descricao_cor':
+            return 'Cor'
+        case 'fabric':
+            return 'Ano Fabricação'
+        case 'modelo':
+            return 'Ano Modelo'
         default:
             return text.split('_').map(word => word.substr(0, 1).toUpperCase() + word.substr(1)).join(' ')
     }
@@ -223,9 +247,9 @@ export const formatDate = date => {
  */
 export const formatGender = genderId => {
     switch (genderId) {
-        case "1":
+        case "M":
             return "Masculino"
-        case "2":
+        case "F":
             return "Feminino"
         default:
             return genderId
@@ -296,7 +320,7 @@ export const get = (url, callback) => {
  * @param {*} node 
  */
 export const getNodeType = node => {
-    return node.type[0]
+    return node.type[0].toLowerCase()
 }
 
 /**

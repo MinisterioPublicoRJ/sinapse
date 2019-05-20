@@ -104,6 +104,7 @@ const initVisjs = () => {
         const selectedNodeId = this.getNodeAt(params.pointer.DOM)
         if (selectedNodeId) {
             const selectedNode = nodesData.filter(node => node.id === selectedNodeId)[0]
+            console.log(selectedNode)
             populateSidebarRight(selectedNode)
             showSidebarRight()
         } else {
@@ -265,7 +266,7 @@ const searchDetailStep = (entityUUID, entityType) => {
             Busca<br>
             <b>Paradeiro</b>
         </div>
-        <div class="col-lg-4 action caminho-exploratorio" onclick="showEntity('${entityUUID}')">
+        <div class="col-lg-4 action caminho-exploratorio" onclick="showEntity('${searchedDoc.label}', '${entityUUID}')">
             Caminho<br>
             <b>Exploratório</b>
         </div>
@@ -358,6 +359,15 @@ const updateNodes = data => {
             // the same for edges
             let filteredEdge = edgesData.filter(e => e.id === edge.id)
             if (filteredEdge.length === 0) {
+                if (edge.label) {
+                    edge.label = edge.label.toLowerCase()
+                    // fix diacritics
+                    switch (edge.label) {
+                        case 'proprietario':
+                            edge.label = 'proprietário'
+                            break
+                    }
+                }
                 edgesData.push(edge)
                 edges.add(edge)
             }
@@ -631,13 +641,14 @@ const zoomToNodeId = nodeId => {
     network.selectNodes([nodeId.toString()])
 }
 
-const showEntity = uuid => {
-    console.log(`showEntity(${uuid})`)
+/**
+ * Finds a node by given type and UUID
+ * @param {String} entityType Entity type with first capital letter (Veiculo etc.)
+ * @param {String} uuid Document unique universal identificator.
+ */
+const showEntity = (entityType, uuid) => {
     document.querySelector('.busca').style.display = 'none'
-    //getNextNodes(uuid)
-    
-    // hardcoded
-    getNextNodes(140885160)
+    findNodes(entityType, 'uuid', uuid)
 }
 
 const bondAnalysis = (nodeId1, nodeType1, nodeTitle1) => {

@@ -40,9 +40,9 @@ export const entityCard = (entity, key, data, isExtended, bondSearchId) => {
  * Creates a card for a given person
  * @param {Object} doc a entity document representing a person
  * @param {String} doc.nome Person's name
- * @param {Number} doc.num_cpf Person's CPF number, as a Number (so without leading zero)
+ * @param {Number} doc.cpf Person's CPF number, as a Number (so without leading zero)
  * @param {String} doc.nome_mae Person's mother's name
- * @param {String} doc.data_nascimento Person's born date, as a string on the format: YYYY-MM-DD
+ * @param {String} doc.dt_nasc Person's born date, as a string on the format: YYYY-MM-DD
  * @param {Object} data data from API
  * @param {Object} data.pessoa 
  * @param {Object} data.pessoa.highlighting highlighted terms returned by search
@@ -73,7 +73,7 @@ const pessoaCard = (doc, data, isExtended) => {
                         <dl>
                             <div class="col-lg-3">
                                 <dt>CPF</dt>
-                                <dd>${formatCPF(doc.num_cpf)}</dd>
+                                <dd>${formatCPF(doc.cpf)}</dd>
                             </div>
                             <div class="col-lg-6">
                                 <dt>Nome da mãe</dt>
@@ -81,7 +81,7 @@ const pessoaCard = (doc, data, isExtended) => {
                             </div>
                             <div class="col-lg-3">
                                 <dt>Data de nascimento</dt>
-                                <dd>${formatDate(doc.data_nascimento)}</dd>
+                                <dd>${formatDate(doc.dt_nasc)}</dd>
                             </div>
                         </dl>
                     </div>
@@ -114,7 +114,7 @@ const veiculoCard = (doc, data, isExtended) => {
         bodyClass = 'col-lg-12'
         backFn = 'onclick="backToSearch()"'
     }
-    const caracteristicaVeiculo = `${doc.marca} ${doc.modelo} ${doc.cor}`
+    const caracteristicaVeiculo = `${doc.marca_modelo.trim()} ${doc.ano_modelo} ${doc.cor.trim()}`
 
     get(`/api/foto-veiculo?caracteristicas=${caracteristicaVeiculo}`, addVeiculoFoto)
     return `
