@@ -1,3 +1,5 @@
+const DOMINIO = 'http://apps.mprj.mp.br/sistema/dominio'
+
 export const addStyleToNode = node => {
     let color = '#7bb3ff'
 
@@ -43,6 +45,8 @@ export const addStyleToNode = node => {
  */
 export const formatKeyString = (prop, key) => {
     switch (prop) {
+        case 'cldc_ds_hierarquia':
+            return formatDocumentHierarchy(key)
         case 'cnae':
             return formatCNAE(key)
         case 'cnpj':
@@ -58,12 +62,19 @@ export const formatKeyString = (prop, key) => {
         case 'data_inicio':
         case 'data_nascimento':
         case 'datainfra':
+        case 'dt_cadastro':
         case 'dt_criacao':
         case 'dt_extincao':
         case 'dt_nasc':
+        case 'pers_dt_inicio':
+        case 'pers_dt_fim':
             return formatDate(key)
         case 'ident':
             return formatVehicleIdent(key)
+        case 'nr_externo':
+            return formatExternalNumberLink(key)
+        case 'nr_mp':
+            return formatMPRJLink(key)
         case 'placa':
             return formatVehiclePlate(key)
         case 'rg':
@@ -90,6 +101,13 @@ export const formatPropString = text => {
             return 'Órgão'
         case 'mgp':
             return 'MGP'
+        // Documento
+        case 'cldc_ds_hierarquia':
+            return 'Hierarquia de Classe do Documento'
+        case 'nr_externo':
+            return 'Número Externo'
+        case 'nr_mp':
+            return 'Número MPRJ'
         // Empresa
         case 'cnae':
             return 'CNAE'
@@ -156,6 +174,17 @@ export const formatPropString = text => {
             return 'RG'
         case 'sigla_uf':
             return 'UF'
+        // Personagem
+        case 'cpfcnpj':
+            return 'CPF/CNPJ'
+        case 'pers_dt_inicio':
+            return 'Data de Início'
+        case 'pers_dt_fim':
+            return 'Data de Fim'
+        case 'pess_nm_pessoa':
+            return 'Nome da Pessoa'
+        case 'tppe_descricao':
+            return 'Descrição'
         // Telefone
         case 'numero':
             return 'Número'
@@ -242,6 +271,22 @@ export const formatDate = date => {
 }
 
 /**
+ * Format Document Hierarchy Class List
+ * @param {*} str
+ */
+export const formatDocumentHierarchy = str => {
+    let strArray = str.split('|')
+    strArray[0] = strArray[0].split(' ').map(word => word.substr(0, 1).toUpperCase() + word.substr(1).toLowerCase()).join(' ')
+    return strArray.join(' > ')
+}
+
+/**
+ * Returns a Link to Domínio searching for a external number.
+ * @param {String} num
+ */
+export const formatExternalNumberLink = num => `<a href="${DOMINIO}/#/document-search/${num}" target="_blank">${num}</a>`
+
+/**
  * Formats Gender string
  * @param {String} genderId
  */
@@ -255,6 +300,18 @@ export const formatGender = genderId => {
             return genderId
     }
 }
+
+/**
+ * Formats number as MPRJ Document number
+ * @param {String} num
+ */
+export const formatMPRJ = num => `${num.substr(0,4)}.${num.substr(4)}`
+
+/**
+ * Returns a Link to Domínio searching for a MPRJ number
+ * @param {String} num
+ */
+export const formatMPRJLink = num => `<a href="${DOMINIO}/#/document-search/${num}" target="_blank">${formatMPRJ(num)}</a>`
 
 /**
  * Format RG on Detran format - xx.xxx.xxx-x
@@ -274,6 +331,9 @@ export const formatRG = rg => {
 export const formatVehicleIdent = ident => {
     // ident is the PK of vehicle owner, either CPF or CNPJ
     // we will naively assume that if it starts with three zeroes, its a CPF, otherwise, it should be a CNPJ
+    if (ident.length === 11) {
+        return formatCPF(ident)
+    }
     if (ident.substr(0,3) === '000') {
         return formatCPF(ident.substr(3))
     }
@@ -303,11 +363,13 @@ export const get = (url, callback) => {
     xmlhttp.open('GET', url, true)
     xmlhttp.onreadystatechange = function() {
         if (xmlhttp.readyState == 4) {
-            if(xmlhttp.status == 200) {
+            if (xmlhttp.status == 200) {
                 var obj = JSON.parse(xmlhttp.responseText)
                 if (callback) {
                     callback(obj)
                 }
+            } else {
+                alert('Erro ao carregar os dados.')
             }
         }
     }

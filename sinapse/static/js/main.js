@@ -335,7 +335,7 @@ const updateNodes = data => {
                         imageEndpoint = `/api/foto?rg=${node.properties.rg}`
                         break;
                     case 'veiculo':
-                        imageEndpoint = `/api/foto-veiculo?caracteristicas=${node.properties.marca} ${node.properties.modelo} ${node.properties.cor}`
+                        imageEndpoint = `/api/foto-veiculo?caracteristicas=${node.properties.marca_modelo} ${node.properties.modelo} ${node.properties.descricao_cor}`
                         break;
                 }
                 get(imageEndpoint, data => {
@@ -358,6 +358,8 @@ const updateNodes = data => {
                     edge.label = edge.label.toLowerCase()
                     // fix diacritics
                     switch (edge.label) {
+                        case 'orgao_responsavel':
+                            edge.label = 'órgão responsável'
                         case 'proprietario':
                             edge.label = 'proprietário'
                             break
@@ -403,16 +405,8 @@ const populateSidebarRight = node => {
 
     emptySidebarRight()
 
-    let content = document.createElement('div')
-    content.setAttribute('id', 'content')
-
-    let headerSidebarRight = document.createElement('div')
-    headerSidebarRight.setAttribute('class', `header bgcolor-${getNodeType(node)}`)
-    content.appendChild(headerSidebarRight)
-
-    let valuesContainer = document.createElement('div')
-    valuesContainer.setAttribute('id', 'valuesContainer')
-
+    let html = `<div id="content">
+        <div class="header bgcolor-${getNodeType(node)}">`
     // Add person photo
     let nodeType = getNodeType(node)
     if (
@@ -420,50 +414,32 @@ const populateSidebarRight = node => {
             (nodeType === 'pessoa' && node.properties.rg) ||
             (nodeType === 'veiculo')
         )
-        && photosData[node.id]) {
-        let img = document.createElement('img')
-        img.setAttribute('src', `data:image/png;base64,${photosData[node.id].imagem}`)
-        headerSidebarRight.appendChild(img)
+        && photosData[node.id]
+    ) {
+        html += `<img src="data:image/png;base64,${photosData[node.id].imagem}">`
     }
-
-    // Add properties
+    html += `</div>
+    <div id="valuesContainer">`
     Object.keys(node.properties).forEach(property => {
-
-        if (property === 'filho_rel_status' ||
+        if (
+            property === 'filho_rel_status' ||
             property === 'filho_rel_status_pai' ||
             property === 'uuid' ||
-            property.substr(0,1) === '_') {
-                return // skip this property
-            }
+            property.substr(0,1) === '_' ||
+            property.substr(-3) === '_dk'
+        ) {
+            return // skip this property
+        }
 
-        let labelSpan = document.createElement('span')
-        labelSpan.className = 'sidebarRight-label'
-        let labelContent = document.createTextNode(formatPropString(property))
-        labelSpan.appendChild(labelContent)
-        valuesContainer.appendChild(labelSpan)
-
-        let dataSpan = document.createElement('span')
-        dataSpan.className = `sidebarRight-data color-${nodeType}`
-        let dataContent = document.createTextNode(formatKeyString(property, node.properties[property]))
-
-        dataSpan.appendChild(dataContent)
-        valuesContainer.appendChild(dataSpan)
+        html += `<span class="sidebarRight-label">${formatPropString(property)}</span>
+        <span class="sidebarRight-data color-${nodeType}">${formatKeyString(property, node.properties[property])}</span>`
     });
+    html += `</div>
+        <button id="closeSidebarRight" class="color-${nodeType}" onclick="hideSidebarRight()"></button>
+        <button id="fullSidebarRight" onclick="fullSidebarRight()"></button>
+    </div>`
 
-    let closeButton = document.createElement("button")
-    closeButton.addEventListener("click", e => hideSidebarRight(), false)
-    closeButton.setAttribute("id", "closeSidebarRight")
-    closeButton.className = `color-${nodeType}`
-
-    let fullButton = document.createElement("button")
-    fullButton.addEventListener("click", e => fullSidebarRight(), false)
-    fullButton.setAttribute("id", "fullSidebarRight")
-    
-    content.appendChild(valuesContainer)
-    content.appendChild(closeButton)
-    content.appendChild(fullButton)
-
-    sidebarRight.appendChild(content)
+    sidebarRight.innerHTML = html
 }
 
 /**
@@ -654,6 +630,8 @@ window.backToSearch = backToSearch
 window.bondAnalysis = bondAnalysis
 window.doBondSearch = doBondSearch
 window.findNodes = findNodes
+window.fullSidebarRight = fullSidebarRight
+window.hideSidebarRight = hideSidebarRight
 window.searchDetailStep = searchDetailStep
 window.searchWhereabouts = searchWhereabouts
 window.showEntity = showEntity

@@ -1,5 +1,4 @@
 {
     "pessoa": "pessoa_fisica/select?q=%22{f_q}%22&wt=json&indent=true&defType=edismax&qf=nome%5E10+nome_mae%5E5&qs=1&stopwords=true&lowercaseOperators=true&hl=true&hl.simple.pre=%3Cem%3E&hl.simple.post=%3C%2Fem%3E",
-    "veiculo": "veiculo/select?q=%22{f_q}%22&wt=json&indent=true&defType=edismax&qf=descricao+proprietario+placa&qs=5&stopwords=true&lowercaseOperators=true&hl=true",
-    "empresa": "pessoa_fisica/select?q=%22{f_q}%22&fl=uuid+nome+nome_mae&wt=json&indent=true&defType=edismax&qf=nome%5E10+nome_mae%5E5&qs=1&stopwords=true&lowercaseOperators=true&hl=true&hl.simple.pre=%3Cem%3E&hl.simple.post=%3C%2Fem%3E"
+    "veiculo": "veiculo/select?q=%22{f_q}%22&wt=json&indent=true&defType=edismax&qf=descricao+proprietario+placa&qs=5&stopwords=true&lowercaseOperators=true&hl=true"
 }
