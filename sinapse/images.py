@@ -6,14 +6,14 @@ from sinapse.queries import find_next_nodes, download_google_image
 
 
 def get_vehicle_photo(node_id):
-    next_nodes = find_next_nodes(node_id, node_type=':veiculo', path_size=1,
+    next_nodes = find_next_nodes(node_id, node_type=':Veiculo', path_size=1,
                                  limit='')
-    label = 'veiculo'
+    label = 'Veiculo'
     infos = find_relations_info(
         next_nodes.json(),
-        pks=['marca', 'modelo', 'cor'],
+        pks=['marca_modelo', 'modelo', 'descricao_cor'],
         label=label,
-        props=['marca', 'modelo', 'cor']
+        props=['marca_modelo', 'modelo', 'descricao_cor']
     )
     for info in infos:
         vehicle_characteristic = ' '.join(info[1:])
