@@ -57,7 +57,8 @@ export const formatKeyString = (prop, key) => {
             return formatCPF(key)
         case 'cpfcnpj':
         case 'cpfcgc':
-            return formatVehicleIdent(key)
+        case 'cpf_cnpj':
+            return formatCPFOrCNPJ(key)
         case 'data':
         case 'data_inicio':
         case 'data_nascimento':
@@ -70,7 +71,7 @@ export const formatKeyString = (prop, key) => {
         case 'pers_dt_fim':
             return formatDate(key)
         case 'ident':
-            return formatVehicleIdent(key)
+            return formatCPFOrCNPJ(key)
         case 'nr_externo':
             return formatExternalNumberLink(key)
         case 'nr_mp':
@@ -108,6 +109,17 @@ export const formatPropString = text => {
             return 'Número Externo'
         case 'nr_mp':
             return 'Número MPRJ'
+        // Embarcação
+        case 'ano_construcao':
+            return 'Ano de Construção'
+        case 'cpf_cnpj':
+            return 'CPF / CNPJ do Proprietário'
+        case 'nome_embarcacao':
+            return 'Nome da Embarcação'
+        case 'nr_inscricao':
+            return 'Número de Inscrição'
+        case 'tipo_embarcacao':
+            return 'Tipo da Embarcação'
         // Empresa
         case 'cnae':
             return 'CNAE'
@@ -153,6 +165,16 @@ export const formatPropString = text => {
             return 'Data de Criação'
         case 'dt_extincao':
             return 'Data de Extinção'
+        case 'nm_comarca':
+            return 'Comarca'
+        case 'nm_foro':
+            return 'Foro'
+        case 'nm_orgao':
+            return 'Órgão'
+        case 'nm_regiao':
+            return 'Região'
+        case 'nm_tporgao':
+            return 'Tipo do Órgão'
         case 'sensivel':
             return 'Sensível'
         case 'situacao':
@@ -328,7 +350,7 @@ export const formatRG = rg => {
  * Format Vehicle Ident as CPF or CNPJ
  * @param {String} ident Vehicle owner ident
  */
-export const formatVehicleIdent = ident => {
+export const formatCPFOrCNPJ = ident => {
     // ident is the PK of vehicle owner, either CPF or CNPJ
     // we will naively assume that if it starts with three zeroes, its a CPF, otherwise, it should be a CNPJ
     if (ident.length === 11) {

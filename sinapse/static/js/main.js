@@ -26,6 +26,7 @@ const init = () => {
 }
 
 const VERSION = '20190501'
+const SEARCH_TAB_OPENED = 2
 
 // Initial vars
 let nodes,               // Visjs initialized nodes
@@ -172,11 +173,29 @@ const createSearchTabs = (data, bondSearchId) => {
     // first it iterates each 'object_type' (empresa, pessoa, veiculo) to create tabs
     Object.keys(data).forEach((key, index) => {
         let tabLink = bondSearchId ? `bond_${key}` : key
-        finalHTML += `<li role="presentation" ${index === 1 ? 'class="active"' : ''}>
+        let keyName, keyNamePlural
+        switch (key) {
+            case 'documento_personagem':
+                keyName = 'documento'
+                keyNamePlural = 'documentos'
+                break
+            case 'pessoa_juridica':
+                keyName = 'empresa'
+                keyNamePlural = 'empresas'
+                break
+            case 'embarcacao':
+                keyName = 'embarcação'
+                keyNamePlural = 'embarcações'
+                break
+            default:
+                keyName = key
+                keyNamePlural = key + 's'
+        }
+        finalHTML += `<li role="presentation" ${index === SEARCH_TAB_OPENED ? 'class="active"' : ''}>
             <a href="#${tabLink}" role="tab" class="custom-tab ${key}" data-toggle="tab">
                 <img src="/static/img/icon/${key}.svg" />
                 <p class="number color-${key}">${thousandsSeparator(data[key].response.numFound)}</p>
-                <p class="color-${key}">${key}${data[key].response.numFound > 1 ? 's' : ''}</p>
+                <p class="color-${key}">${data[key].response.numFound > 1 ? keyNamePlural : keyName}</p>
             </a>
         </li>`
     })
@@ -196,7 +215,7 @@ const createSearchCards = (data, bondSearchId) => {
     // then, for each 'object_type', create a tab panel
     Object.keys(data).forEach((key, indexKey) => {
         let tabId = bondSearchId ? `bond_${key}` : key
-        finalHTML += `<div role="tabpanel" class="tab-pane ${indexKey === 1 ? 'active' : ''} ${key}" id="${tabId}">`
+        finalHTML += `<div role="tabpanel" class="tab-pane ${indexKey === SEARCH_TAB_OPENED ? 'active' : ''} ${key}" id="${tabId}">`
         // and for each 'doc', create a card
         data[key].response.docs.forEach(doc => {
             finalHTML += entityCard(doc, key, data, false, bondSearchId)
@@ -426,7 +445,8 @@ const populateSidebarRight = node => {
             property === 'filho_rel_status_pai' ||
             property === 'uuid' ||
             property.substr(0,1) === '_' ||
-            property.substr(-3) === '_dk'
+            property.substr(-3) === '_dk' ||
+            property.substr(0,3) === 'cd_'
         ) {
             return // skip this property
         }
