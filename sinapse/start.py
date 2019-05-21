@@ -363,10 +363,7 @@ def api_findNodes():
 
     opcoes = []
 
-    for label, prop, val, letra in zip(plabel,
-                                       pprop,
-                                       pval,
-                                       letras):
+    for label, prop, val, letra in zip(plabel, pprop, pval, letras):
         opcoes.append(
             _monta_query_filtro_opcional(
                 label,
