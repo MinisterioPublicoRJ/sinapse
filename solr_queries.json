@@ -1,4 +1,5 @@
 {
-    "pessoa": "pessoa_fisica/select?q=%22{f_q}%22&wt=json&indent=true&defType=edismax&qf=nome%5E10+nome_mae%5E5&qs=1&stopwords=true&lowercaseOperators=true&hl=true&hl.simple.pre=%3Cem%3E&hl.simple.post=%3C%2Fem%3E",
-    "veiculo": "veiculo/select?q=%22{f_q}%22&wt=json&indent=true&defType=edismax&qf=descricao+proprietario+placa&qs=5&stopwords=true&lowercaseOperators=true&hl=true"
+    "pessoa": "pessoa_fisica/select?q=%22{f_q}%22&wt=json&indent=true&defType=edismax&qf=nome%5E10+nome_mae%5E5&qs=1&stopwords=true&lowercaseOperators=true&hl=true&hl.simple.pre=%3Cem%3E&hl.simple.post=%3Cem%3E",
+    "veiculo": "veiculo/select?q=%22{f_q}%22&wt=json&indent=true&defType=edismax&qf=descricao+proprietario+placa&qs=5&stopwords=true&lowercaseOperators=true&hl=true",
+    "pessoa_juridica":"pessoa_juridica/select?q=%22{f_q}%22&wt=json&indent=true&defType=edismax&qf=responsavel+cpnj+cpf_responsavel+razao_social&qs=1&stopwords=true&lowercaseOperators=true&hl=true&hl.simple.pre=%3Cem%3E&hl.simple.post=%3Cem%3E"
 }
