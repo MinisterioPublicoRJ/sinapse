@@ -158,9 +158,11 @@ class CasoGlobal(unittest.TestCase):
 
         assert resposta.status_code == 302
 
+    @mock.patch('sinapse.start.vehicle_info')
+    @mock.patch('sinapse.start.person_info')
     @mock.patch('sinapse.start.get_vehicle_photo_asynch')
     @mock.patch('sinapse.start.get_person_photo_asynch')
-    def test_autorizacao_da_api(self, _gpa, _gva):
+    def test_autorizacao_da_api(self, _gpa, _gva, _pi, _vi):
         api_node = self.app.get('/api/node')
         api_findNodes = self.app.get('/api/findNodes')
         api_nextNodes = self.app.get('/api/nextNodes')
@@ -353,9 +355,11 @@ class MetodosConsulta(unittest.TestCase):
             request_findShortestPath_doisfiltros_ok
         )
 
+    @mock.patch('sinapse.start.vehicle_info')
+    @mock.patch('sinapse.start.person_info')
     @mock.patch('sinapse.start.conta_expansoes')
     @mock_logresponse
-    def test_metodo_consulta_api_next_nodes(self, _conta_expansoes):
+    def test_metodo_consulta_api_next_nodes(self, _conta_expansoes, _pi, _vi):
         _conta_expansoes.return_value = [73, 73, 73]
         responses.add(
             responses.POST,
@@ -380,9 +384,12 @@ class MetodosConsulta(unittest.TestCase):
             request_nextNodes_ok
         )
 
+    @mock.patch('sinapse.start.vehicle_info')
+    @mock.patch('sinapse.start.person_info')
     @mock.patch('sinapse.start.conta_expansoes')
     @mock_logresponse
-    def test_metodo_consulta_api_next_nodes_one_filter(self, _conta_expansoes):
+    def test_metodo_consulta_api_next_nodes_one_filter(self, _conta_expansoes,
+                                                       _pi, _vi):
         _conta_expansoes.return_value = [73, 73, 73]
         responses.add(
             responses.POST,
@@ -408,10 +415,13 @@ class MetodosConsulta(unittest.TestCase):
             request_nextNodes_umfiltro_ok
         )
 
+    @mock.patch('sinapse.start.vehicle_info')
+    @mock.patch('sinapse.start.person_info')
     @mock.patch('sinapse.start.conta_expansoes')
     @mock_logresponse
     def test_metodo_consulta_api_next_nodes_two_filters(self,
-                                                        _conta_expansoes):
+                                                        _conta_expansoes,
+                                                        _pi, _vi):
         _conta_expansoes.return_value = [73, 73, 73]
         responses.add(
             responses.POST,
@@ -501,10 +511,12 @@ class MetodosConsulta(unittest.TestCase):
 
         self.assertEqual(response.get_json(), expected_response)
 
+    @mock.patch('sinapse.start.vehicle_info')
+    @mock.patch('sinapse.start.person_info')
     @mock.patch('sinapse.start.get_vehicle_photo_asynch')
     @mock.patch('sinapse.start.get_person_photo_asynch')
     @mock_logresponse
-    def test_resposta_nos(self, _gpa, _gva):
+    def test_resposta_nos(self, _gpa, _gva, _pi, _vi):
         _gpa.__name__ = 'Response'
         responses.add(
             responses.POST,
@@ -604,10 +616,12 @@ class MetodosConsulta(unittest.TestCase):
         )
         self.assertEqual(resposta.json['numero_de_nos'], 101)
 
+    @mock.patch('sinapse.start.vehicle_info')
+    @mock.patch('sinapse.start.person_info')
     @mock.patch('sinapse.start.get_vehicle_photo_asynch')
     @mock.patch('sinapse.start.get_person_photo_asynch')
     @mock_logresponse
-    def test_resposta_expansoes(self, _gpa, _gva):
+    def test_resposta_expansoes(self, _gpa, _gva, _pi, _vi):
         responses.add(
             responses.POST,
             _ENDERECO_NEO4J % '/db/data/transaction/commit',

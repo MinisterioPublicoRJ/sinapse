@@ -4,7 +4,7 @@ from decouple import config
 
 from sinapse.buildup import _IMAGENS
 from sinapse.detran.utils import find_relations_info, parse_content
-from sinapse.queries import find_next_nodes, update_photo_status
+from sinapse.queries import update_photo_status
 
 
 RG_BODY = """<?xml version="1.0" encoding="utf-8"?>
@@ -85,17 +85,7 @@ def get_processed_rg(rg):
     return response.status_code, response.content
 
 
-def get_person_photo(node_id):
-    next_nodes = find_next_nodes(node_id, rel_types='', path_size=1, limit='')
-    label = 'Pessoa'
-
-    infos = find_relations_info(
-        next_nodes.json(),
-        pks=['num_rg'],
-        label=label,
-        props=['num_rg']
-    )
-    
+def get_person_photo(infos):
     successes = []
     for info in infos:
         status, content = send_rg_query(info.num_rg)

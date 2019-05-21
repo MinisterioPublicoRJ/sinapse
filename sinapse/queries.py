@@ -16,6 +16,7 @@ from sinapse.buildup import (
     _HEADERS,
     _LOG_SOLR
 )
+from sinapse.detran.utils import find_relations_info
 
 
 IMG_HEADERS = {}
@@ -165,3 +166,39 @@ def _get_next_item(s):
             object_raw, "utf-8").decode("unicode_escape")
         final_object = json.loads(object_decode)
         return final_object, end_object
+
+
+# Person Info
+def person_info(node_id):
+    person_query = {
+        'where': 'id(n) = {id}'.format(id=node_id),
+        'relation_type': '',
+        'path_size': 1,
+        'limit': '',
+        'node_type': ':pessoa'
+    }
+    person_nodes = find_next_nodes(person_query)
+    return find_relations_info(
+        person_nodes.json(),
+        pks=['rg'],
+        label='pessoa',
+        props=['rg']  # Add UUID
+    )
+
+
+# Vehicle Info
+def vehicle_info(node_id):
+    vehicle_query = {
+        'where': 'id(n) = {id}'.format(id=node_id),
+        'relation_type': '',
+        'path_size': 1,
+        'limit': '',
+        'node_type': ':veiculo'
+    }
+    vehicle_nodes = find_next_nodes(vehicle_query)
+    return find_relations_info(
+        vehicle_nodes.json(),
+        pks=['marca', 'modelo', 'cor'],
+        label='veiculo',
+        props=['marca', 'modelo', 'cor']  # Add UUID
+    )

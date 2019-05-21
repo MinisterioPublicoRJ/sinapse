@@ -28,7 +28,10 @@ from sinapse.buildup import (
 from sinapse.tasks import (get_person_photo_asynch,
                            get_vehicle_photo_asynch)
 from sinapse.detran.utils import get_node_id
-from sinapse.queries import find_next_nodes, get_node_from_id
+from sinapse.queries import (find_next_nodes,
+                             get_node_from_id,
+                             person_info,
+                             vehicle_info)
 from sinapse.whereabouts.whereabouts import get_whereabouts_receita, get_whereabouts_credilink
 
 
@@ -392,8 +395,11 @@ def api_findNodes():
     node_id = get_node_id(response.json())
 
     # Call asynchronously tasks
-    get_person_photo_asynch.delay(node_id)
-    get_vehicle_photo_asynch.delay(node_id)
+    person_infos = person_info(node_id)
+    vehicle_infos = vehicle_info(node_id)
+
+    get_person_photo_asynch.delay(person_infos)
+    get_vehicle_photo_asynch.delay(vehicle_infos)
 
     return respostajson_visjs(response, numero_de_nos=numero_de_nos)
 
@@ -417,10 +423,12 @@ def api_nextNodes():
 
     numero_expansoes = conta_expansoes(node_id, rel_types)
 
-    # Call asynchronously tasks
-    get_person_photo_asynch.delay(node_id)
-    get_vehicle_photo_asynch.delay(node_id)
+    # Call tasks asynchronously
+    person_infos = person_info(node_id)
+    vehicle_infos = vehicle_info(node_id)
 
+    get_person_photo_asynch.delay(person_infos)
+    get_vehicle_photo_asynch.delay(vehicle_infos)
     return respostajson_visjs(response, numero_de_expansoes=numero_expansoes)
 
 

@@ -2,7 +2,7 @@ import base64
 
 from sinapse.buildup import _IMAGENS
 from sinapse.detran.utils import find_relations_info
-from sinapse.queries import find_next_nodes, download_google_image
+from sinapse.queries import download_google_image
 
 
 def get_vehicle_photo(node_id):
