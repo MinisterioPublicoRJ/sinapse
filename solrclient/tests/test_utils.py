@@ -2,7 +2,11 @@ from collections import namedtuple
 from unittest import TestCase
 
 from solrclient.utils import solr2info
-from solrclient.tests.fixtures import solr_pessoa_fisica, solr_veiculo
+from solrclient.tests.fixtures import (
+    solr_pessoa_fisica,
+    solr_veiculo,
+    solr_pessoa_fisica_2
+)
 
 
 class ParseSolrResponse(TestCase):
@@ -41,5 +45,20 @@ class ParseSolrResponse(TestCase):
             info_obj('3ad66', "HONDA/CG 125 FAN ESD", "2014", "PRETA"),
             info_obj('37464', "CITROEN/XSARA PICASSO GX", "2001", "CINZA")
         ]
+
+        self.assertEqual(info, expected)
+
+    def test_parse_solr_response_ignore_person_without_rg(self):
+        """
+            Ignore persons without rg
+        """
+        info = solr2info(
+            solr_pessoa_fisica_2['pessoa'],
+            label='Pesoa',
+            props=['uuid', 'rg']
+        )
+
+        info_obj = namedtuple('Pessoa', ['uuid', 'rg'])
+        expected = [info_obj('3cffe', '123456')]
 
         self.assertEqual(info, expected)
