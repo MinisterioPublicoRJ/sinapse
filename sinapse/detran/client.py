@@ -100,7 +100,7 @@ def get_person_photo(infos, label):
                 {'num_rg': success.num_rg},
                 {'$set': {
                     'imagem': photo,
-                    'uuid': success.node_id,
+                    'uuid': success.uuid,
                     'tipo': label
                 }},
                 upsert=True

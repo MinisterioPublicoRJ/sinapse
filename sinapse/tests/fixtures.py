@@ -299,6 +299,7 @@ resposta_sensivel_mista = {
                         'nome_mae': 'M H P R',
                         'nome': 'N R P',
                         'sexo': '2',
+                        'uuid': 'abde',
                         'nome_rg': 'N R P',
                         'dt_nasc': '20180709',
                         }}, {'id': '10844320', 'labels': ['pessoa'], 'properties': {
@@ -327,6 +328,7 @@ resposta_sensivel_mista = {
     'nome': 'A P R',
     'sensivel': True,
     'sexo': '1',
+    'uuid': 'aabbcc',
     'nome_rg': 'A P R',
     'dt_nasc': '20180709',
     }}, {'id': '10844320', 'labels': ['pessoa'], 'properties': {
@@ -355,6 +357,7 @@ resposta_sensivel_mista = {
     'nome_mae': 'M H P R',
     'nome': 'S P R',
     'sexo': '1',
+    'uuid': 'efe3',
     'nome_rg': 'S P R',
     'dt_nasc': '20180709',
     }}, {'id': '10844320', 'labels': ['pessoa'], 'properties': {
@@ -391,6 +394,7 @@ resposta_sensivel_mista = {
     'nome_mae': 'M H P R',
     'nome': 'M T R DE A',
     'sexo': '2',
+    'uuid': 'aaef',
     'nome_rg': 'M T R DE A',
     'dt_nasc': '20180709',
     }}], 'relationships': [{
@@ -414,6 +418,7 @@ resposta_sensivel_mista_esp = {
     'nome_mae': 'M H P R',
     'nome': 'N R P',
     'sexo': '2',
+    'uuid': 'abde',
     'nome_rg': 'N R P',
     'dt_nasc': '20180709',
     }}, {'id': '10844320', 'labels': ['sigiloso'], 'properties': {
@@ -446,6 +451,7 @@ resposta_sensivel_mista_esp = {
     'nome': 'S P R',
     'sexo': '1',
     'nome_rg': 'S P R',
+    'uuid': 'efe3',
     'dt_nasc': '20180709',
     }}, {'id': '10844320', 'labels': ['sigiloso'], 'properties': {
     }}], 'relationships': [{
@@ -467,6 +473,7 @@ resposta_sensivel_mista_esp = {
     'nome_mae': 'M H P R',
     'nome': 'M T R DE A',
     'sexo': '2',
+    'uuid': 'aaef',
     'nome_rg': 'M T R DE A',
     'dt_nasc': '20180709',
     }}], 'relationships': [{

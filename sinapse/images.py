@@ -18,7 +18,7 @@ def get_vehicle_photo(infos, label):
                     {'caracteristicas': vehicle_characteristic},
                     {'$set': {
                         'imagem': base64.encodestring(img).decode(),
-                        'uuid': info.node_id,
+                        'uuid': info.uuid,
                         'tipo': label
                     }},
                     upsert=True
