@@ -12,6 +12,19 @@ from .auth import autenticadorjwt
 from .buildup import app, _IMAGENS
 from .queries import search_info, log_solr_response
 from .start import login_necessario
+from sinapse.detran.client import get_person_photo
+from sinapse.images import get_vehicle_photo
+from solrclient.utils import solr2info
+
+
+def _search_pictures_asynch(info):
+    persons = solr2info(info['pessoa'], 'Pessoa', ['uuid', 'rg'])
+    vehicles = solr2info(
+        info['veiculo'],
+        'Veiculo', ['uuid', 'marca_modelo', 'ano_modelo', 'cor']
+    )
+    get_person_photo(persons, label='pessoa')
+    get_vehicle_photo(vehicles, label='veiculo')
 
 
 @app.route("/api/filtroinicial", methods=['GET'])
@@ -42,6 +55,9 @@ def api_search():
     user = session.get('usuario', "dummy")
     sessionid = request.cookies.get('session')
     log_solr_response(user, sessionid, info)
+
+    _search_pictures_asynch(info)
+
     return jsonify(info)
 
 
