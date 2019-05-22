@@ -12,8 +12,7 @@ from .auth import autenticadorjwt
 from .buildup import app, _IMAGENS
 from .queries import search_info, log_solr_response
 from .start import login_necessario
-from sinapse.detran.client import get_person_photo
-from sinapse.images import get_vehicle_photo
+from sinapse.tasks import (get_person_photo_asynch, get_vehicle_photo_asynch)
 from solrclient.utils import solr2info
 
 
@@ -23,8 +22,8 @@ def _search_pictures_asynch(info):
         info['veiculo'],
         'Veiculo', ['uuid', 'marca_modelo', 'ano_modelo', 'cor']
     )
-    get_person_photo(persons, label='pessoa')
-    get_vehicle_photo(vehicles, label='veiculo')
+    get_person_photo_asynch.delay(persons)
+    get_vehicle_photo_asynch.delay(vehicles)
 
 
 @app.route("/api/filtroinicial", methods=['GET'])

@@ -5,8 +5,10 @@ from sinapse.queries import download_google_image
 
 
 def get_vehicle_photo(infos, label):
+    keys = ['marca_modelo', 'ano_modelo', 'cor']
+
     for info in infos:
-        vehicle_characteristic = ' '.join(info[1:])
+        vehicle_characteristic = ' '.join([info[k] for k in keys])
         img_exists = _IMAGENS.find_one(
             {'caracteristicas': vehicle_characteristic},
             {'_id': 0, 'imagem': 1}
@@ -18,7 +20,7 @@ def get_vehicle_photo(infos, label):
                     {'caracteristicas': vehicle_characteristic},
                     {'$set': {
                         'imagem': base64.encodestring(img).decode(),
-                        'uuid': info.uuid,
+                        'uuid': info['uuid'],
                         'tipo': label
                     }},
                     upsert=True
