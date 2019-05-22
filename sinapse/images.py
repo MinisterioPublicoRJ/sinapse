@@ -1,20 +1,10 @@
 import base64
 
 from sinapse.buildup import _IMAGENS
-from sinapse.detran.utils import find_relations_info
 from sinapse.queries import download_google_image
 
 
-def get_vehicle_photo(node_id):
-    next_nodes = find_next_nodes(node_id, node_type=':Veiculo', path_size=1,
-                                 limit='')
-    label = 'Veiculo'
-    infos = find_relations_info(
-        next_nodes.json(),
-        pks=['marca_modelo', 'modelo', 'descricao_cor'],
-        label=label,
-        props=['marca_modelo', 'modelo', 'descricao_cor']
-    )
+def get_vehicle_photo(infos, label):
     for info in infos:
         vehicle_characteristic = ' '.join(info[1:])
         img_exists = _IMAGENS.find_one(

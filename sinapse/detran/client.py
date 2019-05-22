@@ -3,7 +3,7 @@ import requests
 from decouple import config
 
 from sinapse.buildup import _IMAGENS
-from sinapse.detran.utils import find_relations_info, parse_content
+from sinapse.detran.utils import parse_content
 from sinapse.queries import update_photo_status
 
 
@@ -85,7 +85,7 @@ def get_processed_rg(rg):
     return response.status_code, response.content
 
 
-def get_person_photo(infos):
+def get_person_photo(infos, label):
     successes = []
     for info in infos:
         status, content = send_rg_query(info.num_rg)
