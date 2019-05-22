@@ -93,23 +93,6 @@ def log_solr_response(user, sessionid, query):
     })
 
 
-def update_photo_status(node_id, status):
-    query = {"statements": [{
-        "statement":
-        "MATCH (p:pessoa) WHERE id(p) = {node_id}"
-        " SET p._status_photo='{status}'".format(
-            node_id=node_id, status=status
-        ),
-    }]}
-
-    requests.post(
-        _ENDERECO_NEO4J % '/db/data/transaction/commit',
-        data=json.dumps(query),
-        auth=_AUTH,
-        headers=_HEADERS
-    )
-
-
 def download_google_image(term):
     url = 'https://www.google.com/search?q='\
         + quote(term)\

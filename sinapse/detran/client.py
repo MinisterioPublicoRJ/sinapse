@@ -4,7 +4,6 @@ from decouple import config
 
 from sinapse.buildup import _IMAGENS
 from sinapse.detran.utils import parse_content
-from sinapse.queries import update_photo_status
 
 
 RG_BODY = """<?xml version="1.0" encoding="utf-8"?>
@@ -92,7 +91,6 @@ def get_person_photo(infos, label):
         if b'sucesso' in content.lower()\
                 or b'foi finalizada' in content.lower():
             successes.append(info)
-            update_photo_status(info.node_id, 'searching')
 
     for success in successes:
         status, content = get_processed_rg(success.num_rg)
@@ -107,6 +105,3 @@ def get_person_photo(infos, label):
                 }},
                 upsert=True
             )
-            update_photo_status(info.node_id, 'found')
-        else:
-            update_photo_status(info.node_id, 'not found')
