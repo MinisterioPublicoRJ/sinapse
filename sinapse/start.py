@@ -101,7 +101,7 @@ def respostajson_visjs(response, **kwargs):
 def limpa_nos(nos):
     copia_nos = deepcopy(nos)
     for no in copia_nos:
-        if 'sensivel' in no['properties'].keys():
+        if 'sensivel' in no['properties'].keys() and no['properties']['sensivel'] == '1':
             no['labels'] = ['sigiloso']
             no['properties'] = dict()
 
@@ -126,7 +126,7 @@ def limpa_nos(nos):
 def limpa_relacoes(relacoes):
     copia_relacoes = deepcopy(relacoes)
     for relacao in copia_relacoes:
-        if 'sensivel' in relacao['properties'].keys():
+        if 'sensivel' in relacao['properties'].keys() and relacao['properties']['sensivel'] == '1':
             relacao['type'] = 'sigiloso'
             relacao['properties'] = dict()
 
