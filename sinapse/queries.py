@@ -59,7 +59,10 @@ def search_info(q, solr_queries):
     resp = dict()
     for label, query in solr_queries.items():
         if query:
-            resp[label] = _solr_search(f_q, query)
+            try:
+                resp[label] = _solr_search(f_q, query)
+            except:
+                pass
     return resp
 
 

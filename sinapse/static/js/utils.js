@@ -3,7 +3,7 @@ const DOMINIO = 'http://apps.mprj.mp.br/sistema/dominio'
 export const addStyleToNode = node => {
     let color = '#7bb3ff'
 
-    switch (getNodeType(node)) {
+    switch (getNodeType(node).toLowerCase()) {
         case 'empresa':
             color = '#51c881'
             break
@@ -263,6 +263,7 @@ export const formatCNAE = cnae => {
  * @param {String} cnpj
  */
 export const formatCNPJ = cnpj => {
+    cnpj = cnpj.toString().padStart(14, "0")
     if (cnpj.length === 14) {
         return `${cnpj.substr(0,2)}.${cnpj.substr(2,3)}.${cnpj.substr(5,3)}/${cnpj.substr(8,4)}-${cnpj.substr(12)}`
     }
@@ -298,7 +299,12 @@ export const formatDate = date => {
  */
 export const formatDocumentHierarchy = str => {
     let strArray = str.split('|')
-    strArray[0] = strArray[0].split(' ').map(word => word.substr(0, 1).toUpperCase() + word.substr(1).toLowerCase()).join(' ')
+    strArray[0] = strArray[0].split(' ').map(word => {
+        if (word.length < 3) {
+            return word.toLowerCase()
+        }
+        return word.substr(0, 1).toUpperCase() + word.substr(1).toLowerCase()
+    }).join(' ')
     return strArray.join(' > ')
 }
 
