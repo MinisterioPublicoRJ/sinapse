@@ -430,7 +430,7 @@ const populateSidebarRight = node => {
     let nodeType = getNodeType(node)
     if (
         (
-            (nodeType === 'pessoa' && node.properties.rg) ||
+            (nodeType === 'pessoa' && node.properties.num_rg) ||
             (nodeType === 'veiculo')
         )
         && photosData[node.id]
