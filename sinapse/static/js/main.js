@@ -343,7 +343,7 @@ const updateNodes = data => {
             let nodeType = getNodeType(node)
             if (
                 (
-                    (nodeType === 'pessoa' && node.properties.rg) ||
+                    (nodeType === 'pessoa' && node.properties.num_rg) ||
                     (nodeType === 'veiculo')
                 )
                 && !photosData[node.uuid]
@@ -351,7 +351,7 @@ const updateNodes = data => {
                 let imageEndpoint
                 switch (nodeType) {
                     case 'pessoa':
-                        imageEndpoint = `/api/foto?rg=${node.properties.rg}`
+                        imageEndpoint = `/api/foto?rg=${node.properties.num_rg}`
                         break;
                     case 'veiculo':
                         imageEndpoint = `/api/foto-veiculo?caracteristicas=${node.properties.marca_modelo} ${node.properties.modelo} ${node.properties.descricao_cor}`
@@ -444,6 +444,7 @@ const populateSidebarRight = node => {
             property === 'filho_rel_status' ||
             property === 'filho_rel_status_pai' ||
             property === 'uuid' ||
+            property === 'sensivel' ||
             property.substr(0,1) === '_' ||
             property.substr(-3) === '_dk' ||
             property.substr(0,3) === 'cd_'

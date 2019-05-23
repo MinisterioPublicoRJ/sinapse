@@ -6,21 +6,21 @@
 .color-documento_personagem:focus,
 .color-documento::placeholder,
 .color-documento_personagem::placeholder {
-    color: #ae70af;
+    color: #AE70AF;
 }
 .bgcolor-documento,
 .bgcolor-documento_personagem {
-    background-color: #ae70af;
+    background-color: #AE70AF;
 }
 
 .color-embarcacao,
 .color-embarcacao:hover,
 .color-embarcacao:focus,
 .color-embarcacao::placeholder {
-    color: #186bb6;
+    color: #076BB6;
 }
 .bgcolor-embarcacao {
-    background-color: #186bb6;
+    background-color: #076BB6;
 }
 
 .color-empresa,
@@ -86,6 +86,16 @@
 }
 .bgcolor-pessoa {
     background-color: #72d8f2;
+}
+
+.color-sigiloso,
+.color-sigiloso:hover,
+.color-sigiloso:focus,
+.color-sigiloso::placeholder {
+    color: #F37D43;
+}
+.bgcolor-sigiloso {
+    background-color: #F37D43;
 }
 
 .color-telefone,

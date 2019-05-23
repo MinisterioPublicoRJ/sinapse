@@ -263,6 +263,9 @@ export const formatCNAE = cnae => {
  * @param {String} cnpj
  */
 export const formatCNPJ = cnpj => {
+    if (!cnpj) {
+        return '—'
+    }
     cnpj = cnpj.toString().padStart(14, "0")
     if (cnpj.length === 14) {
         return `${cnpj.substr(0,2)}.${cnpj.substr(2,3)}.${cnpj.substr(5,3)}/${cnpj.substr(8,4)}-${cnpj.substr(12)}`
@@ -275,6 +278,9 @@ export const formatCNPJ = cnpj => {
  * @param {String} cpf
  */
 export const formatCPF = cpf => {
+    if (!cpf) {
+        return '—'
+    }
     cpf = cpf.toString().padStart(11, "0")
     if (cpf.length === 11) {
         return `${cpf.substr(0,3)}.${cpf.substr(3,3)}.${cpf.substr(6,3)}-${cpf.substr(9)}`
@@ -312,7 +318,7 @@ export const formatDocumentHierarchy = str => {
  * Returns a Link to Domínio searching for a external number.
  * @param {String} num
  */
-export const formatExternalNumberLink = num => `<a href="${DOMINIO}/#/document-search/${num}" target="_blank">${num}</a>`
+export const formatExternalNumberLink = num => `${num} - <a href="${DOMINIO}/#/document-search/${num}" target="_blank">Abrir no Domínio</a>`
 
 /**
  * Formats Gender string
@@ -339,7 +345,7 @@ export const formatMPRJ = num => `${num.substr(0,4)}.${num.substr(4)}`
  * Returns a Link to Domínio searching for a MPRJ number
  * @param {String} num
  */
-export const formatMPRJLink = num => `<a href="${DOMINIO}/#/document-search/${num}" target="_blank">${formatMPRJ(num)}</a>`
+export const formatMPRJLink = num => `${formatMPRJ(num)} - <a href="${DOMINIO}/#/document-search/${num}" target="_blank">Abrir no Domínio</a>`
 
 /**
  * Format RG on Detran format - xx.xxx.xxx-x

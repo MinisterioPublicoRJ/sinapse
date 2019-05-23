@@ -1,6 +1,7 @@
 import {
     formatCNPJ,
     formatCPF,
+    formatCPFOrCNPJ,
     formatDate,
     formatVehiclePlate,
     getNodeType,
@@ -47,21 +48,30 @@ const nodeToDOMString = node => {
     let ret = ''
     if (node) {
         switch (getNodeType(node)) {
-            case 'pessoa':
-            case 'personagem':
-                ret = `<dt onclick="zoomToNodeId(${node.id})">${node.properties.nome}</dt>`
-                if (node.properties.cpf) {
-                    ret += `<dd>CPF: ${formatCPF(node.properties.cpf)}</dd>`
-                }
+            case 'documento':
+                ret = `<dt onclick="zoomToNodeId(${node.id})">${node.properties.dt_cadastro} - ${node.properties.cldc_ds_hierarquia}</dt>`
+                break
+            case 'embarcacao':
+                ret = `<dt onclick="zoomToNodeId(${node.id})">${node.properties.nome_embarcacao}</dt>`
                 break
             case 'empresa':
-                ret = `<dt onclick="zoomToNodeId(${node.id})">${node.properties.razao_social}</dt><dd>CNPJ: ${formatCNPJ(node.properties.cnpj)}</dd>`
+                console.log('este node', node)
+                ret = `<dt onclick="zoomToNodeId(${node.id})">${node.properties.nome_fantasia || node.properties.razao_social}</dt><dd>CNPJ: ${formatCNPJ(node.properties.num_cnpj)}</dd>`
                 break
             case 'multa':
-                ret = `<dt onclick="zoomToNodeId(${node.id})">${formatDate(node.properties.data)} - ${node.properties.desc}</dt>`
+                ret = `<dt onclick="zoomToNodeId(${node.id})">${formatDate(node.properties.datainfra)} - ${node.properties.descinfra}</dt>`
+                break
+            case 'pessoa':
+                ret = `<dt onclick="zoomToNodeId(${node.id})">${node.properties.nome}</dt>`
+                if (node.properties.cpf) {
+                    ret += `<dd>CPF: ${formatCPF(node.properties.num_cpf)}</dd>`
+                }
+                break
+            case 'personagem':
+                ret = `<dt onclick="zoomToNodeId(${node.id})">${node.properties.pess_nm_pessoa} - ${node.properties.tppe_descricao}</dt><dd>CPF: ${formatCPFOrCNPJ(node.properties.cpfcnpj)}</dd>`
                 break
             case 'veiculo':
-                ret = `<dt onclick="zoomToNodeId(${node.id})">${node.properties.marca} ${node.properties.ano}/${node.properties.modelo} - ${formatVehiclePlate(node.properties.placa)}</dt>`
+                ret = `<dt onclick="zoomToNodeId(${node.id})">${node.properties.marca_modelo.trim()} ${node.properties.fabric}/${node.properties.modelo} ${node.properties.descricao_cor.trim()} - ${formatVehiclePlate(node.properties.placa)}</dt>`
                 break
             default:
                 ret = `<dt onclick="zoomToNodeId(${node.id})">${node.id}</dt>`
@@ -80,6 +90,7 @@ export const updateLeftSidebar = (labels, nodesData) => {
     let entityListToWrite = ''
 
     labels.sort().forEach(type => {
+        type = type.toLowerCase()
         let nodesForThisType = sortByType(nodesData.filter(node => getNodeType(node) === type), type)
         if (nodesForThisType.length) {
             entityListToWrite += `

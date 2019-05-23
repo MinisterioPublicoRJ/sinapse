@@ -150,7 +150,7 @@ const embarcacaoCard = (doc, data, isExtended) => {
                             </div>
                             <div class="col-lg-3">
                                 <dt>Ano de Construção</dt>
-                                <dd class="color-embarcacao">${doc.ano_construcao}</dd>
+                                <dd class="color-embarcacao">${doc.ano_construcao || '—'}</dd>
                             </div>
                         </dl>
                     </div>
