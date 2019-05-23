@@ -27,6 +27,13 @@ const init = () => {
 
 const VERSION = '20190501'
 const SEARCH_TAB_OPENED = 2
+const EDGES_DICT = {
+    'orgao_responsavel': 'órgão responsável',
+    'proprietario': 'proprietário',
+    'socio': 'sócio',
+    'MAE': 'mãe',
+    'PAI': 'pai',
+}
 
 // Initial vars
 let nodes,               // Visjs initialized nodes
@@ -375,14 +382,14 @@ const updateNodes = data => {
             if (filteredEdge.length === 0) {
                 if (edge.label) {
                     edge.label = edge.label.toLowerCase()
-                    // fix diacritics
-                    switch (edge.label) {
-                        case 'orgao_responsavel':
-                            edge.label = 'órgão responsável'
-                        case 'proprietario':
-                            edge.label = 'proprietário'
-                            break
+                    if (edge.properties.parentesco) {
+                        edge.label = edge.properties.parentesco
                     }
+                    // fix diacritics
+                    edge.label = edge.label in EDGES_DICT ? EDGES_DICT[edge.label] : edge.label
+                }
+                if (edge.properties.dt_fim) {
+                    edge.dashes = true
                 }
                 edgesData.push(edge)
                 edges.add(edge)
