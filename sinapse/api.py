@@ -52,7 +52,7 @@ def api_photo():
     rg = request.args.get('rg', '')
 
     photo_doc = _IMAGENS.find_one(
-        {'$or': [{'rg': rg}, {'node_id': node_id}], 'tipo': 'pessoa'},
+        {'$or': [{'num_rg': rg}, {'node_id': node_id}], 'tipo': 'Pessoa'},
         {'_id': 0}
     ) or {}
 
@@ -65,7 +65,7 @@ def api_photo_vehicle():
     characteristics = request.args.get('caracteristicas', '')
 
     photo_doc = _IMAGENS.find_one(
-        {'caracteristicas': characteristics, 'tipo': 'veiculo'},
+        {'caracteristicas': characteristics, 'tipo': 'Veiculo'},
         {'_id': 0}
     ) or {}
 

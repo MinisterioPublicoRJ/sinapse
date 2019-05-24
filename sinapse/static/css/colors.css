@@ -1,56 +1,51 @@
-.color-pessoa,
-.color-pessoa:hover,
-.color-pessoa:focus,
-.color-pessoa::placeholder {
-    color: #72d8f2;
+.color-documento,
+.color-documento_personagem,
+.color-documento:hover,
+.color-documento_personagem:hover,
+.color-documento:focus,
+.color-documento_personagem:focus,
+.color-documento::placeholder,
+.color-documento_personagem::placeholder {
+    color: #AE70AF;
+}
+.bgcolor-documento,
+.bgcolor-documento_personagem {
+    background-color: #AE70AF;
 }
 
-.bgcolor-pessoa {
-    background-color: #72d8f2;
+.color-embarcacao,
+.color-embarcacao:hover,
+.color-embarcacao:focus,
+.color-embarcacao::placeholder {
+    color: #076BB6;
 }
-
-.color-veiculo,
-.color-veiculo:hover,
-.color-veiculo:focus,
-.color-veiculo::placeholder {
-    color: #f2727b;
-}
-
-.bgcolor-veiculo {
-    background-color: #f2727b;
+.bgcolor-embarcacao {
+    background-color: #076BB6;
 }
 
 .color-empresa,
+.color-pessoa_juridica,
 .color-empresa:hover,
+.color-pessoa_juridica:hover,
 .color-empresa:focus,
-.color-empresa::placeholder {
+.color-pessoa_juridica:focus,
+.color-empresa::placeholder,
+.color-pessoa_juridica::placeholder {
     color: #60b87f;
 }
-
-.bgcolor-empresa {
+.bgcolor-empresa,
+.bgcolor-pessoa_juridica {
     background-color: #60b87f;
 }
 
-.color-personagem,
-.color-personagem:hover,
-.color-personagem:focus,
-.color-personagem::placeholder {
-    color: #a176d1;
+.color-mgp,
+.color-mgp:hover,
+.color-mgp:focus,
+.color-mgp::placeholder {
+    color: #ab897f;
 }
-
-.bgcolor-personagem {
-    background-color: #a176d1;
-}
-
-.color-telefone,
-.color-telefone:hover,
-.color-telefone:focus,
-.color-telefone::placeholder {
-    color: #324eb6;
-}
-
-.bgcolor-telefone {
-    background-color: #324eb6;
+.bgcolor-mgp {
+    background-color: #ab897f;
 }
 
 .color-multa,
@@ -59,7 +54,6 @@
 .color-multa::placeholder {
     color: #ff524e;
 }
-
 .bgcolor-multa {
     background-color: #ff524e;
 }
@@ -70,18 +64,56 @@
 .color-orgao::placeholder {
     color: #ffb842;
 }
-
 .bgcolor-orgao {
     background-color: #ffb842;
 }
 
-.color-mgp,
-.color-mgp:hover,
-.color-mgp:focus,
-.color-mgp::placeholder {
-    color: #ab897f;
+.color-personagem,
+.color-personagem:hover,
+.color-personagem:focus,
+.color-personagem::placeholder {
+    color: #a176d1;
+}
+.bgcolor-personagem {
+    background-color: #a176d1;
 }
 
-.bgcolor-mgp {
-    background-color: #ab897f;
+.color-pessoa,
+.color-pessoa:hover,
+.color-pessoa:focus,
+.color-pessoa::placeholder {
+    color: #72d8f2;
+}
+.bgcolor-pessoa {
+    background-color: #72d8f2;
+}
+
+.color-sigiloso,
+.color-sigiloso:hover,
+.color-sigiloso:focus,
+.color-sigiloso::placeholder {
+    color: #F37D43;
+}
+.bgcolor-sigiloso {
+    background-color: #F37D43;
+}
+
+.color-telefone,
+.color-telefone:hover,
+.color-telefone:focus,
+.color-telefone::placeholder {
+    color: #324eb6;
+}
+.bgcolor-telefone {
+    background-color: #324eb6;
+}
+
+.color-veiculo,
+.color-veiculo:hover,
+.color-veiculo:focus,
+.color-veiculo::placeholder {
+    color: #f2727b;
+}
+.bgcolor-veiculo {
+    background-color: #f2727b;
 }

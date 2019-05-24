@@ -87,28 +87,29 @@ def get_processed_rg(rg):
 
 def get_person_photo(node_id):
     next_nodes = find_next_nodes(node_id, rel_types='', path_size=1, limit='')
-    label = 'pessoa'
+    label = 'Pessoa'
+
     infos = find_relations_info(
         next_nodes.json(),
-        pks=['rg'],
+        pks=['num_rg'],
         label=label,
-        props=['rg']
+        props=['num_rg']
     )
-
+    
     successes = []
     for info in infos:
-        status, content = send_rg_query(info.rg)
+        status, content = send_rg_query(info.num_rg)
         if b'sucesso' in content.lower()\
                 or b'foi finalizada' in content.lower():
             successes.append(info)
             update_photo_status(info.node_id, 'searching')
 
     for success in successes:
-        status, content = get_processed_rg(success.rg)
+        status, content = get_processed_rg(success.num_rg)
         photo = parse_content(content, 'fotoCivil')
         if photo is not None and photo != '':
             _IMAGENS.update(
-                {'rg': success.rg},
+                {'num_rg': success.num_rg},
                 {'$set': {
                     'imagem': photo,
                     'uuid': success.node_id,
