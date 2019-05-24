@@ -176,7 +176,7 @@ def vehicle_info(node_id):
         'relation_type': '',
         'path_size': 1,
         'limit': '',
-        'node_type': ':veiculo'
+        'node_type': ''
     }
     vehicle_nodes = find_next_nodes(vehicle_query)
     return find_relations_info(
