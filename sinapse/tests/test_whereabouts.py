@@ -5,14 +5,11 @@ import responses
 from unittest import mock
 
 from sinapse.whereabouts.whereabouts import (
-    get_whereabouts_receita, 
+    get_whereabouts_receita,
     get_whereabouts_credilink,
     extract_addresses_from_receita,
     extract_addresses_from_credilink,
-    get_data_from_receita,
-    get_data_from_credilink
 )
-from sinapse.queries import get_node_from_id
 from sinapse.start import (
     app,
     _ENDERECO_NEO4J
@@ -30,13 +27,16 @@ from .fixtures import (
     resposta_whereabouts_ok
 )
 
+
 def test_extract_addresses_from_receita():
     saida = extract_addresses_from_receita(input_whereabouts_addresses_receita)
     assert saida == output_whereabouts_addresses_receita
 
 
 def test_extract_addresses_from_credilink():
-    saida = extract_addresses_from_credilink(input_whereabouts_addresses_credilink)
+    saida = extract_addresses_from_credilink(
+        input_whereabouts_addresses_credilink
+    )
     assert saida == output_whereabouts_addresses_credilink
 
 
@@ -51,7 +51,6 @@ class BuscaDeParadeiro(unittest.TestCase):
                     "usuario": "usuario",
                     "senha": "senha"})
 
-
     @mock.patch('sinapse.whereabouts.whereabouts.get_data_from_receita')
     @responses.activate
     def test_whereabouts_receita(self, _get_data_from_receita):
@@ -61,7 +60,6 @@ class BuscaDeParadeiro(unittest.TestCase):
 
         assert saida == resposta_whereabouts_receita_ok
 
-
     @mock.patch('sinapse.whereabouts.whereabouts.get_data_from_credilink')
     @responses.activate
     def test_whereabouts_credilink(self, _get_data_from_credilink):
@@ -70,7 +68,6 @@ class BuscaDeParadeiro(unittest.TestCase):
         saida = get_whereabouts_credilink(11452244740)
 
         assert saida == resposta_whereabouts_credilink_ok
-
 
     @mock.patch('sinapse.whereabouts.whereabouts.get_data_from_receita')
     @mock.patch('sinapse.whereabouts.whereabouts.get_data_from_credilink')
@@ -97,7 +94,6 @@ class BuscaDeParadeiro(unittest.TestCase):
 
         request = json.loads(responses.calls[-1].request.body)
         assert request == request_get_node_from_id
-
 
     @responses.activate
     def test_whereabouts_sensivel(self):

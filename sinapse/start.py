@@ -28,8 +28,12 @@ from sinapse.buildup import (
 from sinapse.tasks import (get_person_photo_asynch,
                            get_vehicle_photo_asynch)
 from sinapse.detran.utils import get_node_id
-from sinapse.queries import find_next_nodes, get_node_from_id
+from sinapse.queries import (find_next_nodes,
+                             get_node_from_id,
+                             person_info,
+                             vehicle_info)
 from sinapse.whereabouts.whereabouts import get_whereabouts_receita, get_whereabouts_credilink
+
 
 def parse_json_to_visjs(json, **kwargs):
     nodes = {}
@@ -46,7 +50,7 @@ def parse_json_to_visjs(json, **kwargs):
             nodes[node['id']] = node
         for relationship in result_relationships:
             relationships[relationship['id']] = relationship
-    
+
     nodes = list(nodes.values())
     for d in nodes:
         d['type'] = d.pop('labels')
@@ -58,11 +62,12 @@ def parse_json_to_visjs(json, **kwargs):
         r['to'] = r.pop('endNode')
         r['arrows'] = "to"
         r['dashes'] = False
-        
+
     json_visjs = {'nodes': nodes, 'edges': relationships}
     json_visjs.update(kwargs)
-    
+
     return json_visjs
+
 
 def redirecionar(url, code=302):
     retorno = redirect(url, code=code)
@@ -82,6 +87,7 @@ def respostajson(response, **kwargs):
         return jsonify(remove_info_sensiveis(dados))
 
     return jsonify(dados)
+
 
 def respostajson_visjs(response, **kwargs):
     usuario = session.get('usuario', "dummy")
@@ -137,7 +143,6 @@ def remove_info_sensiveis(resposta):
     resp = deepcopy(resposta)
     for data in resp['results'][0]['data']:
         data['graph']['nodes'] = limpa_nos(data['graph']['nodes'])
-        #data['row'] = limpa_linhas(data['row'])
         data['graph']['relationships'] = limpa_relacoes(
             data['graph']['relationships'])
 
@@ -307,8 +312,9 @@ def api_findShortestPath():
         rel_types = ':' + rel_types.replace(',', '|:')
 
     query = {"statements": [{
-        "statement": "MATCH p = allShortestPaths((a)-[%s*]-(b)) "
-            "WHERE id(a) = %s AND id(b) = %s RETURN p" % (rel_types, id_start, id_end),
+        "statement": "MATCH p = allShortestPaths((a)-[%s*]-(b))"
+        " WHERE id(a) = %s AND id(b) = %s RETURN p"
+        % (rel_types, id_start, id_end),
         "resultDataContents": ["row", "graph"]
     }]}
 
@@ -317,7 +323,7 @@ def api_findShortestPath():
         data=json.dumps(query),
         auth=_AUTH,
         headers=_HEADERS)
-    
+
     return respostajson_visjs(response)
 
 
@@ -357,10 +363,7 @@ def api_findNodes():
 
     opcoes = []
 
-    for label, prop, val, letra in zip(plabel,
-                                       pprop,
-                                       pval,
-                                       letras):
+    for label, prop, val, letra in zip(plabel, pprop, pval, letras):
         opcoes.append(
             _monta_query_filtro_opcional(
                 label,
@@ -389,8 +392,11 @@ def api_findNodes():
     node_id = get_node_id(response.json())
 
     # Call asynchronously tasks
-    get_person_photo_asynch.delay(node_id)
-    get_vehicle_photo_asynch.delay(node_id)
+    person_infos = person_info(node_id)
+    vehicle_infos = vehicle_info(node_id)
+
+    get_person_photo_asynch.delay(person_infos)
+    get_vehicle_photo_asynch.delay(vehicle_infos)
 
     return respostajson_visjs(response, numero_de_nos=numero_de_nos)
 
@@ -403,14 +409,23 @@ def api_nextNodes():
     if rel_types:
         rel_types = ':' + rel_types.replace(',', '|:')
 
-    response = find_next_nodes(node_id, rel_types)
+    parameters = {
+        'where': 'id(n) = {id}'.format(id=node_id),
+        'relation_type': rel_types,
+        'path_size': 1,
+        'limit': 'limit 100',
+        'node_type': ''
+    }
+    response = find_next_nodes(parameters)
 
     numero_expansoes = conta_expansoes(node_id, rel_types)
 
-    # Call asynchronously tasks
-    get_person_photo_asynch.delay(node_id)
-    get_vehicle_photo_asynch.delay(node_id)
+    # Call tasks asynchronously
+    person_infos = person_info(node_id)
+    vehicle_infos = vehicle_info(node_id)
 
+    get_person_photo_asynch.delay(person_infos)
+    get_vehicle_photo_asynch.delay(vehicle_infos)
     return respostajson_visjs(response, numero_de_expansoes=numero_expansoes)
 
 
@@ -448,16 +463,18 @@ def api_relationships():
         headers=_HEADERS)
     return respostajson(response)
 
+
 @app.route("/api/whereabouts")
 @login_necessario
 def api_whereabouts():
     # TODO: Hide sensitive information
     node_id = request.args.get('node_id')
-    
+
     response = get_node_from_id(node_id)
     response = remove_info_sensiveis(response.json())
-    
-    node_props = response['results'][0]['data'][0]['graph']['nodes'][0]['properties']
+
+    node_props = response['results'][0]['data'][0]['graph'][
+        'nodes'][0]['properties']
     # If information is confidential, properties will be empty
     if node_props:
         num_cpf = node_props['cpf']
