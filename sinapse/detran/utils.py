@@ -21,7 +21,7 @@ def get_node_id(response_json):
 
 
 def find_relations_info(response_json, pks, label, props):
-    info_obj = namedtuple(label.capitalize(), ['node_id'] + props)
+    info_obj = namedtuple(label.capitalize(), ['uuid'] + props)
     saved_pk = []
     info = []
     for data in response_json['results'][0]['data']:
@@ -32,7 +32,7 @@ def find_relations_info(response_json, pks, label, props):
                     props_val = [node['properties'][p] for p in props]
                     info.append(
                         info_obj(
-                            *[node['id']] +
+                            *[node['properties']['uuid']] +
                             props_val
                         )
                     )

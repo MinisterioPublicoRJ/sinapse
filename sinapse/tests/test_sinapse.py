@@ -16,7 +16,6 @@ from sinapse.start import (
     _ENDERECO_NEO4J,
     _log_response,
     limpa_nos,
-    #limpa_linhas,
     remove_info_sensiveis,
     resposta_sensivel,
     limpa_relacoes,
@@ -28,25 +27,40 @@ from sinapse.start import (
 )
 
 from .fixtures import (
-    casos_servicos,
     resposta_node_sensivel_ok,
     nos_sensiveis_esp,
     resposta_node_sensivel_esp,
     resposta_node_ok,
+    request_node_ok,
     resposta_sensivel_mista,
     resposta_sensivel_mista_esp,
     relacoes_sensiveis,
     relacoes_sensiveis_esp,
     resposta_filterNodes_ok,
     resposta_nextNodes_ok,
+    request_nextNodes_ok,
+    resposta_nextNodes_umfiltro_ok,
+    request_nextNodes_umfiltro_ok,
+    resposta_nextNodes_doisfiltros_ok,
+    request_nextNodes_doisfiltros_ok,
+    resposta_findShortestPath_ok,
+    request_findShortestPath_umfiltro_ok,
+    resposta_findShortestPath_umfiltro_ok,
+    request_findShortestPath_doisfiltros_ok,
+    resposta_findShortestPath_doisfiltros_ok,
+    request_findShortestPath_ok,
+    resposta_nodeproperties_ok,
+    request_nodeproperties_ok,
+    resposta_label_ok,
+    resposta_relationships_ok,
     query_dinamica,
     parser_test_input,
     parser_test_output
 )
 
+
 def test_parser_visjs():
     saida = parse_json_to_visjs(parser_test_input)
-    
     assert saida == parser_test_output
 
 
@@ -102,7 +116,7 @@ def test_autenticar():
     assert retorno == "usuario"
 
 
-def logresponse(funcao):
+def mock_logresponse(funcao):
     @mock.patch("sinapse.start._log_response")
     @responses.activate
     @wraps(funcao)
@@ -144,9 +158,11 @@ class CasoGlobal(unittest.TestCase):
 
         assert resposta.status_code == 302
 
+    @mock.patch('sinapse.start.vehicle_info')
+    @mock.patch('sinapse.start.person_info')
     @mock.patch('sinapse.start.get_vehicle_photo_asynch')
     @mock.patch('sinapse.start.get_person_photo_asynch')
-    def test_autorizacao_da_api(self, _gpa, _gva):
+    def test_autorizacao_da_api(self, _gpa, _gva, _pi, _vi):
         api_node = self.app.get('/api/node')
         api_findNodes = self.app.get('/api/findNodes')
         api_nextNodes = self.app.get('/api/nextNodes')
@@ -223,7 +239,7 @@ class MetodosConsulta(unittest.TestCase):
     @mock.patch('sinapse.start.conta_nos')
     @mock.patch('sinapse.start.get_vehicle_photo_asynch')
     @mock.patch('sinapse.start.get_person_photo_asynch')
-    @logresponse
+    @mock_logresponse
     def test_monta_query_dinamica(self, _gpa, _gva, _conta_nos):
         _conta_nos.return_value = 10
         _gpa.__name__ = 'Response'
@@ -249,42 +265,258 @@ class MetodosConsulta(unittest.TestCase):
         statements = json.loads(responses.calls[0].request.body)
         assert statements['statements'] == query_dinamica
 
+    @mock_logresponse
+    def test_metodo_consulta_api_node(self):
+        responses.add(
+            responses.POST,
+            _ENDERECO_NEO4J % '/db/data/transaction/commit',
+            json=resposta_node_ok
+        )
+        response = self.app.get(
+            'api/node',
+            query_string={'node_id': 395989945}
+        )
+
+        expected_response = parse_json_to_visjs(deepcopy(resposta_node_ok))
+        self.assertEqual(response.get_json(), expected_response)
+        self.assertEqual(
+            json.loads(responses.calls[-1].request.body),
+            request_node_ok
+        )
+
+    @mock_logresponse
+    def test_metodo_consulta_api_find_shortest_path(self):
+        responses.add(
+            responses.POST,
+            _ENDERECO_NEO4J % '/db/data/transaction/commit',
+            json=resposta_findShortestPath_ok
+        )
+        response = self.app.get(
+            'api/findShortestPath',
+            query_string={
+                "node_id1": 140885160,
+                "node_id2": 328898991
+            }
+        )
+
+        expected_response = resposta_findShortestPath_ok
+
+        self.assertEqual(response.get_json(), expected_response)
+        self.assertEqual(
+            json.loads(responses.calls[-1].request.body),
+            request_findShortestPath_ok
+        )
+
+    @mock_logresponse
+    def test_metodo_consulta_api_find_shortest_path_one_filter(self):
+        responses.add(
+            responses.POST,
+            _ENDERECO_NEO4J % '/db/data/transaction/commit',
+            json=resposta_findShortestPath_umfiltro_ok
+        )
+        response = self.app.get(
+            'api/findShortestPath',
+            query_string={
+                "node_id1": 140885160,
+                "node_id2": 328898991,
+                "rel_types": "trabalha"
+            }
+        )
+
+        expected_response = resposta_findShortestPath_umfiltro_ok
+
+        self.assertEqual(response.get_json(), expected_response)
+        self.assertEqual(
+            json.loads(responses.calls[-1].request.body),
+            request_findShortestPath_umfiltro_ok
+        )
+
+    @mock_logresponse
+    def test_metodo_consulta_api_find_shortest_path_two_filters(self):
+        responses.add(
+            responses.POST,
+            _ENDERECO_NEO4J % '/db/data/transaction/commit',
+            json=resposta_findShortestPath_doisfiltros_ok
+        )
+        response = self.app.get(
+            'api/findShortestPath',
+            query_string={
+                "node_id1": 140885160,
+                "node_id2": 328898991,
+                "rel_types": "filho,personagem"
+            }
+        )
+
+        expected_response = resposta_findShortestPath_doisfiltros_ok
+
+        self.assertEqual(response.get_json(), expected_response)
+        self.assertEqual(
+            json.loads(responses.calls[-1].request.body),
+            request_findShortestPath_doisfiltros_ok
+        )
+
+    @mock.patch('sinapse.start.vehicle_info')
+    @mock.patch('sinapse.start.person_info')
     @mock.patch('sinapse.start.conta_expansoes')
-    @logresponse
-    def test_metodos_consulta(self, _conta_expansoes):
-        _conta_expansoes.side_effect = [[73, 73, 73]]*len(casos_servicos)
-        for caso in casos_servicos:
-            self._consultar(caso)
+    @mock_logresponse
+    def test_metodo_consulta_api_next_nodes(self, _conta_expansoes, _pi, _vi):
+        _conta_expansoes.return_value = [73, 73, 73]
+        responses.add(
+            responses.POST,
+            _ENDERECO_NEO4J % '/db/data/transaction/commit',
+            json=resposta_nextNodes_ok
+        )
+        response = self.app.get(
+            'api/nextNodes',
+            query_string={
+                'node_id': 395989945
+            }
+        )
 
-    def _consultar(self, caso):
-        with self.subTest(caso['nome']):
-            responses.add(
-                caso['metodo'],
-                _ENDERECO_NEO4J % caso['endereco'],
-                json=caso['resposta']
-            )
+        expected_response = parse_json_to_visjs(
+            deepcopy(resposta_nextNodes_ok)
+        )
+        expected_response['numero_de_expansoes'] = [73, 73, 73]
 
-            resposta = self.app.get(
-                caso['servico'],
-                query_string=caso['query_string']
-            )
+        self.assertEqual(response.get_json(), expected_response)
+        self.assertEqual(
+            json.loads(responses.calls[-1].request.body),
+            request_nextNodes_ok
+        )
 
-            assert resposta.get_json() == caso['resposta']
-            if caso['query_string']:
-                assert json.loads(
-                    responses.calls[-1].request.body) == caso['requisicao']
-            else:
-                assert responses.calls[-1].request.body is None
+    @mock.patch('sinapse.start.vehicle_info')
+    @mock.patch('sinapse.start.person_info')
+    @mock.patch('sinapse.start.conta_expansoes')
+    @mock_logresponse
+    def test_metodo_consulta_api_next_nodes_one_filter(self, _conta_expansoes,
+                                                       _pi, _vi):
+        _conta_expansoes.return_value = [73, 73, 73]
+        responses.add(
+            responses.POST,
+            _ENDERECO_NEO4J % '/db/data/transaction/commit',
+            json=resposta_nextNodes_umfiltro_ok
+        )
+        response = self.app.get(
+            'api/nextNodes',
+            query_string={
+                'node_id': 395989945,
+                'rel_types': 'filho'
+            }
+        )
 
-            responses.remove(
-                caso['metodo'],
-                _ENDERECO_NEO4J % caso['endereco']
-            )
+        expected_response = parse_json_to_visjs(
+            deepcopy(resposta_nextNodes_umfiltro_ok)
+        )
+        expected_response['numero_de_expansoes'] = [73, 73, 73]
 
+        self.assertEqual(response.get_json(), expected_response)
+        self.assertEqual(
+            json.loads(responses.calls[-1].request.body),
+            request_nextNodes_umfiltro_ok
+        )
+
+    @mock.patch('sinapse.start.vehicle_info')
+    @mock.patch('sinapse.start.person_info')
+    @mock.patch('sinapse.start.conta_expansoes')
+    @mock_logresponse
+    def test_metodo_consulta_api_next_nodes_two_filters(self,
+                                                        _conta_expansoes,
+                                                        _pi, _vi):
+        _conta_expansoes.return_value = [73, 73, 73]
+        responses.add(
+            responses.POST,
+            _ENDERECO_NEO4J % '/db/data/transaction/commit',
+            json=resposta_nextNodes_doisfiltros_ok
+        )
+        response = self.app.get(
+            'api/nextNodes',
+            query_string={
+                'node_id': 395989945,
+                'rel_types': 'filho,trabalha'
+            }
+        )
+
+        expected_response = parse_json_to_visjs(
+            deepcopy(resposta_nextNodes_doisfiltros_ok)
+        )
+        expected_response['numero_de_expansoes'] = [73, 73, 73]
+
+        self.assertEqual(response.get_json(), expected_response)
+        self.assertEqual(
+            json.loads(responses.calls[-1].request.body),
+            request_nextNodes_doisfiltros_ok
+        )
+
+    @mock_logresponse
+    def test_metodo_consulta_api_node_properties(self):
+        responses.add(
+            responses.POST,
+            _ENDERECO_NEO4J % '/db/data/cypher',
+            json=resposta_nodeproperties_ok
+        )
+        response = self.app.get(
+            'api/nodeProperties',
+            query_string={
+                'label': 'pessoa'
+            }
+        )
+
+        expected_response = parse_json_to_visjs(
+            deepcopy(resposta_nodeproperties_ok)
+        )
+
+        self.assertEqual(response.get_json(), expected_response)
+        self.assertEqual(
+            json.loads(responses.calls[-1].request.body),
+            request_nodeproperties_ok
+        )
+
+    @mock_logresponse
+    def test_metodo_consulta_api_labels(self):
+        responses.add(
+            responses.GET,
+            _ENDERECO_NEO4J % '/db/data/labels',
+            json=resposta_label_ok
+        )
+        response = self.app.get(
+            'api/labels',
+            query_string={
+                'label': 'pessoa'
+            }
+        )
+
+        expected_response = parse_json_to_visjs(
+            deepcopy(resposta_label_ok)
+        )
+
+        self.assertEqual(response.get_json(), expected_response)
+
+    @mock_logresponse
+    def test_metodo_consulta_api_relationships(self):
+        responses.add(
+            responses.GET,
+            _ENDERECO_NEO4J % '/db/data/relationship/types',
+            json=resposta_relationships_ok
+        )
+        response = self.app.get(
+            'api/relationships',
+            query_string={
+                'label': 'pessoa'
+            }
+        )
+
+        expected_response = parse_json_to_visjs(
+            deepcopy(resposta_relationships_ok)
+        )
+
+        self.assertEqual(response.get_json(), expected_response)
+
+    @mock.patch('sinapse.start.vehicle_info')
+    @mock.patch('sinapse.start.person_info')
     @mock.patch('sinapse.start.get_vehicle_photo_asynch')
     @mock.patch('sinapse.start.get_person_photo_asynch')
-    @logresponse
-    def test_resposta_nos(self, _gpa, _gva):
+    @mock_logresponse
+    def test_resposta_nos(self, _gpa, _gva, _pi, _vi):
         _gpa.__name__ = 'Response'
         responses.add(
             responses.POST,
@@ -311,7 +543,9 @@ class MetodosConsulta(unittest.TestCase):
             '/api/findNodes',
             query_string=query_string
         )
-        resposta_esperada = deepcopy(resposta_filterNodes_ok)
+        resposta_esperada = parse_json_to_visjs(
+            deepcopy(resposta_filterNodes_ok)
+        )
         resposta_esperada['numero_de_nos'] = 1
 
         self.assertEqual(resposta.get_json(), resposta_esperada)
@@ -345,7 +579,7 @@ class MetodosConsulta(unittest.TestCase):
     @mock.patch('sinapse.start.get_person_photo_asynch')
     @mock.patch('sinapse.start.get_node_id', return_value=12345)
     @mock.patch('sinapse.start.conta_nos', return_value=101)
-    @logresponse
+    @mock_logresponse
     def test_conta_numero_de_nos_antes_da_busca(self, _conta_nos, _gni, _gpa,
                                                 _gva):
         _gni.__name__ = 'Return'
@@ -382,10 +616,12 @@ class MetodosConsulta(unittest.TestCase):
         )
         self.assertEqual(resposta.json['numero_de_nos'], 101)
 
+    @mock.patch('sinapse.start.vehicle_info')
+    @mock.patch('sinapse.start.person_info')
     @mock.patch('sinapse.start.get_vehicle_photo_asynch')
     @mock.patch('sinapse.start.get_person_photo_asynch')
-    @logresponse
-    def test_resposta_expansoes(self, _gpa, _gva):
+    @mock_logresponse
+    def test_resposta_expansoes(self, _gpa, _gva, _pi, _vi):
         responses.add(
             responses.POST,
             _ENDERECO_NEO4J % '/db/data/transaction/commit',
@@ -411,7 +647,9 @@ class MetodosConsulta(unittest.TestCase):
             '/api/nextNodes',
             query_string=query_string
         )
-        resposta_esperada = deepcopy(resposta_nextNodes_ok)
+        resposta_esperada = parse_json_to_visjs(
+            deepcopy(resposta_nextNodes_ok)
+        )
         resposta_esperada['numero_de_expansoes'] = [72, 72, 72]
 
         self.assertEqual(resposta.get_json(), resposta_esperada)
@@ -440,9 +678,9 @@ class MetodosConsulta(unittest.TestCase):
     @mock.patch('sinapse.start.get_vehicle_photo_asynch')
     @mock.patch('sinapse.start.get_person_photo_asynch')
     @mock.patch('sinapse.start.conta_expansoes', return_value=[1, 1, 1])
-    @logresponse
-    def test_conta_numero_de_expansoes_antes_da_busca(self, _conta_expansoes, _gfa,
-                                                      _gva):
+    @mock_logresponse
+    def test_conta_numero_de_expansoes_antes_da_busca(self, _conta_expansoes,
+                                                      _gfa, _gva):
         mock_resposta = mock.MagicMock()
         responses.add(
             responses.POST,
@@ -525,24 +763,11 @@ class RemoveInfoSensivel(unittest.TestCase):
         self.assertNotEqual(info, nos)
         self.assertEqual(info, nos_sensiveis_esp)
 
-    # def test_remove_linhas_sensiveis(self):
-    #     linhas = resposta_node_sensivel_ok['results'][0]['data'][0]['row']
-    #     info = limpa_linhas(linhas)
-
-    #     self.assertNotEqual(info, linhas)
-    #     self.assertEqual(info, [dict()])
-
     def test_mantem_nos_nao_sensiveis(self):
-        nos = resposta_node_ok['nodes']
+        nos = resposta_node_ok['results'][0]['data'][0]['graph']['nodes']
         info = limpa_nos(nos)
 
         self.assertEqual(info, nos)
-
-    # def test_mantem_linhas_nao_sensiveis(self):
-    #     linhas = resposta_node_ok['results'][0]['data'][0]['row']
-    #     info = limpa_linhas(linhas)
-
-    #     self.assertEqual(info, linhas)
 
     def test_remove_relacoes_sensiveis(self):
         info = limpa_relacoes(relacoes_sensiveis)
@@ -575,8 +800,11 @@ class RemoveInfoSensivel(unittest.TestCase):
         )
 
         resposta = self.app.get('/api/node?node_id=395989945')
-        
-        self.assertEqual(resposta.json, parse_json_to_visjs(resposta_node_sensivel_esp))
+
+        self.assertEqual(
+            resposta.json,
+            parse_json_to_visjs(deepcopy(resposta_node_sensivel_esp))
+        )
 
     @mock.patch("sinapse.start._log_response")
     @responses.activate
@@ -589,4 +817,7 @@ class RemoveInfoSensivel(unittest.TestCase):
 
         resposta = self.app.get('/api/node?node_id=395989945')
 
-        self.assertEqual(resposta.json, resposta_node_ok)
+        self.assertEqual(
+            resposta.json,
+            parse_json_to_visjs(deepcopy(resposta_node_ok))
+        )
