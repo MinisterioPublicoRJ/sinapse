@@ -287,9 +287,14 @@ const searchDetailStep = (entityUUID, entityType) => {
     let searchedDoc = searchData[entityType].response.docs.filter(doc => doc.uuid === entityUUID)[0]
     console.log(entityUUID, entityType, searchedDoc)
 
+    let searchWhereaboutsFn = `searchWhereabouts('${entityUUID}')`
+    if (entityType !== 'pessoa') {
+        searchWhereaboutsFn = `alert('Função disponível somente para busca por pessoas físicas.')`
+    }
+
     let searchDetailsHTML = `<div class="${entityType}">
         ${entityCard(searchedDoc, entityType, searchData, true)}
-        <div class="col-lg-4 action busca-paradeiro" onclick="searchWhereabouts('${entityUUID}')">
+        <div class="col-lg-4 action busca-paradeiro" onclick="${searchWhereaboutsFn}">
             Busca<br>
             <b>Paradeiro</b>
         </div>
