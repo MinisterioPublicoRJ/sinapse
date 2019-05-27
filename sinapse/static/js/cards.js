@@ -8,6 +8,8 @@ import {
     get,
 } from '/static/js/utils.js'
 
+const DOMINIO = 'http://apps.mprj.mp.br/sistema/dominio'
+
 /**
  * Creates a card for a doc/entity
  * @param {Object} entity data for this entity
@@ -80,7 +82,7 @@ const documentoCard = (doc, data, isExtended) => {
         <div class="${bodyClass}">
             <div class="row">
                 <div class="col-lg-12">
-                    <h3 class="color-documento" ${backFn}>${returnHighlightedProperty(doc, 'nr_mp', data.documento_personagem.highlighting, formatMPRJ)}</h3>
+                    <h3 class="color-documento" ${backFn}>${returnHighlightedProperty(doc, 'nr_mp', data.documento_personagem.highlighting, formatMPRJ)} <a href="${DOMINIO}/#/document-search/${doc.nr_mp}" target="_blank" title="Abrir no Domínio">🔗</a></h3>
                 </div>
                 <div class="body col-lg-12">
                     <div class="row">

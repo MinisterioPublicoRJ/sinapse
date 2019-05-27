@@ -318,7 +318,7 @@ export const formatDocumentHierarchy = str => {
  * Returns a Link to Domínio searching for a external number.
  * @param {String} num
  */
-export const formatExternalNumberLink = num => `${num} - <a href="${DOMINIO}/#/document-search/${num}" target="_blank">Abrir no Domínio</a>`
+export const formatExternalNumberLink = num => `${num} <a href="${DOMINIO}/#/document-search/${num}" target="_blank" title="Abrir no Domínio">🔗</a>`
 
 /**
  * Formats Gender string
@@ -345,7 +345,7 @@ export const formatMPRJ = num => `${num.substr(0,4)}.${num.substr(4)}`
  * Returns a Link to Domínio searching for a MPRJ number
  * @param {String} num
  */
-export const formatMPRJLink = num => `${formatMPRJ(num)} - <a href="${DOMINIO}/#/document-search/${num}" target="_blank">Abrir no Domínio</a>`
+export const formatMPRJLink = num => `${formatMPRJ(num)} <a href="${DOMINIO}/#/document-search/${num}" target="_blank" title="Abrir no Domínio">🔗</a>`
 
 /**
  * Format RG on Detran format - xx.xxx.xxx-x
