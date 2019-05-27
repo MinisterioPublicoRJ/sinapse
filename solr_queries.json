@@ -1,7 +1,7 @@
 {
-    "pessoa": "pessoa_fisica/select?q=%22{f_q}%22&wt=json&indent=true&defType=edismax&qf=nome%5E10+nome_mae+cpf%5E5&qs=1&stopwords=true&lowercaseOperators=true&hl=true&hl.simple.pre=%3Cem%3E&hl.simple.post=%3Cem%3E",
+    "pessoa": "pessoa_fisica/select?q=%22{f_q}%22&wt=json&indent=true&defType=edismax&qf=nome%5E10+nome_mae+cpf%5E5&qs=1&stopwords=true&lowercaseOperators=true&hl=true",
     "veiculo": "veiculo/select?q=%22{f_q}%22&wt=json&indent=true&defType=edismax&qf=descricao+proprietario+placa&qs=5&stopwords=true&lowercaseOperators=true&hl=true",
-    "pessoa_juridica":"pessoa_juridica/select?q=%22{f_q}%22&wt=json&indent=true&defType=edismax&qf=responsavel+cnpj+cpf_responsavel+razao_social&qs=1&stopwords=true&lowercaseOperators=true&hl=true&hl.simple.pre=%3Cem%3E&hl.simple.post=%3Cem%3E",
-    "embarcacao": "embarcacao/select?q=%22{f_q}%22&wt=json&indent=true&defType=edismax&qf=nome_embarcacao+cpf_cnpj&qs=1&stopwords=true&lowercaseOperators=true&hl=true&hl.simple.pre=%3Cem%3E&hl.simple.post=%3Cem%3E",
-    "documento_personagem": "documento_personagem/select?q=%22{f_q}%22&wt=json&indent=true&defType=edismax&qf=nr_mp+ds_info_personagem+cldc_ds_hierarquia+nr_externo&qs=1&stopwords=true&lowercaseOperators=true&hl=true&hl.simple.pre=%3Cem%3E&hl.simple.post=%3Cem%3E"
+    "pessoa_juridica":"pessoa_juridica/select?q=%22{f_q}%22&wt=json&indent=true&defType=edismax&qf=responsavel+cnpj+cpf_responsavel+razao_social&qs=1&stopwords=true&lowercaseOperators=true&hl=true",
+    "embarcacao": "embarcacao/select?q=%22{f_q}%22&wt=json&indent=true&defType=edismax&qf=nome_embarcacao+cpf_cnpj&qs=1&stopwords=true&lowercaseOperators=true&hl=true",
+    "documento_personagem": "documento_personagem/select?q=%22{f_q}%22&wt=json&indent=true&defType=edismax&qf=nr_mp+ds_info_personagem+cldc_ds_hierarquia+nr_externo&qs=1&stopwords=true&lowercaseOperators=true&hl=true"
 }
