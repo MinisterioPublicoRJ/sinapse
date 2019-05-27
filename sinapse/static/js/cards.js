@@ -85,15 +85,19 @@ const documentoCard = (doc, data, isExtended) => {
                 <div class="body col-lg-12">
                     <div class="row">
                         <dl>
-                            <div class="col-lg-5">
+                            <div class="col-lg-3">
                                 <dt>Classe</dt>
                                 <dd class="color-documento">${returnHighlightedProperty(doc, 'cldc_ds_hierarquia', data.documento_personagem.highlighting, formatDocumentHierarchy)}</dd>
                             </div>
                             <div class="col-lg-4">
+                                <dt>Personagens</dt>
+                                <dd class="color-documento">${returnHighlightedProperty(doc, 'ds_info_personagem', data.documento_personagem.highlighting).join('<br>')}</dd>
+                            </div>
+                            <div class="col-lg-3">
                                 <dt>Número Externo</dt>
                                 <dd class="color-documento">${returnHighlightedProperty(doc, 'nr_externo', data.documento_personagem.highlighting)}</dd>
                             </div>
-                            <div class="col-lg-3">
+                            <div class="col-lg-2">
                                 <dt>Data do Cadastro</dt>
                                 <dd class="color-documento">${formatDate(doc.dt_cadastro)}</dd>
                             </div>
@@ -345,6 +349,12 @@ const returnHighlightedProperty = (doc, prop, highlighting, formatFn) => {
     if (highlighting[doc.uuid] && highlighting[doc.uuid][prop]) {
         if (formatFn) {
             return `<em>${formatFn(highlighting[doc.uuid][prop][0].replace(/<\/?em>/g, ''))}</em>`
+        }
+        if (prop === 'ds_info_personagem') {
+            let filteredElem = highlighting[doc.uuid][prop][0]
+            let filteredElemNoHighlight = filteredElem.replace(/<\/?em>/g, '')
+            let filteredArray = doc[prop].filter(e => e !== filteredElemNoHighlight)
+            return [].concat(filteredElem).concat(filteredArray)
         }
         return highlighting[doc.uuid][prop][0]
     }
