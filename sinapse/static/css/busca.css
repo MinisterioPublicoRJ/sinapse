@@ -642,6 +642,10 @@ span.tooltip:after {
 #search-details .busca-paradeiro {
     background-image: url('/static/img/icon/icon_paradeiro.svg');
     color: #72A5F2;
+    filter: grayscale(1)
+}
+#search-details .pessoa .busca-paradeiro {
+    filter: grayscale(0)
 }
 
 #search-details .caminho-exploratorio {
