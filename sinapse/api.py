@@ -12,6 +12,18 @@ from .auth import autenticadorjwt
 from .buildup import app, _IMAGENS
 from .queries import search_info, log_solr_response
 from .start import login_necessario
+from sinapse.tasks import (get_person_photo_asynch, get_vehicle_photo_asynch)
+from solrclient.utils import solr2info
+
+
+def _search_pictures_asynch(info):
+    persons = solr2info(info['pessoa'], 'Pessoa', ['uuid', 'rg'])
+    vehicles = solr2info(
+        info['veiculo'],
+        'Veiculo', ['uuid', 'marca_modelo', 'ano_modelo', 'cor']
+    )
+    get_person_photo_asynch.delay(persons)
+    get_vehicle_photo_asynch.delay(vehicles)
 
 
 @app.route("/api/filtroinicial", methods=['GET'])
@@ -42,6 +54,9 @@ def api_search():
     user = session.get('usuario', "dummy")
     sessionid = request.cookies.get('session')
     log_solr_response(user, sessionid, info)
+
+    _search_pictures_asynch(info)
+
     return jsonify(info)
 
 
@@ -52,7 +67,7 @@ def api_photo():
     rg = request.args.get('rg', '')
 
     photo_doc = _IMAGENS.find_one(
-        {'$or': [{'rg': rg}, {'node_id': node_id}], 'tipo': 'pessoa'},
+        {'$or': [{'num_rg': rg}, {'node_id': node_id}], 'tipo': 'Pessoa'},
         {'_id': 0}
     ) or {}
 
@@ -65,7 +80,7 @@ def api_photo_vehicle():
     characteristics = request.args.get('caracteristicas', '')
 
     photo_doc = _IMAGENS.find_one(
-        {'caracteristicas': characteristics, 'tipo': 'veiculo'},
+        {'caracteristicas': characteristics, 'tipo': 'Veiculo'},
         {'_id': 0}
     ) or {}
 

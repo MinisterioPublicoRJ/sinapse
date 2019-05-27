@@ -38,10 +38,19 @@ resposta_node_ok = {
                                     'sexo': '1',
                                     'nome_rg': 'DANIEL CARVALHO BELCHIOR',
                                     'dt_nasc': '19850522'
-                                }
+                                },
+                                'type': [],
                             }
                         ],
-                        'relationships': []
+                        'relationships': [
+                            {
+                                'id': 1,
+                                'labels': [],
+                                'type': [],
+                                'startNode': 1,
+                                'endNode': 2
+                            }
+                        ]
                     }
                 }
             ]
@@ -141,26 +150,40 @@ request_filterNodes_ok = {
 
 
 resposta_filterNodes_ok = {
-    'nodes': [{
-        'id': '140885160',
-        'type': ['pessoa'],
-        'properties': {
-            'cpf': '11452244740',
-            'dt_nasc': '19850522',
-            'filho_rel_status': 1,
-            'filho_rel_status_pai': 1,
-            'nome': 'DANIEL CARVALHO BELCHIOR',
-            'nome_mae': 'MARTA CARVALHO BELCHIOR',
-            'nome_pai': 'FRANCISCO IVAN FONTELE BELCHIOR',
-            'nome_rg': 'DANIEL CARVALHO BELCHIOR',
-            'rg': '131242950',
-            'sexo': '1',
-            'uf': 'RJ',
-            'visitado': False,
-        }
-    }],
-    'edges': []
-}
+    'results': [
+        {
+            'columns': ['r', 'n', 'x'], 
+'data': [{
+    'graph': {
+        'nodes': [{
+            'id': '140885160',
+            'type': ['pessoa'],
+            'properties': {
+                'cpf': '11452244740',
+                'dt_nasc': '19850522',
+                'filho_rel_status': 1,
+                'filho_rel_status_pai': 1,
+                'nome': 'DANIEL CARVALHO BELCHIOR',
+                'nome_mae': 'MARTA CARVALHO BELCHIOR',
+                'nome_pai': 'FRANCISCO IVAN FONTELE BELCHIOR',
+                'nome_rg': 'DANIEL CARVALHO BELCHIOR',
+                'rg': '131242950',
+                'sexo': '1',
+                'uf': 'RJ',
+                'visitado': False,
+            },
+            'labels': [],
+        }],
+        'edges': [], 
+        'relationships': [{
+            'id': '282236618',
+            'type': 'filho',
+            'startNode': '85604696',
+            'endNode': '10844320',
+            'properties': {},
+    }]
+    }}]
+}]}
 
 request_nextNodes_ok = {
     'statements': [
@@ -171,7 +194,11 @@ request_nextNodes_ok = {
     ]
 }
 
-resposta_nextNodes_ok = {
+resposta_nextNodes_ok = {'results': [
+        {
+            'columns': ['r', 'n', 'x'], 
+'data': [{
+    'graph': {
     'nodes': [
         {
             'id': '395989945',
@@ -180,7 +207,9 @@ resposta_nextNodes_ok = {
                 'cpf': '11452244740',
                 'nome': 'DANIEL CARVALHO BELCHIOR',
                 'pess_dk': 15535503
-            }
+            },
+            'labels': [],
+            'type': []
         },
         {
             'id': '359754850',
@@ -191,7 +220,9 @@ resposta_nextNodes_ok = {
                 'docu_dk': 17430731,
                 'dt_cadastro': '12/01/2018 15:46:42',
                 'nr_mprj': 201800032105
-            }
+            },
+            'labels': [],
+            'type': []
         },
         {
             'id': '140885160',
@@ -209,7 +240,9 @@ resposta_nextNodes_ok = {
                 'sexo': '1',
                 'uf': 'RJ',
                 'visitado': False
-            }
+            },
+            'labels': [],
+            'type': []
         }
     ],
     'edges': [
@@ -236,6 +269,15 @@ resposta_nextNodes_ok = {
             'label': 'personagem'
         }
     ],
+        'relationships': [
+            {
+                'id': 1,
+                'type': 'person',
+                'startNode': 1,
+                'endNode': 2
+            }
+        ]
+    }}]}],
     'numero_de_expansoes': [73, 73, 73]
 }
 
@@ -257,6 +299,7 @@ resposta_sensivel_mista = {
                         'nome_mae': 'M H P R',
                         'nome': 'N R P',
                         'sexo': '2',
+                        'uuid': 'abde',
                         'nome_rg': 'N R P',
                         'dt_nasc': '20180709',
                         }}, {'id': '10844320', 'labels': ['pessoa'], 'properties': {
@@ -285,6 +328,7 @@ resposta_sensivel_mista = {
     'nome': 'A P R',
     'sensivel': True,
     'sexo': '1',
+    'uuid': 'aabbcc',
     'nome_rg': 'A P R',
     'dt_nasc': '20180709',
     }}, {'id': '10844320', 'labels': ['pessoa'], 'properties': {
@@ -313,6 +357,7 @@ resposta_sensivel_mista = {
     'nome_mae': 'M H P R',
     'nome': 'S P R',
     'sexo': '1',
+    'uuid': 'efe3',
     'nome_rg': 'S P R',
     'dt_nasc': '20180709',
     }}, {'id': '10844320', 'labels': ['pessoa'], 'properties': {
@@ -349,6 +394,7 @@ resposta_sensivel_mista = {
     'nome_mae': 'M H P R',
     'nome': 'M T R DE A',
     'sexo': '2',
+    'uuid': 'aaef',
     'nome_rg': 'M T R DE A',
     'dt_nasc': '20180709',
     }}], 'relationships': [{
@@ -372,6 +418,7 @@ resposta_sensivel_mista_esp = {
     'nome_mae': 'M H P R',
     'nome': 'N R P',
     'sexo': '2',
+    'uuid': 'abde',
     'nome_rg': 'N R P',
     'dt_nasc': '20180709',
     }}, {'id': '10844320', 'labels': ['sigiloso'], 'properties': {
@@ -404,6 +451,7 @@ resposta_sensivel_mista_esp = {
     'nome': 'S P R',
     'sexo': '1',
     'nome_rg': 'S P R',
+    'uuid': 'efe3',
     'dt_nasc': '20180709',
     }}, {'id': '10844320', 'labels': ['sigiloso'], 'properties': {
     }}], 'relationships': [{
@@ -425,6 +473,7 @@ resposta_sensivel_mista_esp = {
     'nome_mae': 'M H P R',
     'nome': 'M T R DE A',
     'sexo': '2',
+    'uuid': 'aaef',
     'nome_rg': 'M T R DE A',
     'dt_nasc': '20180709',
     }}], 'relationships': [{
@@ -830,7 +879,7 @@ resposta_nextNodes_umfiltro_ok = {
 request_findShortestPath_doisfiltros_ok = {
     "statements": [
         {
-        "statement": "MATCH p = shortestPath((a)-[:filho|:personagem*]-(b)) "
+        "statement": "MATCH p = allShortestPaths((a)-[:filho|:personagem*]-(b)) "
             "WHERE id(a) = 140885160 AND id(b) = 328898991 RETURN p",
         "resultDataContents": ["row", "graph"]
         }
@@ -845,7 +894,7 @@ resposta_findShortestPath_doisfiltros_ok = {
 request_findShortestPath_umfiltro_ok = {
     "statements": [
         {
-        "statement": "MATCH p = shortestPath((a)-[:trabalha*]-(b)) "
+        "statement": "MATCH p = allShortestPaths((a)-[:trabalha*]-(b)) "
             "WHERE id(a) = 140885160 AND id(b) = 328898991 RETURN p",
         "resultDataContents": ["row", "graph"]
         }
@@ -1007,7 +1056,7 @@ resposta_findShortestPath_umfiltro_ok = {
 request_findShortestPath_ok = {
     "statements": [
         {
-        "statement": "MATCH p = shortestPath((a)-[*]-(b)) "
+        "statement": "MATCH p = allShortestPaths((a)-[*]-(b)) "
             "WHERE id(a) = 140885160 AND id(b) = 328898991 RETURN p",
         "resultDataContents": ["row", "graph"]
         }
@@ -1105,110 +1154,6 @@ resposta_findShortestPath_ok = {
 }
 
 casos_servicos = [
-    {
-        'nome': 'api_node',
-        'endereco': '/db/data/transaction/commit',
-        'servico': '/api/node',
-        'resposta': resposta_node_ok,
-        'requisicao': request_node_ok,
-        'query_string': {
-            "node_id": 395989945
-        },
-        'metodo': responses.POST
-    },
-    {
-        'nome': 'api_findShortestPath',
-        'endereco': '/db/data/transaction/commit',
-        'servico': '/api/findShortestPath',
-        'resposta': resposta_findShortestPath_ok,
-        'requisicao': request_findShortestPath_ok,
-        'query_string': {
-            "node_id1": 140885160,
-            "node_id2": 328898991
-        },
-        'metodo': responses.POST
-    },
-    {
-        'nome': 'api_findShortestPath_umfiltro',
-        'endereco': '/db/data/transaction/commit',
-        'servico': '/api/findShortestPath',
-        'resposta': resposta_findShortestPath_umfiltro_ok,
-        'requisicao': request_findShortestPath_umfiltro_ok,
-        'query_string': {
-            "node_id1": 140885160,
-            "node_id2": 328898991,
-            "rel_types": "trabalha"
-        },
-        'metodo': responses.POST
-    },
-    {
-        'nome': 'api_findShortestPath_doisfiltros',
-        'endereco': '/db/data/transaction/commit',
-        'servico': '/api/findShortestPath',
-        'resposta': resposta_findShortestPath_doisfiltros_ok,
-        'requisicao': request_findShortestPath_doisfiltros_ok,
-        'query_string': {
-            "node_id1": 140885160,
-            "node_id2": 328898991,
-            "rel_types": "filho,personagem"
-        },
-        'metodo': responses.POST
-    },
-    {
-        'nome': 'api_nextNodes',
-        'endereco': '/db/data/transaction/commit',
-        'servico': '/api/nextNodes',
-        'resposta': resposta_nextNodes_ok,
-        'requisicao': request_nextNodes_ok,
-        'query_string': {
-            'node_id': 395989945
-        },
-        'metodo': responses.POST
-    },
-    {
-        'nome': 'api_nextNodes_umfiltro',
-        'endereco': '/db/data/transaction/commit',
-        'servico': '/api/nextNodes',
-        'resposta': resposta_nextNodes_umfiltro_ok,
-        'requisicao': request_nextNodes_umfiltro_ok,
-        'query_string': {
-            'node_id': 395989945,
-            'rel_types': 'filho'
-        },
-        'metodo': responses.POST
-    },
-    {
-        'nome': 'api_nextNodes_doisfiltros',
-        'endereco': '/db/data/transaction/commit',
-        'servico': '/api/nextNodes',
-        'resposta': resposta_nextNodes_doisfiltros_ok,
-        'requisicao': request_nextNodes_doisfiltros_ok,
-        'query_string': {
-            'node_id': 395989945,
-            'rel_types': 'filho,trabalha'
-        },
-        'metodo': responses.POST
-    },
-    {
-        'nome': 'api_nodeProperties',
-        'endereco': '/db/data/cypher',
-        'servico': '/api/nodeProperties',
-        'resposta': resposta_nodeproperties_ok,
-        'requisicao': request_nodeproperties_ok,
-        'query_string': {
-            "label": "pessoa"
-        },
-        'metodo': responses.POST
-    },
-    {
-        'nome': 'api_labels',
-        'endereco': '/db/data/labels',
-        'servico': '/api/labels',
-        'resposta': resposta_label_ok,
-        'requisicao': None,
-        'query_string': {},
-        'metodo': responses.GET
-    },
     {
         'nome': 'api_relationships',
         'endereco': '/db/data/relationship/types',

@@ -1,6 +1,10 @@
 import {
     formatCPF,
+    formatCPFOrCNPJ,
+    formatCNPJ,
     formatDate,
+    formatDocumentHierarchy,
+    formatMPRJ,
     get,
 } from '/static/js/utils.js'
 
@@ -22,6 +26,15 @@ export const entityCard = (entity, key, data, isExtended, bondSearchId) => {
     }
     let ret = `<div class="card-resultado clearfix" ${onclickFn}>`
     switch(key) {
+        case 'documento_personagem':
+            ret += documentoCard(entity, data, isExtended)
+            break
+        case 'embarcacao':
+            ret += embarcacaoCard(entity, data, isExtended)
+            break
+        case 'pessoa_juridica':
+            ret += empresaCard(entity, data, isExtended)
+            break
         case 'pessoa':
             ret += pessoaCard(entity, data, isExtended)
             break
@@ -34,6 +47,178 @@ export const entityCard = (entity, key, data, isExtended, bondSearchId) => {
     }
     ret += `</div>`
     return ret
+}
+
+/**
+ * Creates a card for a given document
+ * @param {Object} doc a entity document representing a document
+ * @param {String} doc.cldc_ds_hierarquia Information about document hierarchy, separated with |, first level is all caps
+ * @param {String[]} doc.ds_info_personagem Array of personagens
+ * @param {String} doc.dt_cadastro Date of creation
+ * @param {String} doc.nr_externo External Number
+ * @param {String} doc.nr_mp MP Number
+ * @param {Object} data data from API
+ * @param {Object} data.documento_personagem
+ * @param {Object} data.documento_personagem.highlighting highlighted terms returned by search
+ * @param {Object} data.documento_personagem.highlighting.uuid a object that has a highlighted term
+ * @param {String[]} data.documento_personagem.highlighting.uuid.prop the terms that matches the searched term
+ * @param {bool} isExtended whether the card is being called within the search list result or in the searchDetails screen
+ */
+const documentoCard = (doc, data, isExtended) => {
+    let titleClass = 'col-lg-2 text-center'
+    let bodyClass = 'col-lg-10'
+    let backFn = ''
+    if (isExtended) {
+        titleClass = 'col-lg-12 text-center title'
+        bodyClass = 'col-lg-12'
+        backFn = 'onclick="backToSearch()"'
+    }
+    return `
+        <div class="${titleClass}">
+            <img src="/static/img/icon/documento_personagem.svg" />
+        </div>
+        <div class="${bodyClass}">
+            <div class="row">
+                <div class="col-lg-12">
+                    <h3 class="color-documento" ${backFn}>${returnHighlightedProperty(doc, 'nr_mp', data.documento_personagem.highlighting, formatMPRJ)}</h3>
+                </div>
+                <div class="body col-lg-12">
+                    <div class="row">
+                        <dl>
+                            <div class="col-lg-5">
+                                <dt>Classe</dt>
+                                <dd class="color-documento">${returnHighlightedProperty(doc, 'cldc_ds_hierarquia', data.documento_personagem.highlighting, formatDocumentHierarchy)}</dd>
+                            </div>
+                            <div class="col-lg-4">
+                                <dt>Número Externo</dt>
+                                <dd class="color-documento">${returnHighlightedProperty(doc, 'nr_externo', data.documento_personagem.highlighting)}</dd>
+                            </div>
+                            <div class="col-lg-3">
+                                <dt>Data do Cadastro</dt>
+                                <dd class="color-documento">${formatDate(doc.dt_cadastro)}</dd>
+                            </div>
+                        </dl>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `
+}
+
+/**
+ * Creates a card for a given ship
+ * @param {Object} doc a entity document representing a ship
+ * @param {String} doc.ano_construcao Ship build date
+ * @param {String} doc.cpf_cnpj Ship owner document
+ * @param {String} doc.nome_embarcacao Ship name
+ * @param {String} doc.tipo_embarcacao Ship type
+ * @param {Object} data data from API
+ * @param {Object} data.embarcacao
+ * @param {Object} data.embarcacao.highlighting highlighted terms returned by search
+ * @param {Object} data.embarcacao.highlighting.uuid a object that has a highlighted term
+ * @param {String[]} data.embarcacao.highlighting.uuid.prop the terms that matches the searched term
+ * @param {bool} isExtended whether the card is being called within the search list result or in the searchDetails screen
+ */
+const embarcacaoCard = (doc, data, isExtended) => {
+    let titleClass = 'col-lg-2 text-center'
+    let bodyClass = 'col-lg-10'
+    let backFn = ''
+    if (isExtended) {
+        titleClass = 'col-lg-12 text-center title'
+        bodyClass = 'col-lg-12'
+        backFn = 'onclick="backToSearch()"'
+    }
+    return `
+        <div class="${titleClass}">
+            <img src="/static/img/icon/embarcacao.svg" />
+        </div>
+        <div class="${bodyClass}">
+            <div class="row">
+                <div class="col-lg-12">
+                    <h3 class="color-embarcacao" ${backFn}>${returnHighlightedProperty(doc, 'nome_embarcacao', data.embarcacao.highlighting)}</h3>
+                </div>
+                <div class="body col-lg-12">
+                    <div class="row">
+                        <dl>
+                            <div class="col-lg-4">
+                                <dt>CPF/CNPJ do Proprietário</dt>
+                                <dd class="color-embarcacao">${returnHighlightedProperty(doc, 'cpf_cnpj', data.embarcacao.highlighting, formatCPFOrCNPJ)}</dd>
+                            </div>
+                            <div class="col-lg-4">
+                                <dt>Tipo da Embarcação</dt>
+                                <dd class="color-embarcacao">${doc.tipo_embarcacao}</dd>
+                            </div>
+                            <div class="col-lg-3">
+                                <dt>Ano de Construção</dt>
+                                <dd class="color-embarcacao">${doc.ano_construcao || '—'}</dd>
+                            </div>
+                        </dl>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `
+}
+
+/**
+ * Creates a card for a given company
+ * @param {Object} doc a entity document representing a company
+ * @param {String} doc.cnpj Company CNPJ
+ * @param {String} doc.cpf_responsavel Company Owner's CPF
+ * @param {String} doc.municipio Company City
+ * @param {String} doc.razao_social Company Full Name
+ * @param {String} doc.responsavel Company Responsible Person
+ * @param {String} doc.uf Company UF
+ * @param {Object} data data from API
+ * @param {Object} data.empresa
+ * @param {Object} data.empresa.highlighting highlighted terms returned by search
+ * @param {Object} data.empresa.highlighting.uuid a object that has a highlighted term
+ * @param {String[]} data.empresa.highlighting.uuid.prop the terms that matches the searched term
+ * @param {bool} isExtended whether the card is being called within the search list result or in the searchDetails screen
+ */
+const empresaCard = (doc, data, isExtended) => {
+    let titleClass = 'col-lg-2 text-center'
+    let bodyClass = 'col-lg-10'
+    let backFn = ''
+    if (isExtended) {
+        titleClass = 'col-lg-12 text-center title'
+        bodyClass = 'col-lg-12'
+        backFn = 'onclick="backToSearch()"'
+    }
+    return `
+        <div class="${titleClass}">
+            <img src="/static/img/icon/pessoa_juridica.svg" />
+        </div>
+        <div class="${bodyClass}">
+            <div class="row">
+                <div class="col-lg-12">
+                    <h3 class="color-empresa" ${backFn}>${returnHighlightedProperty(doc, 'razao_social', data.pessoa_juridica.highlighting)}</h3>
+                </div>
+                <div class="body col-lg-12">
+                    <div class="row">
+                        <dl>
+                            <div class="col-lg-3">
+                                <dt>CNPJ</dt>
+                                <dd class="color-empresa">${returnHighlightedProperty(doc, 'cnpj', data.pessoa_juridica.highlighting, formatCNPJ)}</dd>
+                            </div>
+                            <div class="col-lg-3">
+                                <dt>Nome do Responsável</dt>
+                                <dd class="color-empresa">${returnHighlightedProperty(doc, 'responsavel', data.pessoa_juridica.highlighting)}</dd>
+                            </div>
+                            <div class="col-lg-3">
+                                <dt>CPF do Proprietário</dt>
+                                <dd class="color-empresa">${returnHighlightedProperty(doc, 'cpf_responsavel', data.pessoa_juridica.highlighting, formatCPF)}</dd>
+                            </div>
+                            <div class="col-lg-3">
+                                <dt>Município / UF</dt>
+                                <dd class="color-empresa">${doc.municipio} / ${doc.uf}</dd>
+                            </div>
+                        </dl>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `
 }
 
 /**
@@ -73,7 +258,7 @@ const pessoaCard = (doc, data, isExtended) => {
                         <dl>
                             <div class="col-lg-3">
                                 <dt>CPF</dt>
-                                <dd class="color-pessoa">${formatCPF(doc.num_cpf)}</dd>
+                                <dd class="color-pessoa">${formatCPF(doc.cpf)}</dd>
                             </div>
                             <div class="col-lg-6">
                                 <dt>Nome da mãe</dt>
@@ -81,7 +266,7 @@ const pessoaCard = (doc, data, isExtended) => {
                             </div>
                             <div class="col-lg-3">
                                 <dt>Data de nascimento</dt>
-                                <dd class="color-pessoa">${formatDate(doc.data_nascimento)}</dd>
+                                <dd class="color-pessoa">${formatDate(doc.dt_nasc)}</dd>
                             </div>
                         </dl>
                     </div>
@@ -154,12 +339,19 @@ const veiculoCard = (doc, data, isExtended) => {
  * @param {Object} highlighting 
  * @param {Object} highlighting[uuid]
  * @param {String[]} highlighting[uuid][prop]
+ * @param {Function} formatFn Applies a formatting function, if available
  */
-const returnHighlightedProperty = (doc, prop, highlighting) => {
+const returnHighlightedProperty = (doc, prop, highlighting, formatFn) => {
     if (highlighting[doc.uuid] && highlighting[doc.uuid][prop]) {
+        if (formatFn) {
+            return `<em>${formatFn(highlighting[doc.uuid][prop][0].replace(/<\/?em>/g, ''))}</em>`
+        }
         return highlighting[doc.uuid][prop][0]
     }
     if (doc[prop]) {
+        if (formatFn) {
+            return formatFn(doc[prop])
+        }
         return doc[prop]
     }
     return 'desconhecido'

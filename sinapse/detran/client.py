@@ -3,8 +3,7 @@ import requests
 from decouple import config
 
 from sinapse.buildup import _IMAGENS
-from sinapse.detran.utils import find_relations_info, parse_content
-from sinapse.queries import find_next_nodes, update_photo_status
+from sinapse.detran.utils import parse_content
 
 
 RG_BODY = """<?xml version="1.0" encoding="utf-8"?>
@@ -85,37 +84,24 @@ def get_processed_rg(rg):
     return response.status_code, response.content
 
 
-def get_person_photo(node_id):
-    next_nodes = find_next_nodes(node_id, rel_types='', path_size=1, limit='')
-    label = 'pessoa'
-    infos = find_relations_info(
-        next_nodes.json(),
-        pks=['rg'],
-        label=label,
-        props=['rg']
-    )
-
+def get_person_photo(infos, label):
     successes = []
     for info in infos:
-        status, content = send_rg_query(info.rg)
+        status, content = send_rg_query(info['num_rg'])
         if b'sucesso' in content.lower()\
                 or b'foi finalizada' in content.lower():
             successes.append(info)
-            update_photo_status(info.node_id, 'searching')
 
     for success in successes:
-        status, content = get_processed_rg(success.rg)
+        status, content = get_processed_rg(success['num_rg'])
         photo = parse_content(content, 'fotoCivil')
         if photo is not None and photo != '':
             _IMAGENS.update(
-                {'rg': success.rg},
+                {'num_rg': success['num_rg']},
                 {'$set': {
                     'imagem': photo,
-                    'uuid': success.node_id,
+                    'uuid': success['uuid'],
                     'tipo': label
                 }},
                 upsert=True
             )
-            update_photo_status(info.node_id, 'found')
-        else:
-            update_photo_status(info.node_id, 'not found')

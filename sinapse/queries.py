@@ -16,6 +16,7 @@ from sinapse.buildup import (
     _HEADERS,
     _LOG_SOLR
 )
+from sinapse.detran.utils import find_relations_info
 
 
 IMG_HEADERS = {}
@@ -24,11 +25,11 @@ IMG_HEADERS['User-Agent'] = "Mozilla/5.0 (Windows NT 6.1)"\
     " Chrome/41.0.2228.0 Safari/537.36"
 
 
-def find_next_nodes(node_id, rel_types='', node_type='', path_size=1,
-                    limit='limit 100'):
+def find_next_nodes(parameters):
     query = {"statements": [{
-        "statement": "MATCH r = (n)-[%s*..%s]-(x%s) where id(n) = %s"
-        " return r,n,x %s" % (rel_types, path_size, node_type, node_id, limit),
+        "statement": "MATCH r = (n)-[{relation_type}*..{path_size}]-"
+        "(x{node_type}) where {where}"
+        " return r,n,x {limit}".format(**parameters),
         "resultDataContents": ["row", "graph"]
     }]}
     response = requests.post(
@@ -38,6 +39,7 @@ def find_next_nodes(node_id, rel_types='', node_type='', path_size=1,
         headers=_HEADERS)
 
     return response
+
 
 def get_node_from_id(node_id):
     query = {"statements": [{
@@ -54,12 +56,16 @@ def get_node_from_id(node_id):
 
     return response
 
+
 def search_info(q, solr_queries):
     f_q = re.sub(r'\s+', '+', q)
     resp = dict()
     for label, query in solr_queries.items():
         if query:
-            resp[label] = _solr_search(f_q, query)
+            try:
+                resp[label] = _solr_search(f_q, query)
+            except:
+                pass
     return resp
 
 
@@ -85,23 +91,6 @@ def log_solr_response(user, sessionid, query):
         'datahora': datetime.now(),
         'resposta': query
     })
-
-
-def update_photo_status(node_id, status):
-    query = {"statements": [{
-        "statement":
-        "MATCH (p:pessoa) WHERE id(p) = {node_id}"
-        " SET p._status_photo='{status}'".format(
-            node_id=node_id, status=status
-        ),
-    }]}
-
-    requests.post(
-        _ENDERECO_NEO4J % '/db/data/transaction/commit',
-        data=json.dumps(query),
-        auth=_AUTH,
-        headers=_HEADERS
-    )
 
 
 def download_google_image(term):
@@ -160,3 +149,39 @@ def _get_next_item(s):
             object_raw, "utf-8").decode("unicode_escape")
         final_object = json.loads(object_decode)
         return final_object, end_object
+
+
+# Person Info
+def person_info(node_id):
+    person_query = {
+        'where': 'id(n) = {id}'.format(id=node_id),
+        'relation_type': '',
+        'path_size': 1,
+        'limit': '',
+        'node_type': ':pessoa'
+    }
+    person_nodes = find_next_nodes(person_query)
+    return find_relations_info(
+        person_nodes.json(),
+        pks=['rg'],
+        label='pessoa',
+        props=['rg']  # Add UUID
+    )
+
+
+# Vehicle Info
+def vehicle_info(node_id):
+    vehicle_query = {
+        'where': 'id(n) = {id}'.format(id=node_id),
+        'relation_type': '',
+        'path_size': 1,
+        'limit': '',
+        'node_type': ''
+    }
+    vehicle_nodes = find_next_nodes(vehicle_query)
+    return find_relations_info(
+        vehicle_nodes.json(),
+        pks=['marca', 'modelo', 'cor'],
+        label='veiculo',
+        props=['marca', 'modelo', 'cor']  # Add UUID
+    )
