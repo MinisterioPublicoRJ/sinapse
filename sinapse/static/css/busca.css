@@ -557,6 +557,7 @@ span.tooltip:after {
 
 .custom-tab {
     text-align: center;
+    width: 110px;
 }
 
 .custom-tab img {
