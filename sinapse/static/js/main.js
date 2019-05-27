@@ -195,6 +195,10 @@ const createSearchTabs = (data, bondSearchId) => {
                 keyName = 'embarcação'
                 keyNamePlural = 'embarcações'
                 break
+            case 'veiculo':
+                keyName = 'veículo'
+                keyNamePlural = 'veículos'
+                break
             default:
                 keyName = key
                 keyNamePlural = key + 's'
