@@ -31,6 +31,7 @@ const EDGES_DICT = {
     'orgao_responsavel': 'órgão responsável',
     'proprietario': 'proprietário',
     'socio': 'sócio',
+    'socio_responsavel': 'sócio responsável',
     'MAE': 'mãe',
     'PAI': 'pai',
 }
@@ -390,6 +391,9 @@ const updateNodes = data => {
                 }
                 if (edge.properties.dt_fim) {
                     edge.dashes = true
+                    if (edge.label === 'trabalha') {
+                        edge.label = 'trabalhou'
+                    }
                 }
                 edgesData.push(edge)
                 edges.add(edge)
