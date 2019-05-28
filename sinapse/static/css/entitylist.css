@@ -4,9 +4,7 @@
     position: fixed;
     left: 0;
     z-index: 2;
-    width: 200px;
     border-right: 1px solid black;
-    height: 100%;
     height: calc(100% - 70px);
     padding: 30px 10px;
     overflow-y: scroll;
@@ -26,4 +24,24 @@
     cursor: pointer;
     display: block;
     font-size: .8em
+}
+
+/*
+** Jquery UI override
+*/
+.ui-widget-header {
+    background: #72D8F2
+}
+
+.ui-widget-header:nth-of-type(2) {
+    background: #ccc
+}
+
+.ui-dialog-titlebar {
+    color: #fff;
+    text-transform: uppercase;
+}
+
+.ui-dialog-titlebar-close {
+    display: none;
 }

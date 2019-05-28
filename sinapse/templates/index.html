@@ -13,21 +13,30 @@
         {% endassets %}
     </head>
     <body class="container-fluid">
-        <div class="col-lg-2">
-            <a class="logo" href="/">Logo do sistema conexão</a>
-            <div class="entitylist">
-                <p>As entidades exibidas no grafo serão exibidas nesta barra lateral.</p>
-                <div id="entitylist"></div>
+        <header>
+        <div class="col-lg-12">
+            <div class="col-lg-2">
+                <a class="logo" href="/">Logo do sistema conexão</a>
             </div>
-        </div>
-        <div class="col-lg-8 container-graph">  
-            <header>
+            <div class="col-lg-8">
                 <p id="version">
                     <span id="version_number"></span><span id="version_username">{{session['usuario']}}</span>
                 </p>
-            </header>
+            </div>
+            <div class="col-lg-2">
+                <a href="http://apps.mprj.mp.br/sistema/cadg/" class="mprj">
+                    <span><abbr title="Ministério Público">MP</abbr> em Mapas</span>
+                </a>
+            </div>
+        </div>
+        </header>
+        <div class="entitylist">
+            <p>As entidades exibidas no grafo serão exibidas nesta barra lateral.</p>
+            <div id="entitylist"></div>
+        </div>
+        <div class="container-graph">
             <main>
-                <div class="busca">
+                <div class="col-lg-8 col-lg-offset-2 busca">
                     <div id="loading">
                         <img src="/static/img/icon/Loading_icon.gif">
                     </div>
@@ -35,7 +44,7 @@
                         <div id="balls-animation"></div>
                         <form id="form-search-area">
                             <div id="textBusca">
-                                <input type="text" placeholder="O que deseja procurar?" id="textVal">
+                                <input type="text" placeholder="O que deseja procurar?" id="textVal" autofocus/>
                             </div>
                         </form>
                     </div>
@@ -99,16 +108,11 @@
                 </div>
             </footer>
         </div>
-        <div class="col-lg-2 container-sidebar">
-            <a href="http://apps.mprj.mp.br/sistema/cadg/" class="mprj">
-                <span><abbr title="Ministério Público">MP</abbr> em Mapas</span>
-            </a>
-            <aside id="sidebarRight"></aside>
-        </div>
-        <script type="module" src="/static/js/main.js"></script>
+        <aside id="sidebarRight"></aside>
         {% assets "js" %}
             <script type="text/javascript" src="{{ ASSET_URL }}"></script>
         {% endassets %}
+        <script type="module" src="/static/js/main.js"></script>
         {% if filtroinicial is defined %}
             <script>
                 window.filtroInicial = {

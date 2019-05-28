@@ -6,21 +6,21 @@
 .color-documento_personagem:focus,
 .color-documento::placeholder,
 .color-documento_personagem::placeholder {
-    color: #AE70AF;
+    color: #AE70AF !important;
 }
 .bgcolor-documento,
 .bgcolor-documento_personagem {
-    background-color: #AE70AF;
+    background-color: #AE70AF !important;
 }
 
 .color-embarcacao,
 .color-embarcacao:hover,
 .color-embarcacao:focus,
 .color-embarcacao::placeholder {
-    color: #076BB6;
+    color: #076BB6 !important;
 }
 .bgcolor-embarcacao {
-    background-color: #076BB6;
+    background-color: #076BB6 !important;
 }
 
 .color-empresa,
@@ -31,89 +31,89 @@
 .color-pessoa_juridica:focus,
 .color-empresa::placeholder,
 .color-pessoa_juridica::placeholder {
-    color: #60b87f;
+    color: #60b87f !important;
 }
 .bgcolor-empresa,
 .bgcolor-pessoa_juridica {
-    background-color: #60b87f;
+    background-color: #60b87f !important;
 }
 
 .color-mgp,
 .color-mgp:hover,
 .color-mgp:focus,
 .color-mgp::placeholder {
-    color: #ab897f;
+    color: #ab897f !important;
 }
 .bgcolor-mgp {
-    background-color: #ab897f;
+    background-color: #ab897f !important;
 }
 
 .color-multa,
 .color-multa:hover,
 .color-multa:focus,
 .color-multa::placeholder {
-    color: #ff524e;
+    color: #ff524e !important;
 }
 .bgcolor-multa {
-    background-color: #ff524e;
+    background-color: #ff524e !important;
 }
 
 .color-orgao,
 .color-orgao:hover,
 .color-orgao:focus,
 .color-orgao::placeholder {
-    color: #ffb842;
+    color: #ffb842 !important;
 }
 .bgcolor-orgao {
-    background-color: #ffb842;
+    background-color: #ffb842 !important;
 }
 
 .color-personagem,
 .color-personagem:hover,
 .color-personagem:focus,
 .color-personagem::placeholder {
-    color: #a176d1;
+    color: #a176d1 !important;
 }
 .bgcolor-personagem {
-    background-color: #a176d1;
+    background-color: #a176d1 !important;
 }
 
 .color-pessoa,
 .color-pessoa:hover,
 .color-pessoa:focus,
 .color-pessoa::placeholder {
-    color: #72d8f2;
+    color: #72d8f2 !important;
 }
 .bgcolor-pessoa {
-    background-color: #72d8f2;
+    background-color: #72d8f2 !important;
 }
 
 .color-sigiloso,
 .color-sigiloso:hover,
 .color-sigiloso:focus,
 .color-sigiloso::placeholder {
-    color: #F37D43;
+    color: #F37D43 !important;
 }
 .bgcolor-sigiloso {
-    background-color: #F37D43;
+    background-color: #F37D43 !important;
 }
 
 .color-telefone,
 .color-telefone:hover,
 .color-telefone:focus,
 .color-telefone::placeholder {
-    color: #324eb6;
+    color: #324eb6 !important;
 }
 .bgcolor-telefone {
-    background-color: #324eb6;
+    background-color: #324eb6 !important;
 }
 
 .color-veiculo,
 .color-veiculo:hover,
 .color-veiculo:focus,
 .color-veiculo::placeholder {
-    color: #f2727b;
+    color: #f2727b !important;
 }
 .bgcolor-veiculo {
-    background-color: #f2727b;
+    background-color: #f2727b !important;
 }
