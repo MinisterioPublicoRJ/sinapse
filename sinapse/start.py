@@ -470,9 +470,20 @@ def api_relationships():
 @login_necessario
 def api_whereabouts():
     # TODO: Hide sensitive information
-    node_id = request.args.get('node_id')
+    uuid = request.args.get('uuid')
 
-    response = get_node_from_id(node_id)
+    query = {"statements": [{
+        "statement": "MATCH (p:Pessoa) where p.uuid = '%s' return p"
+        % (uuid),
+        "resultDataContents": ["row", "graph"]
+    }]}
+
+    response = requests.post(
+        _ENDERECO_NEO4J % '/db/data/transaction/commit',
+        data=json.dumps(query),
+        auth=_AUTH,
+        headers=_HEADERS)
+
     response = remove_info_sensiveis(response.json())
 
     node_props = response['results'][0]['data'][0]['graph'][

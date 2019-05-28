@@ -667,13 +667,11 @@ const getShortestPath = (nodeUuid1, nodeType1, nodeUuid2, nodeType2) => {
     get(`/api/findShortestPath?node_uuid1=${nodeUuid1}&label1=${nodeType1}&node_uuid2=${nodeUuid2}&label2=${nodeType2}`, updateNodes)
 }
 
-const searchWhereabouts = nodeId => {
+const searchWhereabouts = nodeUuid => {
     document.querySelector('#search-details').style.display = 'none'
 
-    //get(`/api/whereabouts?node_id=${nodeId}`, displayWhereabouts)
+    get(`/api/whereabouts?uuid=${nodeUuid}`, displayWhereabouts)
 
-    // hardcoded
-    get(`/api/whereabouts?node_id=140885160`, displayWhereabouts)
     showLoading()
 }
 
