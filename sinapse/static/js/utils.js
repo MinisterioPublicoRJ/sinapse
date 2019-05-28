@@ -243,19 +243,26 @@ export const formatAddresses = addresses => {
 }
 
 const formatAddress = address => {
+    let addressStr = address.endereco
+    if (address.numero) {
+        addressStr += ', ' + address.numero
+    }
+    if (address.complemento) {
+        addressStr += ' / ' + address.complemento
+    }
+    if (address.bairro) {
+        addressStr += ' - ' + address.bairro
+    }
+    if (address.cidade) {
+        addressStr += ' - ' + address.cidade
+    }
+    if (address.sigla_uf) {
+        addressStr += '/' + address.sigla_uf
+    }
+    if (address)
     return `<dl class="address">
-        <dt>Rua:</dt>
-        <dd>${address.endereco}</dd>
-        <dt>Número:</dt>
-        <dd>${address.numero}</dd>
-        <dt>Complemento:</dt>
-        <dd>${address.complemento}</dd>
-        <dt>Bairro:</dt>
-        <dd>${address.bairro}</dd>
-        <dt>Cidade:</dt>
-        <dd>${address.cidade}</dd>
-        <dt>UF:</dt>
-        <dd>${address.sigla_uf}</dd>
+        <dt>Endereço:</dt>
+        <dd>${addressStr}</dd>
         <dt>Telefone:</dt>
         <dd>${address.telefone}</dd>
     </dl>`
