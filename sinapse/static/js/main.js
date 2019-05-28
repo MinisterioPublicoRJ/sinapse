@@ -502,6 +502,16 @@ const populateSidebarRight = node => {
 const showSidebarRight = () => {
     sidebarRight.style.display = "block"
     document.getElementsByTagName('body')[0].className = 'showingSidebarRight'
+    $(() => $("#sidebarRight").dialog({
+        classes: {
+            "ui-dialog-titlebar": "grey-title",
+        },
+        height: 600,
+        position: {
+            my: "right",
+            at: "right",
+        },
+    }))
 }
 
 /** Hides the Right Sidebar. */
@@ -587,6 +597,14 @@ const showEntity = (entityType, uuid) => {
     console.log(`showEntity(${uuid})`)
     document.querySelector('.busca').style.display = 'none'
     findNodes(entityType, 'uuid', uuid)
+    $(() => $(".entitylist").dialog({
+        height: 500,
+        position: {
+            my: 'left',
+            at: 'left',
+        },
+        title: 'lista de vínculos'
+    }))
 }
 
 const bondAnalysis = (nodeId1, nodeType1, nodeTitle1) => {
