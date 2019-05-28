@@ -35,6 +35,7 @@ const EDGES_DICT = {
     'MAE': 'mãe',
     'PAI': 'pai',
 }
+let homonymAlertDisplayed = false
 
 // Initial vars
 let nodes,               // Visjs initialized nodes
@@ -132,7 +133,7 @@ const initVisjs = () => {
  * @param {Number} nodeId A Node ID to fetch from API
  */
 const getNextNodes = nodeId => {
-    get(`/api/nextNodes?node_id=${nodeId}`, updateNodes)
+    get(`/api/nextNodes?node_id=${nodeId}`, data => updateNodes(data, nodeId))
 }
 
 /**
@@ -194,6 +195,10 @@ const createSearchTabs = (data, bondSearchId) => {
             case 'embarcacao':
                 keyName = 'embarcação'
                 keyNamePlural = 'embarcações'
+                break
+            case 'veiculo':
+                keyName = 'veículo'
+                keyNamePlural = 'veículos'
                 break
             default:
                 keyName = key
@@ -282,9 +287,14 @@ const searchDetailStep = (entityUUID, entityType) => {
     let searchedDoc = searchData[entityType].response.docs.filter(doc => doc.uuid === entityUUID)[0]
     console.log(entityUUID, entityType, searchedDoc)
 
+    let searchWhereaboutsFn = `searchWhereabouts('${entityUUID}')`
+    if (entityType !== 'pessoa') {
+        searchWhereaboutsFn = `alert('Função disponível somente para busca por pessoas físicas.')`
+    }
+
     let searchDetailsHTML = `<div class="${entityType}">
         ${entityCard(searchedDoc, entityType, searchData, true)}
-        <div class="col-lg-4 action busca-paradeiro" onclick="searchWhereabouts('${entityUUID}')">
+        <div class="col-lg-4 action busca-paradeiro" onclick="${searchWhereaboutsFn}">
             Busca<br>
             <b>Paradeiro</b>
         </div>
@@ -332,7 +342,7 @@ const updateFromFindNodes = data => {
  *
  * @param {*} data Data from API data.
  */
-const updateNodes = data => {
+const updateNodes = (data, nodeId) => {
     document.querySelector('.busca').style.display = 'none'
     document.querySelector('footer').className = ''
     document.querySelector('#graph').className = ''
@@ -369,7 +379,10 @@ const updateNodes = data => {
                     if (data.uuid && data.imagem) {
                         if (!photosData[data.uuid]) {
                             photosData[data.uuid] = data
-                            nodes.update({id: data.uuid, shape: 'circularImage', image: `data:image/png;base64,${data.imagem}`})
+                            let matchedNode = nodesData.filter(node => node.properties.uuid === data.uuid)
+                            if (matchedNode && matchedNode[0]) {
+                                nodes.update({id: matchedNode[0].id, shape: 'circularImage', image: `data:image/png;base64,${data.imagem}`})
+                            }
                         }
                     }
                 })
@@ -377,6 +390,8 @@ const updateNodes = data => {
         }
     }
     if (data.edges) {
+        let motherCount = 0
+        let fatherCount = 0
         for (let edge of data.edges) {
             // the same for edges
             let filteredEdge = edgesData.filter(e => e.id === edge.id)
@@ -384,6 +399,12 @@ const updateNodes = data => {
                 if (edge.label) {
                     edge.label = edge.label.toLowerCase()
                     if (edge.properties.parentesco) {
+                        if (edge.from == nodeId && edge.properties.parentesco === 'MAE') {
+                            motherCount++
+                        }
+                        if (edge.from == nodeId && edge.properties.parentesco === 'PAI') {
+                            fatherCount++
+                        }
                         edge.label = edge.properties.parentesco
                     }
                     // fix diacritics
@@ -398,6 +419,10 @@ const updateNodes = data => {
                 edgesData.push(edge)
                 edges.add(edge)
             }
+        }
+        if ( (motherCount > 1 || fatherCount > 1) && !homonymAlertDisplayed ) {
+            homonymAlertDisplayed = true
+            alert('ATENÇÃO: O sistema pode exibir homônimos em idade compatível para relação parental.')
         }
     }
 
@@ -444,9 +469,10 @@ const populateSidebarRight = node => {
             (nodeType === 'pessoa' && node.properties.num_rg) ||
             (nodeType === 'veiculo')
         )
-        && photosData[node.id]
+        && photosData[node.properties.uuid]
     ) {
-        html += `<img src="data:image/png;base64,${photosData[node.id].imagem}">`
+        let imageLink = `data:image/png;base64,${photosData[node.properties.uuid].imagem}`
+        html += `<img src="${imageLink}">`
     }
     html += `</div>
     <div id="valuesContainer">`

@@ -158,15 +158,17 @@ def person_info(node_id):
         'relation_type': '',
         'path_size': 1,
         'limit': '',
-        'node_type': ':pessoa'
+        'node_type': ':Pessoa'
     }
     person_nodes = find_next_nodes(person_query)
-    return find_relations_info(
+    fri = find_relations_info(
         person_nodes.json(),
-        pks=['rg'],
-        label='pessoa',
-        props=['rg']  # Add UUID
+        pks=['num_rg'],
+        label='Pessoa',
+        props=['num_rg']
     )
+    fri = [item._asdict() for item in fri]
+    return fri
 
 
 # Vehicle Info
