@@ -305,16 +305,18 @@ def api_node():
 @app.route("/api/findShortestPath")
 @login_necessario
 def api_findShortestPath():
-    id_start = request.args.get('node_id1')
-    id_end = request.args.get('node_id2')
+    label1 = request.args.get('label1')
+    label2 = request.args.get('label2')
+    id_start = request.args.get('node_uuid1')
+    id_end = request.args.get('node_uuid2')
     rel_types = request.args.get('rel_types', '')
     if rel_types:
         rel_types = ':' + rel_types.replace(',', '|:')
 
     query = {"statements": [{
-        "statement": "MATCH p = allShortestPaths((a)-[%s*]-(b))"
-        " WHERE id(a) = %s AND id(b) = %s RETURN p"
-        % (rel_types, id_start, id_end),
+        "statement": "MATCH p = allShortestPaths((a:%s)-[%s*]-(b:%s))"
+        " WHERE a.uuid = '%s' AND b.uuid = '%s' RETURN p"
+        % (label1, rel_types, label2, id_start, id_end),
         "resultDataContents": ["row", "graph"]
     }]}
 
