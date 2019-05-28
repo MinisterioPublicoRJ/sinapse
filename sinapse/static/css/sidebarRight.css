@@ -53,22 +53,19 @@
     #sidebarRight {
         display: none;
         height: 100%;
-        height: calc(100% - 72px);
-        position: absolute;
-        top: 72px;
+        height: calc(100% - 5px);
+        position: relative;
+        top: 5px;
         right: 0;
         color: #848484;
-        box-shadow: -5px 0px 10px #f1f1f1;
-        background: rgb(255, 255, 255);
     }
 
     #closeSidebarRight {
-        padding: 50px;
-        font-size: 30px;
+        padding: 30px;
+        font-size: 0;
         position: absolute;
-        bottom: 0;
+        top: -54px;
         box-sizing: border-box;
-        width: 100%;
         right: 0;
         border: none;
         background: none;
@@ -88,7 +85,7 @@
 }
 
 #content {
-    height: 100%;
+    height: 60vh;
 }
 
 .sidebarRight-label {
@@ -249,4 +246,16 @@
 
 .veiculo #fullSidebarRight {
     background-image: url("/static/img/icon/veiculo-inf.svg")
+}
+
+/*
+** Jquery UI override
+*/
+
+.grey-title {
+    background: #ccc !important;
+}
+
+.ui-dialog .ui-dialog-content {
+    padding: 0;
 }

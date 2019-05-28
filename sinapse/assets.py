@@ -8,9 +8,12 @@ bundles = {
         'js/vendor/jquery-3.4.0.min.js',
         'js/vendor/vis.min.js',
         'js/vendor/bootstrap.min.js',
+        'js/vendor/jquery-ui.min.js',
     ),
     'css': Bundle(
         'css/vendor/bootstrap.min.css',
+        'css/vendor/jquery-ui.min.css',
+        'css/vendor/jquery-ui.structure.min.css',
         # Font Awesome não pode ficar em 'vendor/'
         # porque se referencia às fontes como '../fonts/'
         'css/font-awesome.min.css',
