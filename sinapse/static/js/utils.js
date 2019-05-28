@@ -365,6 +365,9 @@ export const formatRG = rg => {
 export const formatCPFOrCNPJ = ident => {
     // ident is the PK of vehicle owner, either CPF or CNPJ
     // we will naively assume that if it starts with three zeroes, its a CPF, otherwise, it should be a CNPJ
+    if (!ident) {
+        return ''
+    }
     if (ident.length === 11) {
         return formatCPF(ident)
     }

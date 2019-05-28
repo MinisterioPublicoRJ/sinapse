@@ -469,9 +469,10 @@ const populateSidebarRight = node => {
             (nodeType === 'pessoa' && node.properties.num_rg) ||
             (nodeType === 'veiculo')
         )
-        && photosData[node.id]
+        && photosData[node.properties.uuid]
     ) {
-        html += `<img src="data:image/png;base64,${photosData[node.id].imagem}">`
+        let imageLink = `data:image/png;base64,${photosData[node.properties.uuid].imagem}`
+        html += `<img src="${imageLink}">`
     }
     html += `</div>
     <div id="valuesContainer">`
