@@ -50,10 +50,12 @@ export const formatKeyString = (prop, key) => {
         case 'cnae':
             return formatCNAE(key)
         case 'cnpj':
+        case 'num_cnpj':
             return formatCNPJ(key)
         case 'cpf':
         case 'cpf_responsavel':
         case 'num_cpf':
+        case 'num_cpf_responsavel':
             return formatCPF(key)
         case 'cpfcnpj':
         case 'cpfcgc':
@@ -72,6 +74,8 @@ export const formatKeyString = (prop, key) => {
             return formatDate(key)
         case 'ident':
             return formatCPFOrCNPJ(key)
+        case 'ind_matriz_filial':
+            return formatIndMatrizFilial(key)
         case 'nr_externo':
             return formatExternalNumberLink(key)
         case 'nr_mp':
@@ -96,6 +100,8 @@ export const formatKeyString = (prop, key) => {
 export const formatPropString = text => {
     switch (text) {
         // 1st Level
+        case 'embarcacao':
+            return 'Embarcação'
         case 'veiculo':
             return 'Veículo'
         case 'orgao':
@@ -124,12 +130,17 @@ export const formatPropString = text => {
         case 'cnae':
             return 'CNAE'
         case 'cnpj':
+        case 'num_cnpj':
             return 'CNPJ'
         case 'cpf_responsavel':
+        case 'num_cpf_responsavel':
             return 'CPF do Responsável'
         case 'data_inicio':
             return 'Data de Início'
+        case 'ind_matriz_filial':
+            return 'Matriz ou Filial'
         case 'municipio':
+        case 'nome_municipio':
             return 'Município'
         case 'nome_responsavel':
             return 'Nome do Responsável'
@@ -376,6 +387,12 @@ export const formatCPFOrCNPJ = ident => {
     }
     formatCNPJ(ident)
 }
+
+/**
+ * Format company as Matriz or Filial
+ * @param {String} ind A string that indicates if is Matriz ("1") or Filial ("2")
+ */
+export const formatIndMatrizFilial = ind => ind === "1" ? 'Matriz' : 'Filial'
 
 /**
  * Format as Vehicle Plate - XXX-XXXX

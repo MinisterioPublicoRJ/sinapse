@@ -67,12 +67,12 @@ export const entityCard = (entity, key, data, isExtended, bondSearchId) => {
  * @param {bool} isExtended whether the card is being called within the search list result or in the searchDetails screen
  */
 const documentoCard = (doc, data, isExtended) => {
-    let titleClass = 'col-lg-2 text-center'
-    let bodyClass = 'col-lg-10'
+    let titleClass = 'col-md-2 text-center'
+    let bodyClass = 'col-md-10'
     let backFn = ''
     if (isExtended) {
-        titleClass = 'col-lg-12 text-center title'
-        bodyClass = 'col-lg-12'
+        titleClass = 'col-md-12 text-center title'
+        bodyClass = 'col-md-12'
         backFn = 'onclick="backToSearch()"'
     }
     return `
@@ -81,27 +81,27 @@ const documentoCard = (doc, data, isExtended) => {
         </div>
         <div class="${bodyClass}">
             <div class="row">
-                <div class="col-lg-12">
+                <div class="col-md-12">
                     <h3 class="color-documento" ${backFn}>${returnHighlightedProperty(doc, 'nr_mp', data.documento_personagem.highlighting, formatMPRJ)} <a href="${DOMINIO}/#/document-search/${doc.nr_mp}" target="_blank" title="Abrir no Domínio">🔗</a></h3>
                 </div>
-                <div class="body col-lg-12">
+                <div class="body col-md-12">
                     <div class="row">
                         <dl>
-                            <div class="col-lg-3">
+                            <div class="col-md-6">
                                 <dt>Classe</dt>
                                 <dd class="color-documento">${returnHighlightedProperty(doc, 'cldc_ds_hierarquia', data.documento_personagem.highlighting, formatDocumentHierarchy)}</dd>
                             </div>
-                            <div class="col-lg-4">
-                                <dt>Personagens</dt>
-                                <dd class="color-documento">${returnHighlightedProperty(doc, 'ds_info_personagem', data.documento_personagem.highlighting).join('<br>')}</dd>
-                            </div>
-                            <div class="col-lg-3">
+                            <div class="col-md-3">
                                 <dt>Número Externo</dt>
                                 <dd class="color-documento">${returnHighlightedProperty(doc, 'nr_externo', data.documento_personagem.highlighting)}</dd>
                             </div>
-                            <div class="col-lg-2">
+                            <div class="col-md-3">
                                 <dt>Data do Cadastro</dt>
                                 <dd class="color-documento">${formatDate(doc.dt_cadastro)}</dd>
+                            </div>
+                            <div class="col-md-12">
+                                <dt><br>Personagens</dt>
+                                <dd class="color-documento">${returnHighlightedProperty(doc, 'ds_info_personagem', data.documento_personagem.highlighting).join('<br>')}</dd>
                             </div>
                         </dl>
                     </div>
@@ -126,12 +126,12 @@ const documentoCard = (doc, data, isExtended) => {
  * @param {bool} isExtended whether the card is being called within the search list result or in the searchDetails screen
  */
 const embarcacaoCard = (doc, data, isExtended) => {
-    let titleClass = 'col-lg-2 text-center'
-    let bodyClass = 'col-lg-10'
+    let titleClass = 'col-md-2 text-center'
+    let bodyClass = 'col-md-10'
     let backFn = ''
     if (isExtended) {
-        titleClass = 'col-lg-12 text-center title'
-        bodyClass = 'col-lg-12'
+        titleClass = 'col-md-12 text-center title'
+        bodyClass = 'col-md-12'
         backFn = 'onclick="backToSearch()"'
     }
     return `
@@ -140,21 +140,21 @@ const embarcacaoCard = (doc, data, isExtended) => {
         </div>
         <div class="${bodyClass}">
             <div class="row">
-                <div class="col-lg-12">
+                <div class="col-md-12">
                     <h3 class="color-embarcacao" ${backFn}>${returnHighlightedProperty(doc, 'nome_embarcacao', data.embarcacao.highlighting)}</h3>
                 </div>
-                <div class="body col-lg-12">
+                <div class="body col-md-12">
                     <div class="row">
                         <dl>
-                            <div class="col-lg-4">
+                            <div class="col-md-4">
                                 <dt>CPF/CNPJ do Proprietário</dt>
                                 <dd class="color-embarcacao">${returnHighlightedProperty(doc, 'cpf_cnpj', data.embarcacao.highlighting, formatCPFOrCNPJ)}</dd>
                             </div>
-                            <div class="col-lg-4">
+                            <div class="col-md-4">
                                 <dt>Tipo da Embarcação</dt>
                                 <dd class="color-embarcacao">${doc.tipo_embarcacao}</dd>
                             </div>
-                            <div class="col-lg-3">
+                            <div class="col-md-3">
                                 <dt>Ano de Construção</dt>
                                 <dd class="color-embarcacao">${doc.ano_construcao || '—'}</dd>
                             </div>
@@ -183,12 +183,12 @@ const embarcacaoCard = (doc, data, isExtended) => {
  * @param {bool} isExtended whether the card is being called within the search list result or in the searchDetails screen
  */
 const empresaCard = (doc, data, isExtended) => {
-    let titleClass = 'col-lg-2 text-center'
-    let bodyClass = 'col-lg-10'
+    let titleClass = 'col-md-2 text-center'
+    let bodyClass = 'col-md-10'
     let backFn = ''
     if (isExtended) {
-        titleClass = 'col-lg-12 text-center title'
-        bodyClass = 'col-lg-12'
+        titleClass = 'col-md-12 text-center title'
+        bodyClass = 'col-md-12'
         backFn = 'onclick="backToSearch()"'
     }
     return `
@@ -197,25 +197,25 @@ const empresaCard = (doc, data, isExtended) => {
         </div>
         <div class="${bodyClass}">
             <div class="row">
-                <div class="col-lg-12">
+                <div class="col-md-12">
                     <h3 class="color-empresa" ${backFn}>${returnHighlightedProperty(doc, 'razao_social', data.pessoa_juridica.highlighting)}</h3>
                 </div>
-                <div class="body col-lg-12">
+                <div class="body col-md-12">
                     <div class="row">
                         <dl>
-                            <div class="col-lg-3">
+                            <div class="col-md-3">
                                 <dt>CNPJ</dt>
                                 <dd class="color-empresa">${returnHighlightedProperty(doc, 'cnpj', data.pessoa_juridica.highlighting, formatCNPJ)}</dd>
                             </div>
-                            <div class="col-lg-3">
+                            <div class="col-md-3">
                                 <dt>Nome do Responsável</dt>
                                 <dd class="color-empresa">${returnHighlightedProperty(doc, 'responsavel', data.pessoa_juridica.highlighting)}</dd>
                             </div>
-                            <div class="col-lg-3">
+                            <div class="col-md-3">
                                 <dt>CPF do Proprietário</dt>
                                 <dd class="color-empresa">${returnHighlightedProperty(doc, 'cpf_responsavel', data.pessoa_juridica.highlighting, formatCPF)}</dd>
                             </div>
-                            <div class="col-lg-3">
+                            <div class="col-md-3">
                                 <dt>Município / UF</dt>
                                 <dd class="color-empresa">${doc.municipio} / ${doc.uf}</dd>
                             </div>
@@ -242,12 +242,12 @@ const empresaCard = (doc, data, isExtended) => {
  * @param {bool} isExtended whether the card is being called within the search list result or in the searchDetails screen
  */
 const pessoaCard = (doc, data, isExtended) => {
-    let titleClass = 'col-lg-2 text-center'
-    let bodyClass = 'col-lg-10'
+    let titleClass = 'col-md-2 text-center'
+    let bodyClass = 'col-md-10'
     let backFn = ''
     if (isExtended) {
-        titleClass = 'col-lg-12 text-center title'
-        bodyClass = 'col-lg-12'
+        titleClass = 'col-md-12 text-center title'
+        bodyClass = 'col-md-12'
         backFn = 'onclick="backToSearch()"'
     }
     return `
@@ -256,21 +256,21 @@ const pessoaCard = (doc, data, isExtended) => {
         </div>
         <div class="${bodyClass}">
             <div class="row">
-                <div class="col-lg-12">
+                <div class="col-md-12">
                     <h3 class="color-pessoa" ${backFn}>${returnHighlightedProperty(doc, 'nome', data.pessoa.highlighting)}</h3>
                 </div>
-                <div class="body col-lg-12">
+                <div class="body col-md-12">
                     <div class="row">
                         <dl>
-                            <div class="col-lg-3">
+                            <div class="col-md-3">
                                 <dt>CPF</dt>
                                 <dd class="color-pessoa">${formatCPF(doc.cpf)}</dd>
                             </div>
-                            <div class="col-lg-6">
+                            <div class="col-md-6">
                                 <dt>Nome da mãe</dt>
                                 <dd class="color-pessoa">${returnHighlightedProperty(doc, 'nome_mae', data.pessoa.highlighting)}</dd>
                             </div>
-                            <div class="col-lg-3">
+                            <div class="col-md-3">
                                 <dt>Data de nascimento</dt>
                                 <dd class="color-pessoa">${formatDate(doc.dt_nasc)}</dd>
                             </div>
@@ -297,12 +297,12 @@ const pessoaCard = (doc, data, isExtended) => {
  * @param {bool} isExtended whether the card is being called within the search list result or in the searchDetails screen
  */
 const veiculoCard = (doc, data, isExtended) => {
-    let titleClass = 'col-lg-2 text-center'
-    let bodyClass = 'col-lg-10'
+    let titleClass = 'col-md-2 text-center'
+    let bodyClass = 'col-md-10'
     let backFn = ''
     if (isExtended) {
-        titleClass = 'col-lg-12 text-center title'
-        bodyClass = 'col-lg-12'
+        titleClass = 'col-md-12 text-center title'
+        bodyClass = 'col-md-12'
         backFn = 'onclick="backToSearch()"'
     }
     const caracteristicaVeiculo = `${doc.marca_modelo.trim()} ${doc.ano_modelo} ${doc.cor.trim()}`
@@ -314,19 +314,19 @@ const veiculoCard = (doc, data, isExtended) => {
         </div>
         <div class="${bodyClass}">
             <div class="row">
-                <div class="col-lg-12">
+                <div class="col-md-12">
                     <h3 class="color-veiculo" ${backFn}>${returnHighlightedProperty(doc, 'descricao', data.veiculo.highlighting)}</h3>
                 </div>
                 <dl>
-                    <div class="col-lg-3">
+                    <div class="col-md-3">
                         <dt>Chassis</dt>
                         <dd class="color-veiculo">${returnHighlightedProperty(doc, 'chassi', data.veiculo.highlighting)}</dd>
                     </div>
-                    <div class="col-lg-2">
+                    <div class="col-md-2">
                         <dt>Renavam</dt>
                         <dd class="color-veiculo">${returnHighlightedProperty(doc, 'renavam', data.veiculo.highlighting)}</dd>
                     </div>
-                    <div class="col-lg-7">
+                    <div class="col-md-7">
                         <dt>Proprietário</dt>
                         <dd class="color-veiculo">${returnHighlightedProperty(doc, 'proprietario', data.veiculo.highlighting)}</dd>
                     </div>

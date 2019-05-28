@@ -25,7 +25,7 @@ const init = () => {
     initVersion()
 }
 
-const VERSION = '20190501'
+const VERSION = '20190528'
 const SEARCH_TAB_OPENED = 2
 const EDGES_DICT = {
     'orgao_responsavel': 'órgão responsável',
