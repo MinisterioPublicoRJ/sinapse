@@ -16,15 +16,16 @@ const DOMINIO = 'http://apps.mprj.mp.br/sistema/dominio'
  * @param {String} key the entity type (empresa, pessoa, veiculo)
  * @param {*} data The whole data returned from API, to get highlight information
  * @param {bool} isExtended whether the card is being called within the search list result or in the searchDetails screen
- * @param {bool} bondSearchId wheter the card is a result of the bond search
+ * @param {String} bondSearchUuid UUID of 1st element if bond search
+ * @param {String} bondSearchType 1st element type
 */
-export const entityCard = (entity, key, data, isExtended, bondSearchId) => {
+export const entityCard = (entity, key, data, isExtended, bondSearchUuid, bondSearchType) => {
     let onclickFn = `onclick="searchDetailStep('${entity.uuid}', '${key}')"`
     if (isExtended) {
         onclickFn = ''
     }
-    if (bondSearchId) {
-        onclickFn = `onclick="doBondSearch(${bondSearchId}, ${entity.uuid})"`
+    if (bondSearchUuid) {
+        onclickFn = `onclick="doBondSearch('${bondSearchUuid}', '${bondSearchType}', '${entity.uuid}', '${entity.label}')"`
     }
     let ret = `<div class="card-resultado clearfix" ${onclickFn}>`
     switch(key) {

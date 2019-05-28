@@ -222,16 +222,16 @@ const createSearchTabs = (data, bondSearchId) => {
  * @param {*} data The whole data returned from API, to get highlight information
  * @param {bool} bondSearchId whether the card is being called within the bond search list result or in the main search screen
 */
-const createSearchCards = (data, bondSearchId) => {
+const createSearchCards = (data, bondSearchUuid, bondSearchType) => {
     let finalHTML = '<div class="tab-content">'
 
     // then, for each 'object_type', create a tab panel
     Object.keys(data).forEach((key, indexKey) => {
-        let tabId = bondSearchId ? `bond_${key}` : key
+        let tabId = bondSearchUuid ? `bond_${key}` : key
         finalHTML += `<div role="tabpanel" class="tab-pane ${indexKey === SEARCH_TAB_OPENED ? 'active' : ''} ${key}" id="${tabId}">`
         // and for each 'doc', create a card
         data[key].response.docs.forEach(doc => {
-            finalHTML += entityCard(doc, key, data, false, bondSearchId)
+            finalHTML += entityCard(doc, key, data, false, bondSearchUuid, bondSearchType)
         })
         // treat empty result
         if (data[key].response.docs.length === 0) {
@@ -249,7 +249,7 @@ const createSearchCards = (data, bondSearchId) => {
  * @param {*} data The whole data returned from API, to get highlight information
  * @param {Number} bondSearchId whether the card is being called within the bond search list result or in the main search screen
 */
-const createSearchContent = (data, bondSearchId) => createSearchTabs(data, bondSearchId) + createSearchCards(data, bondSearchId)
+const createSearchContent = (data, bondSearchUuid, bondSearchType) => createSearchTabs(data, bondSearchUuid, bondSearchType) + createSearchCards(data, bondSearchUuid, bondSearchType)
 
 /**
  * Function called when search call is returned from API
@@ -302,7 +302,7 @@ const searchDetailStep = (entityUUID, entityType) => {
             Caminho<br>
             <b>Exploratório</b>
         </div>
-        <div class="col-lg-4 action analise-de-vinculos" onclick="bondAnalysis('${entityUUID}','${entityType}','${searchedDoc[getCardTitle(entityType)]}')">
+        <div class="col-lg-4 action analise-de-vinculos" onclick="bondAnalysis('${entityUUID}','${searchedDoc.label}','${searchedDoc[getCardTitle(entityType)]}')">
             Análise de<br>
             <b>Vínculos</b>
         </div>
@@ -598,7 +598,7 @@ const initVersion = () => {
 }
 
 const showEntity = (entityType, uuid) => {
-    console.log(`showEntity(${uuid})`)
+    console.log(`showEntity(${entityType}, ${uuid})`)
     document.querySelector('.busca').style.display = 'none'
     findNodes(entityType, 'uuid', uuid)
     $(() => $(".entitylist").dialog({
@@ -611,8 +611,9 @@ const showEntity = (entityType, uuid) => {
     }))
 }
 
-const bondAnalysis = (nodeId1, nodeType1, nodeTitle1) => {
+const bondAnalysis = (nodeUuid1, nodeType1, nodeTitle1) => {
     document.querySelector('#search-details').style.display = 'none'
+    console.log(`bondAnalysis(${nodeUuid1}, ${nodeType1}, ${nodeTitle1})`)
     let template = `
     <div class="row">
         <div class="col-lg-5 ${nodeType1} entity">
@@ -648,24 +649,22 @@ const bondAnalysis = (nodeId1, nodeType1, nodeTitle1) => {
         showLoading()
         document.querySelector('#bond-search-result').innerHTML = ''
         get(`/api/search?q=${sanitizeQuery(e.target[0].value)}`, data => {
-            bondSearchCallback(data, nodeId1)
+            bondSearchCallback(data, nodeUuid1, nodeType1)
         })
     })
 }
 
-const bondSearchCallback = (data, nodeId1) => {
+const bondSearchCallback = (data, nodeUuid1, nodeType1) => {
     hideLoading()
-    document.querySelector('#bond-search-result').innerHTML = createSearchContent(data, nodeId1)
+    document.querySelector('#bond-search-result').innerHTML = createSearchContent(data, nodeUuid1, nodeType1)
 }
 
-const doBondSearch = (nodeId1, nodeId2) => {
-    // getShortestPath(nodeId1, nodeId2)
-    // hardcoded, falta interface
-    getShortestPath(140885160, 81208568)
+const doBondSearch = (nodeUuid1, nodeType1, nodeUuid2, nodeType2) => {
+    getShortestPath(nodeUuid1, nodeType1, nodeUuid2, nodeType2)
 }
 
-const getShortestPath = (nodeId1, nodeId2) => {
-    get(`/api/findShortestPath?node_id1=${nodeId1}&node_id2=${nodeId2}`, updateNodes)
+const getShortestPath = (nodeUuid1, nodeType1, nodeUuid2, nodeType2) => {
+    get(`/api/findShortestPath?node_uuid1=${nodeUuid1}&label1=${nodeType1}&node_uuid2=${nodeUuid2}&label2=${nodeType2}`, updateNodes)
 }
 
 const searchWhereabouts = nodeId => {
