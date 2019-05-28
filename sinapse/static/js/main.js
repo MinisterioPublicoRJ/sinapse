@@ -379,7 +379,10 @@ const updateNodes = (data, nodeId) => {
                     if (data.uuid && data.imagem) {
                         if (!photosData[data.uuid]) {
                             photosData[data.uuid] = data
-                            nodes.update({id: data.uuid, shape: 'circularImage', image: `data:image/png;base64,${data.imagem}`})
+                            let matchedNode = nodesData.filter(node => node.properties.uuid === data.uuid)
+                            if (matchedNode && matchedNode[0]) {
+                                nodes.update({id: matchedNode[0].id, shape: 'circularImage', image: `data:image/png;base64,${data.imagem}`})
+                            }
                         }
                     }
                 })
