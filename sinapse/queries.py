@@ -43,7 +43,7 @@ def find_next_nodes(parameters):
 
 def get_node_from_id(node_id):
     query = {"statements": [{
-        "statement": "MATCH (n:pessoa) WHERE id(n) = %s"
+        "statement": "MATCH (n:Pessoa) WHERE id(n) = %s"
         " RETURN n" % (node_id),
         "resultDataContents": ["graph"]
     }]}

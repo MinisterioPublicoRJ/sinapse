@@ -477,7 +477,7 @@ def api_whereabouts():
         'nodes'][0]['properties']
     # If information is confidential, properties will be empty
     if node_props:
-        num_cpf = node_props['cpf']
+        num_cpf = node_props['num_cpf']
     else:
         return jsonify([])
 
