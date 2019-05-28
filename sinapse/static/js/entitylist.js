@@ -3,6 +3,9 @@ import {
     formatCPF,
     formatCPFOrCNPJ,
     formatDate,
+    formatDocumentHierarchy,
+    formatMPRJ,
+    formatPropString,
     formatVehiclePlate,
     getNodeType,
 } from '/static/js/utils.js'
@@ -49,7 +52,7 @@ const nodeToDOMString = node => {
     if (node) {
         switch (getNodeType(node)) {
             case 'documento':
-                ret = `<dt onclick="zoomToNodeId(${node.id})">${node.properties.dt_cadastro} - ${node.properties.cldc_ds_hierarquia}</dt>`
+                ret = `<dt onclick="zoomToNodeId(${node.id})">${formatMPRJ(node.properties.nr_mp)}</dt><dd>${formatDate(node.properties.dt_cadastro)} - ${formatDocumentHierarchy(node.properties.cldc_ds_hierarquia)}</dd>`
                 break
             case 'embarcacao':
                 ret = `<dt onclick="zoomToNodeId(${node.id})">${node.properties.nome_embarcacao}</dt>`
@@ -60,6 +63,9 @@ const nodeToDOMString = node => {
                 break
             case 'multa':
                 ret = `<dt onclick="zoomToNodeId(${node.id})">${formatDate(node.properties.datainfra)} - ${node.properties.descinfra}</dt>`
+                break
+            case 'orgao':
+                ret = `<dt onclick="zoomToNodeId(${node.id})">${node.properties.nm_orgao}</dt>`
                 break
             case 'pessoa':
                 ret = `<dt onclick="zoomToNodeId(${node.id})">${node.properties.nome}</dt>`
@@ -95,7 +101,7 @@ export const updateLeftSidebar = (labels, nodesData) => {
         if (nodesForThisType.length) {
             entityListToWrite += `
                 <h2>
-                    <a data-toggle='collapse' href='#collapse-${type}' role='button' class='color-${type}'>> ${type}</a>
+                    <a data-toggle='collapse' href='#collapse-${type}' role='button' class='color-${type}'>> ${formatPropString(type)}</a>
                 </h2>
                 <dl class='collapse in' id='collapse-${type}'>
             `
