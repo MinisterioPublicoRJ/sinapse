@@ -87,21 +87,21 @@ const documentoCard = (doc, data, isExtended) => {
                 <div class="body col-md-12">
                     <div class="row">
                         <dl>
-                            <div class="col-md-3">
+                            <div class="col-md-6">
                                 <dt>Classe</dt>
                                 <dd class="color-documento">${returnHighlightedProperty(doc, 'cldc_ds_hierarquia', data.documento_personagem.highlighting, formatDocumentHierarchy)}</dd>
-                            </div>
-                            <div class="col-md-4">
-                                <dt>Personagens</dt>
-                                <dd class="color-documento">${returnHighlightedProperty(doc, 'ds_info_personagem', data.documento_personagem.highlighting).join('<br>')}</dd>
                             </div>
                             <div class="col-md-3">
                                 <dt>Número Externo</dt>
                                 <dd class="color-documento">${returnHighlightedProperty(doc, 'nr_externo', data.documento_personagem.highlighting)}</dd>
                             </div>
-                            <div class="col-md-2">
+                            <div class="col-md-3">
                                 <dt>Data do Cadastro</dt>
                                 <dd class="color-documento">${formatDate(doc.dt_cadastro)}</dd>
+                            </div>
+                            <div class="col-md-12">
+                                <dt><br>Personagens</dt>
+                                <dd class="color-documento">${returnHighlightedProperty(doc, 'ds_info_personagem', data.documento_personagem.highlighting).join('<br>')}</dd>
                             </div>
                         </dl>
                     </div>
