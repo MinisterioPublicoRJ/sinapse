@@ -10,6 +10,8 @@ import {
     showLoading,
     hideLoading,
     thousandsSeparator,
+    typeNameSingular,
+    typeNamePlural,
 } from '/static/js/utils.js'
 import { entityCard } from '/static/js/cards.js'
 import { updateLeftSidebar } from '/static/js/entitylist.js'
@@ -182,33 +184,11 @@ const createSearchTabs = (data, bondSearchId) => {
     // first it iterates each 'object_type' (empresa, pessoa, veiculo) to create tabs
     Object.keys(data).forEach((key, index) => {
         let tabLink = bondSearchId ? `bond_${key}` : key
-        let keyName, keyNamePlural
-        switch (key) {
-            case 'documento_personagem':
-                keyName = 'documento'
-                keyNamePlural = 'documentos'
-                break
-            case 'pessoa_juridica':
-                keyName = 'empresa'
-                keyNamePlural = 'empresas'
-                break
-            case 'embarcacao':
-                keyName = 'embarcação'
-                keyNamePlural = 'embarcações'
-                break
-            case 'veiculo':
-                keyName = 'veículo'
-                keyNamePlural = 'veículos'
-                break
-            default:
-                keyName = key
-                keyNamePlural = key + 's'
-        }
         finalHTML += `<li role="presentation" ${index === SEARCH_TAB_OPENED ? 'class="active"' : ''}>
             <a href="#${tabLink}" role="tab" class="custom-tab ${key}" data-toggle="tab">
                 <img src="/static/img/icon/${key}.svg" />
                 <p class="number color-${key}">${thousandsSeparator(data[key].response.numFound)}</p>
-                <p class="color-${key}">${data[key].response.numFound > 1 ? keyNamePlural : keyName}</p>
+                <p class="color-${key}">${data[key].response.numFound > 1 ? typeNamePlural(key) : typeNameSingular(key)}</p>
             </a>
         </li>`
     })

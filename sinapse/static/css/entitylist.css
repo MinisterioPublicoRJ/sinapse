@@ -26,6 +26,13 @@
     font-size: .8em
 }
 
+.entitylist dt {
+    margin-top: 5px;
+}
+.entitylist dt:first-child {
+    margin-top: 0;
+}
+
 /*
 ** Jquery UI override
 */

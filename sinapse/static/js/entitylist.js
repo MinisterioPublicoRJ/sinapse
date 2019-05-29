@@ -5,9 +5,10 @@ import {
     formatDate,
     formatDocumentHierarchy,
     formatMPRJ,
-    formatPropString,
     formatVehiclePlate,
     getNodeType,
+    typeNameSingular,
+    typeNamePlural,
 } from '/static/js/utils.js'
 
 const sidebarLeft = document.getElementById("entitylist")
@@ -19,12 +20,18 @@ const sidebarLeft = document.getElementById("entitylist")
  */
 const sortByType = (nodes, type) => {
     switch (type) {
-        case 'pessoa':
-            return sortByProperty(nodes, 'nome')
+        case 'documento':
+            return sortByProperty(nodes, 'nr_mp')
         case 'empresa':
             return sortByProperty(nodes, 'razao_social')
         case 'multa':
             return sortByProperty(nodes, 'data')
+        case 'orgao':
+            return sortByProperty(nodes, 'nm_orgao')
+        case 'personagem':
+            return sortByProperty(nodes, 'pers_nm_pessoa')
+        case 'pessoa':
+                return sortByProperty(nodes, 'nome')
         default:
             return nodes
     }
@@ -37,9 +44,7 @@ const sortByType = (nodes, type) => {
  * @param {Object} nodes[].properties.prop A number of string to be sorted.
  * @param {String} prop The name of the property to sort.
  */
-const sortByProperty = (nodes, prop) => {
-    return nodes.sort((a, b) => (a.properties[prop] > b.properties[prop]) ? 1 : -1)
-}
+const sortByProperty = (nodes, prop) => nodes.sort((a, b) => (a.properties[prop] > b.properties[prop]) ? 1 : -1)
 
 /**
  * Returns a DOM string for a node on the sidebar
@@ -58,7 +63,6 @@ const nodeToDOMString = node => {
                 ret = `<dt onclick="zoomToNodeId(${node.id})">${node.properties.nome_embarcacao}</dt>`
                 break
             case 'empresa':
-                console.log('este node', node)
                 ret = `<dt onclick="zoomToNodeId(${node.id})">${node.properties.nome_fantasia || node.properties.razao_social}</dt><dd>CNPJ: ${formatCNPJ(node.properties.num_cnpj)}</dd>`
                 break
             case 'multa':
@@ -74,7 +78,7 @@ const nodeToDOMString = node => {
                 }
                 break
             case 'personagem':
-                ret = `<dt onclick="zoomToNodeId(${node.id})">${node.properties.pess_nm_pessoa} - ${node.properties.tppe_descricao}</dt><dd>CPF: ${formatCPFOrCNPJ(node.properties.cpfcnpj)}</dd>`
+                ret = `<dt onclick="zoomToNodeId(${node.id})">${node.properties.pess_nm_pessoa} - ${node.properties.tppe_descricao}</dt><dd>CPF/CNPJ: ${formatCPFOrCNPJ(node.properties.cpfcnpj)}</dd>`
                 break
             case 'veiculo':
                 ret = `<dt onclick="zoomToNodeId(${node.id})">${node.properties.marca_modelo.trim()} ${node.properties.fabric}/${node.properties.modelo} ${node.properties.descricao_cor.trim()} - ${formatVehiclePlate(node.properties.placa)}</dt>`
@@ -101,7 +105,7 @@ export const updateLeftSidebar = (labels, nodesData) => {
         if (nodesForThisType.length) {
             entityListToWrite += `
                 <h2>
-                    <a data-toggle='collapse' href='#collapse-${type}' role='button' class='color-${type}'>> ${formatPropString(type)}</a>
+                    <a data-toggle='collapse' href='#collapse-${type}' role='button' class='color-${type}'>> ${nodesForThisType.length > 1 ? typeNamePlural(type) : typeNameSingular(type)}</a>
                 </h2>
                 <dl class='collapse in' id='collapse-${type}'>
             `

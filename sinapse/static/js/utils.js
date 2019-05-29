@@ -1,15 +1,51 @@
 const DOMINIO = 'http://apps.mprj.mp.br/sistema/dominio'
 
+/**
+ * Returns a document type name with diacritics.
+ * @param {String} type type name
+ */
+export const typeNameSingular = type => {
+    switch (type) {
+        case 'documento_personagem':
+            return 'documento'
+        case 'embarcacao':
+            return 'embarcação'
+        case 'orgao':
+            return 'órgão'
+        case 'pessoa_juridica':
+            return 'empresa'
+        case 'veiculo':
+            return 'veículo'
+    }
+    return type
+}
+
+/**
+ * Returns a document type name in plural with diacritics.
+ * @param {String} type type name
+ */
+export const typeNamePlural = type => {
+    switch (type) {
+        case 'documento_personagem':
+            return 'documentos'
+        case 'embarcacao':
+            return 'embarcações'
+        case 'orgao':
+            return 'órgãos'
+        case 'personagem':
+            return 'personagens'
+        case 'pessoa_juridica':
+            return 'empresas'
+        case 'veiculo':
+            return 'veículos'
+    }
+    return type + 's'
+}
+
 export const addStyleToNode = node => {
     let color = '#7bb3ff'
 
     switch (getNodeType(node).toLowerCase()) {
-        case 'empresa':
-            color = '#51c881'
-            break
-        case 'mgp':
-            color = '#ab897f'
-            break
         case 'multa':
             color = '#ff524e'
             break
@@ -21,6 +57,9 @@ export const addStyleToNode = node => {
             break
         case 'pessoa':
             color = '#00d1e2'
+            break
+        case 'pessoa_juridica':
+            color = '#51c881'
             break
         case 'telefone':
             color = '#324eb6'
@@ -99,15 +138,6 @@ export const formatKeyString = (prop, key) => {
  */
 export const formatPropString = text => {
     switch (text) {
-        // 1st Level
-        case 'embarcacao':
-            return 'Embarcação'
-        case 'veiculo':
-            return 'Veículo'
-        case 'orgao':
-            return 'Órgão'
-        case 'mgp':
-            return 'MGP'
         // Documento
         case 'cldc_ds_hierarquia':
             return 'Hierarquia de Classe do Documento'
@@ -392,7 +422,7 @@ export const formatCPFOrCNPJ = ident => {
     if (ident.substr(0,3) === '000') {
         return formatCPF(ident.substr(3))
     }
-    formatCNPJ(ident)
+    return formatCNPJ(ident)
 }
 
 /**
