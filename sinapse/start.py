@@ -233,11 +233,21 @@ def _autenticar(usuario, senha):
     return None
 
 
-def login_necessario(funcao):
+def login_necessario(funcao, compliance=True):
     @wraps(funcao)
     def funcao_decorada(*args, **kwargs):
+        _ = lambda item, lista: lista.pop(item) if item in lista
         if "usuario" not in session:
             return "Não autorizado", 403
+        if compliance:
+            if "ultimoacesso" not in session or\
+                    (datetime.now() - session["ultimoacesso"]).seconds > 60*30:
+                _("ultimoacesso", session)
+                _("tipoacesso", session)
+                _("numeroprocedimento", session)
+
+                return "Tempo de Compliance expirado", 401
+        session["ultimoacesso"] = datetime.now()
         return funcao(*args, **kwargs)
     return funcao_decorada
 
