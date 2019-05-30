@@ -99,6 +99,15 @@ export const updateLeftSidebar = (labels, nodesData) => {
     document.querySelector('.entitylist').style.display = 'block'
     let entityListToWrite = ''
 
+    $(() => $(".entitylist").dialog({
+        height: 500,
+        position: {
+            my: 'left',
+            at: 'left',
+        },
+        title: 'lista de vínculos'
+    }))
+
     labels.sort().forEach(type => {
         type = type.toLowerCase()
         let nodesForThisType = sortByType(nodesData.filter(node => getNodeType(node) === type), type)

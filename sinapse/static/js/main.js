@@ -581,14 +581,6 @@ const showEntity = (entityType, uuid) => {
     console.log(`showEntity(${entityType}, ${uuid})`)
     document.querySelector('.busca').style.display = 'none'
     findNodes(entityType, 'uuid', uuid)
-    $(() => $(".entitylist").dialog({
-        height: 500,
-        position: {
-            my: 'left',
-            at: 'left',
-        },
-        title: 'lista de vínculos'
-    }))
 }
 
 const bondAnalysis = (nodeUuid1, nodeType1, nodeTitle1) => {
