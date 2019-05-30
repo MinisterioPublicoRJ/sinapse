@@ -19,6 +19,7 @@ from flask import (
 from sinapse.buildup import (
     app,
     _LOG_NEO4J,
+    _LOG_ACESSO,
     _ENDERECO_NEO4J,
     _AUTH,
     _HEADERS,
@@ -250,6 +251,24 @@ def login_necessario(funcao, compliance=True):
         session["ultimoacesso"] = datetime.now()
         return funcao(*args, **kwargs)
     return funcao_decorada
+
+
+@app.route("/compliance", methods=["POST"])
+@login_necessario(False)
+def compliance():
+    tipoacesso = request.form.get("tipoacesso")
+    numeroprocedimento = request.form.get("numeroprocedimento")
+    descricao = request.form.get("descricao")
+
+    _LOG_ACESSO.insert(
+        {
+            "usuario": session["usuario"],
+            "tipoacesso": tipoacesso,
+            "numeroprocedimento": numeroprocedimento,
+            "descricao": descricao,
+            "ip": request.remote_addr
+        }
+    )
 
 
 @app.route("/login", methods=["POST", "GET"])
