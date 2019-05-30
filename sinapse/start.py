@@ -259,6 +259,10 @@ def compliance():
     tipoacesso = request.form.get("tipoacesso")
     numeroprocedimento = request.form.get("numeroprocedimento")
     descricao = request.form.get("descricao")
+    
+    session["ultimoacesso"] = datetime.now()
+    session["numeroprocedimento"] = numeroprocedimento
+    session["tipoacesso"] = tipoacesso
 
     _LOG_ACESSO.insert(
         {
