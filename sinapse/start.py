@@ -236,7 +236,7 @@ def _autenticar(usuario, senha):
 def login_necessario(funcao, compliance=True):
     @wraps(funcao)
     def funcao_decorada(*args, **kwargs):
-        _ = lambda item, lista: lista.pop(item) if item in lista
+        _ = lambda item, lista: lista.pop(item) if item in lista else None
         if "usuario" not in session:
             return "Não autorizado", 403
         if compliance:
