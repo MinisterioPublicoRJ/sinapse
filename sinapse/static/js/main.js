@@ -28,7 +28,7 @@ const init = () => {
 }
 
 const VERSION = '20190528'
-const SEARCH_TAB_OPENED = 2
+let SEARCH_TAB_OPENED = 2
 const EDGES_DICT = {
     'orgao_responsavel': 'órgão responsável',
     'proprietario': 'proprietário',
@@ -174,11 +174,35 @@ const initSearch = () => {
 }
 
 /**
+ * Updates default opened tab with the type with most documents returned
+ * @param {*} data The whole data returned from API
+ */
+const updateOpenedTab = data => {
+    let tabsArray = []
+    Object.keys(data).forEach((key, index) => {
+        tabsArray.push({
+            id: index,
+            name: key,
+            quantity: data[key].response.numFound
+        })
+    })
+    tabsArray.sort((a, b) => b.quantity - a.quantity)
+    let maximumQuantityTabs = tabsArray.filter(t => t.quantity === tabsArray[0].quantity)
+    // if pessoa has the same quantity of other returned documents with most quantities, return pessoa ID
+    if (maximumQuantityTabs.length > 1 && tabsArray.filter(t => t.name === 'pessoa').length) {
+        return tabsArray.filter(t => t.name === 'pessoa')[0].id
+    }
+    // otherwise, return first type with most quantity
+    return tabsArray[0].id
+}
+
+/**
  * Creates tabs for entity search
  * @param {*} data The whole data returned from API, to get highlight information
  * @param {bool} bondSearchId whether the card is being called within the bond search list result or in the main search screen
 */
 const createSearchTabs = (data, bondSearchId) => {
+    SEARCH_TAB_OPENED = updateOpenedTab(data)
     let finalHTML = '<ul class="nav nav-tabs" role="tablist">'
 
     // first it iterates each 'object_type' (empresa, pessoa, veiculo) to create tabs
