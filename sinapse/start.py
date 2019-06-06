@@ -20,6 +20,7 @@ from sinapse.buildup import (
     app,
     _LOG_NEO4J,
     _LOG_ACESSO,
+    _LOG_LOGIN,
     _ENDERECO_NEO4J,
     _AUTH,
     _HEADERS,
@@ -209,10 +210,21 @@ def _log_response(usuario, sessionid, response):
             'usuario': usuario,
             'datahora': datetime.now(),
             'sessionid': sessionid,
-            'resposta': response.json()
+            'resposta': response.json(),
+            'ip': response.remote_addr
         }
     )
 
+
+def _log_login(usuario, motivo, sucesso, response):
+    _LOG_ACESSO.insert(
+            {
+                "usuario": usuario,
+                "motivo": motivo,
+                "sucesso": sucesso,
+                "ip": request.remote_addr
+            }
+        )
 
 def _autenticar(usuario, senha):
     "Autentica o usuário no SCA"
@@ -225,12 +237,19 @@ def _autenticar(usuario, senha):
             'password': senha
         })
     if response.status_code == 200:
+        _log_login(usuario, 'senhaok', True, response)
         response = sessao.get(url=_USERINFO_MPRJ)
         permissoes = json.loads(
             response.content.decode('utf-8'))['permissions']
 
         if 'ROLE_Conexao' in permissoes and permissoes['ROLE_Conexao']:
+            _log_login(usuario, 'roleok', True, response)
             return usuario
+        else:
+            _log_login(usuario, 'rolenok', False, response)
+    else:
+        _log_login(usuario, 'senhanok', False, response)
+
     return None
 
 
