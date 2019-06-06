@@ -191,12 +191,13 @@ const updateOpenedTab = data => {
         })
     })
     tabsArray.sort((a, b) => b.quantity - a.quantity)
-    let maximumQuantityTabs = tabsArray.filter(t => t.quantity === tabsArray[0].quantity)
-    // if pessoa has the same quantity of other returned documents with most quantities, return pessoa ID
-    if (maximumQuantityTabs.length > 1 && tabsArray.filter(t => t.name === 'pessoa').length) {
+    // return pessoa (if available) or empresa (if available) or the type with most quantity
+    if (tabsArray.filter(t => t.name === 'pessoa')[0].quantity) {
         return tabsArray.filter(t => t.name === 'pessoa')[0].id
     }
-    // otherwise, return first type with most quantity
+    if (tabsArray.filter(t => t.name === 'pessoa_juridica')[0].quantity) {
+        return tabsArray.filter(t => t.name === 'pessoa_juridica')[0].id
+    }
     return tabsArray[0].id
 }
 
