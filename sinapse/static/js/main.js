@@ -295,7 +295,7 @@ const searchDetailStep = (entityUUID, entityType) => {
     let searchedDoc = searchData[entityType].response.docs.filter(doc => doc.uuid === entityUUID)[0]
     console.log(entityUUID, entityType, searchedDoc)
 
-    let searchWhereaboutsFn = `searchWhereabouts('${entityUUID}')`
+    let searchWhereaboutsFn = `searchWhereabouts('${entityUUID}', '${searchedDoc.nome}', '${searchedDoc.rg}')`
     if (entityType !== 'pessoa') {
         searchWhereaboutsFn = `alert('Função disponível somente para busca por pessoas físicas.')`
     }
@@ -669,34 +669,65 @@ const getShortestPath = (nodeUuid1, nodeType1, nodeUuid2, nodeType2) => {
     get(`/api/findShortestPath?node_uuid1=${nodeUuid1}&label1=${nodeType1}&node_uuid2=${nodeUuid2}&label2=${nodeType2}`, updateNodes)
 }
 
-const searchWhereabouts = nodeUuid => {
+/**
+ * Searches for a person whereabouts
+ * @param {String} nodeUuid
+ * @param {String} nome
+ * @param {String} rg
+ */
+const searchWhereabouts = (nodeUuid, nome, rg) => {
     document.querySelector('#search-details').style.display = 'none'
 
-    get(`/api/whereabouts?uuid=${nodeUuid}`, displayWhereabouts)
+    get(`/api/whereabouts?uuid=${nodeUuid}`, data => { displayWhereabouts(data, nome, rg) })
 
     showLoading()
 }
 
-const displayWhereabouts = data => {
+/**
+ * Displays information about a person whereabouts
+ * @param {Object[]} data
+ * @param {Object[]} data[].formatted_addresses
+ * @param {String} data[].formatted_addresses[].bairro
+ * @param {String} data[].formatted_addresses[].cep
+ * @param {String} data[].formatted_addresses[].cidade
+ * @param {String} data[].formatted_addresses[].complemento
+ * @param {String} data[].formatted_addresses[].endereco
+ * @param {String} data[].formatted_addresses[].numero
+ * @param {String} data[].formatted_addresses[].sigla_uf
+ * @param {String} data[].formatted_addresses[].telefone
+ * @param {String} data[].type
+ * @param {String} nome
+ * @param {String} rg
+ */
+const displayWhereabouts = (data, nome, rg) => {
     hideLoading()
-    console.log(data)
 
     let credilinkAddresses = data.filter(addresses => addresses.type === 'credilink')
     let receitaFederalAddresses = data.filter(addresses => addresses.type === 'receita_federal')
 
     document.querySelector('#whereabouts').innerHTML = `
         <div class="row pessoa">
-            <div class="col-lg-2">(foto)</div>
-            <div class="col-lg-5">
+            <div class="col-md-12">
+                <h2>Busca de Paradeiros</h2>
+                <h3>${nome}</h3>
+            </div>
+            <div class="col-md-2" id="whereabouts_photo_container"></div>
+            <div class="col-md-5">
                 <h3>Credilink</h3>
                 ${formatAddresses(credilinkAddresses[0].formatted_addresses)}
             </div>
-            <div class="col-lg-5">
+            <div class="col-md-5">
                 <h3>Receita Federal</h3>
                 ${formatAddresses(receitaFederalAddresses[0].formatted_addresses)}
             </div>
         </div>
     `
+
+    get(`/api/foto?rg=${rg}`, data => {
+        if (data.uuid && data.imagem) {
+            document.querySelector('#whereabouts_photo_container').innerHTML = `<img class="whereabouts_photo" src="data:image/png;base64,${data.imagem}">`
+        }
+    })
 }
 
 const logout = () => {

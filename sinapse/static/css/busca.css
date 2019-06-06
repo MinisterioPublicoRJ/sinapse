@@ -39,7 +39,7 @@ span.tooltip:after {
 }
 
 #loading {
-    position: absolute;
+    position: fixed;
     top: 50%;
     left: 50%;
     margin-left: -32px;
@@ -659,6 +659,9 @@ span.tooltip:after {
 }
 
 #whereabouts {
+    height: 85vh;
+    overflow-x: hidden;
+    overflow-y: scroll;
     text-align: left;
 }
 
@@ -735,7 +738,11 @@ span.tooltip:after {
     position: relative;
 }
 
-#bond-search-result .tab-content{
+#bond-search-result .tab-content {
     height: 60vh;
     overflow: scroll;
+}
+
+.whereabouts_photo {
+    width: 100%;
 }
