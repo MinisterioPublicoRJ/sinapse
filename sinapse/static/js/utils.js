@@ -467,6 +467,7 @@ export const get = (url, callback, dontParseJSON) => {
                 }
             } else {
                 alert('Erro ao carregar os dados.')
+                hideLoading()
             }
         }
     }

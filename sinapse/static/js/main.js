@@ -31,6 +31,7 @@ const VERSION = '20190528'
 let SEARCH_TAB_OPENED = 2
 const EDGES_DICT = {
     'orgao_responsavel': 'órgão responsável',
+    'parte_de': 'parte de',
     'proprietario': 'proprietário',
     'socio': 'sócio',
     'socio_responsavel': 'sócio responsável',
@@ -347,6 +348,7 @@ const updateFromFindNodes = data => {
  * @param {*} data Data from API data.
  */
 const updateNodes = (data, nodeId) => {
+    hideLoading()
     document.querySelector('.busca').style.display = 'none'
     document.querySelector('footer').className = ''
     document.querySelector('#graph').className = ''
@@ -656,6 +658,7 @@ const bondSearchCallback = (data, nodeUuid1, nodeType1) => {
 }
 
 const doBondSearch = (nodeUuid1, nodeType1, nodeUuid2, nodeType2) => {
+    showLoading()
     getShortestPath(nodeUuid1, nodeType1, nodeUuid2, nodeType2)
 }
 
