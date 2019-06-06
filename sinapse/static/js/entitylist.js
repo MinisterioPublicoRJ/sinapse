@@ -127,3 +127,19 @@ export const updateLeftSidebar = (labels, nodesData) => {
 
     sidebarLeft.innerHTML = entityListToWrite
 }
+
+export const filterEntityList = () => {
+    let filteredValue = document.querySelector('#entitylistfilter').value
+    // expand all categories
+    document.querySelectorAll('.collapsed').forEach(e => e.click())
+    // show matched items, hide otherwise
+    document.querySelectorAll('#entitylist dt').forEach(e => {
+        if (e.innerText.toLowerCase().includes(filteredValue.toLowerCase())) {
+            $(e).show()
+            $(e.nextElementSibling).show()
+        } else {
+            $(e).hide()
+            $(e.nextElementSibling).hide()
+        }
+    })
+}
