@@ -448,14 +448,20 @@ export const formatVehiclePlate = plate => {
  *
  * @param {String} url The URL to GET.
  * @param {Function} callback A function to be executed with the returned data.
+ * @param {Boolean} dontParseJSON If response doesn't need to be parsed.
  */
-export const get = (url, callback) => {
+export const get = (url, callback, dontParseJSON) => {
     var xmlhttp = new XMLHttpRequest()
     xmlhttp.open('GET', url, true)
     xmlhttp.onreadystatechange = function() {
         if (xmlhttp.readyState == 4) {
             if (xmlhttp.status == 200) {
-                var obj = JSON.parse(xmlhttp.responseText)
+                let obj
+                if (dontParseJSON) {
+                    obj = xmlhttp.responseText
+                } else {
+                    obj = JSON.parse(xmlhttp.responseText)
+                }
                 if (callback) {
                     callback(obj)
                 }

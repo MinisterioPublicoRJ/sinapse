@@ -693,6 +693,10 @@ const displayWhereabouts = data => {
     `
 }
 
+const logout = () => {
+    get('/logout', () => { location.reload() }, true)
+}
+
 // Attach external functions to window
 window.addVeiculoFoto = addVeiculoFoto
 window.backToSearch = backToSearch
@@ -701,6 +705,7 @@ window.doBondSearch = doBondSearch
 window.findNodes = findNodes
 window.fullSidebarRight = fullSidebarRight
 window.hideSidebarRight = hideSidebarRight
+window.logout = logout
 window.searchDetailStep = searchDetailStep
 window.searchWhereabouts = searchWhereabouts
 window.showEntity = showEntity
