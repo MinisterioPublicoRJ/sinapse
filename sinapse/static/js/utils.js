@@ -1,4 +1,5 @@
 const DOMINIO = 'http://apps.mprj.mp.br/sistema/dominio'
+const COMPLIANCE_URL = '/compliance'
 
 /**
  * Returns a document type name with diacritics.
@@ -454,17 +455,68 @@ export const get = (url, callback) => {
     xmlhttp.open('GET', url, true)
     xmlhttp.onreadystatechange = function() {
         if (xmlhttp.readyState == 4) {
-            if (xmlhttp.status == 200) {
-                var obj = JSON.parse(xmlhttp.responseText)
-                if (callback) {
-                    callback(obj)
-                }
-            } else {
-                alert('Erro ao carregar os dados.')
+            switch(xmlhttp.status) {
+                case 200:
+                    var obj = JSON.parse(xmlhttp.responseText)
+                    if (callback) {
+                        callback(obj)
+                    }
+                    break
+                case 401:
+                    showCompliance()
+                    break
+                default:
+                    alert('Erro ao carregar os dados.')
             }
         }
     }
     xmlhttp.send(null)
+}
+
+const post = (url, params, callback) => {
+    var xmlhttp = new XMLHttpRequest()
+    xmlhttp.open('POST', url, true)
+    xmlhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded')
+    xmlhttp.onreadystatechange = function() {
+        if (xmlhttp.readyState == 4) {
+            switch(xmlhttp.status) {
+                case 200:
+                    if (callback) {
+                        callback()
+                    }
+                    break
+                default:
+                    alert('Erro ao enviar os dados.')
+            }
+        }
+    }
+    xmlhttp.send(params)
+}
+
+const showCompliance = () => {
+    hideLoading()
+    document.querySelector('#compliance').style.display = 'block'
+}
+
+export const showComplianceForm = () => {
+    document.querySelector('#compliance-buttons').style.display = 'none'
+    document.querySelector('#compliance-form').style.display = 'block'
+}
+
+export const complianceProcedure = () => {
+    let procedureNumber = document.querySelector('#procedure-number').value
+    let queryObjective = document.querySelector('#query-objective').value
+    if (!procedureNumber) {
+        return alert('O número do procedimento é de preenchimento obrigatório.')
+    }
+    if (!queryObjective) {
+        return alert('O objetivo da consulta é de preenchimento obrigatório.')
+    }
+    post(COMPLIANCE_URL, `tipoacesso=comprocedimento&numeroprocedimento=${procedureNumber}&descricao=${queryObjective}`, () => { location.reload() })
+}
+
+export const complianceNoProcedure = () => {
+    post(COMPLIANCE_URL, 'tipoacesso=semprocedimento&numeroprocedimento=&descricao=', () => { location.reload() })
 }
 
 /**

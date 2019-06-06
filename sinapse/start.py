@@ -271,7 +271,7 @@ def login_necessario(funcao):
             return "Não autorizado", 403
         if check_compliance:
             if "ultimoacesso" not in session or\
-                    (datetime.now() - session["ultimoacesso"]).seconds > 60*30:
+                    (datetime.now() - session["ultimoacesso"]).seconds > 60*30: 
                 _("ultimoacesso", session)
                 _("tipoacesso", session)
                 _("numeroprocedimento", session)
@@ -303,6 +303,8 @@ def compliance():
             "ip": request.remote_addr
         }
     )
+
+    return "OK", 200
 
 
 @app.route("/login", methods=["POST", "GET"])
