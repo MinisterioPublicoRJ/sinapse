@@ -37,6 +37,11 @@ from sinapse.queries import (find_next_nodes,
 from sinapse.whereabouts.whereabouts import get_whereabouts_receita, get_whereabouts_credilink
 
 
+@app.before_request
+def before_request():
+    request.check_compliance = True
+
+
 def parse_json_to_visjs(json, **kwargs):
     nodes = {}
     relationships = {}
@@ -253,12 +258,10 @@ def _autenticar(usuario, senha):
     return None
 
 
-check_compliance = True
 def naocompleia(funcao):
     @wraps(funcao)
     def wrapper(*args, **kwargs):
-        global check_compliance
-        check_compliance = False
+        request.check_compliance = False
         return funcao(*args, **kwargs)
     return wrapper
 
@@ -269,7 +272,7 @@ def login_necessario(funcao):
         _ = lambda item, lista: lista.pop(item) if item in lista else None
         if "usuario" not in session:
             return "Não autorizado", 403
-        if check_compliance:
+        if request.check_compliance:
             if "ultimoacesso" not in session or\
                     (datetime.now() - session["ultimoacesso"]).seconds > 60*30: 
                 _("ultimoacesso", session)
@@ -330,7 +333,7 @@ def logout():
         return "NOK", 404
 
     if 'usuario' in session:
-        del session['usuario']
+        session.clear()
         sucesso = 'Você foi deslogado com sucesso'
         session['flask_msg'] = sucesso
 
