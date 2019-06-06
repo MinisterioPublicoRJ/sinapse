@@ -14,7 +14,7 @@ import {
     typeNamePlural,
 } from '/static/js/utils.js'
 import { entityCard } from '/static/js/cards.js'
-import { updateLeftSidebar } from '/static/js/entitylist.js'
+import { updateLeftSidebar, filterEntityList } from '/static/js/entitylist.js'
 
 /**
  * Init function called on window.onload.
@@ -701,6 +701,7 @@ window.addVeiculoFoto = addVeiculoFoto
 window.backToSearch = backToSearch
 window.bondAnalysis = bondAnalysis
 window.doBondSearch = doBondSearch
+window.filterEntityList = filterEntityList
 window.findNodes = findNodes
 window.fullSidebarRight = fullSidebarRight
 window.hideSidebarRight = hideSidebarRight
