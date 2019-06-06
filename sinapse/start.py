@@ -19,6 +19,7 @@ from flask import (
 from sinapse.buildup import (
     app,
     _LOG_NEO4J,
+    _LOG_ACESSO,
     _ENDERECO_NEO4J,
     _AUTH,
     _HEADERS,
@@ -233,13 +234,58 @@ def _autenticar(usuario, senha):
     return None
 
 
+check_compliance = True
+def naocompleia(funcao):
+    @wraps(funcao)
+    def wrapper(*args, **kwargs):
+        global check_compliance
+        check_compliance = False
+        return funcao(*args, **kwargs)
+    return wrapper
+
+
 def login_necessario(funcao):
     @wraps(funcao)
     def funcao_decorada(*args, **kwargs):
+        _ = lambda item, lista: lista.pop(item) if item in lista else None
         if "usuario" not in session:
             return "Não autorizado", 403
+        if check_compliance:
+            if "ultimoacesso" not in session or\
+                    (datetime.now() - session["ultimoacesso"]).seconds > 60*30: 
+                _("ultimoacesso", session)
+                _("tipoacesso", session)
+                _("numeroprocedimento", session)
+
+                return "Tempo de Compliance expirado", 401
+        session["ultimoacesso"] = datetime.now()
         return funcao(*args, **kwargs)
     return funcao_decorada
+
+
+@app.route("/compliance", methods=["POST"])
+@naocompleia
+@login_necessario
+def compliance():
+    tipoacesso = request.form.get("tipoacesso")
+    numeroprocedimento = request.form.get("numeroprocedimento")
+    descricao = request.form.get("descricao")
+    
+    session["ultimoacesso"] = datetime.now()
+    session["numeroprocedimento"] = numeroprocedimento
+    session["tipoacesso"] = tipoacesso
+
+    _LOG_ACESSO.insert(
+        {
+            "usuario": session["usuario"],
+            "tipoacesso": tipoacesso,
+            "numeroprocedimento": numeroprocedimento,
+            "descricao": descricao,
+            "ip": request.remote_addr
+        }
+    )
+
+    return "OK", 200
 
 
 @app.route("/login", methods=["POST", "GET"])

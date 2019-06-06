@@ -1,5 +1,7 @@
 import {
     addStyleToNode,
+    complianceNoProcedure,
+    complianceProcedure,
     formatKeyString,
     formatPropString,
     formatAddresses,
@@ -7,6 +9,7 @@ import {
     getCardTitle,
     getNodeType,
     sanitizeQuery,
+    showComplianceForm,
     showLoading,
     hideLoading,
     thousandsSeparator,
@@ -703,6 +706,8 @@ const logout = () => {
 window.addVeiculoFoto = addVeiculoFoto
 window.backToSearch = backToSearch
 window.bondAnalysis = bondAnalysis
+window.complianceNoProcedure = complianceNoProcedure
+window.complianceProcedure = complianceProcedure
 window.doBondSearch = doBondSearch
 window.filterEntityList = filterEntityList
 window.findNodes = findNodes
@@ -711,6 +716,7 @@ window.hideSidebarRight = hideSidebarRight
 window.logout = logout
 window.searchDetailStep = searchDetailStep
 window.searchWhereabouts = searchWhereabouts
+window.showComplianceForm = showComplianceForm
 window.showEntity = showEntity
 window.zoomToNodeId = zoomToNodeId
 
