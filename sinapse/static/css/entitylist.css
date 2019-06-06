@@ -49,6 +49,6 @@
     text-transform: uppercase;
 }
 
-.ui-dialog-titlebar-close {
+.ui-dialog:first-child .ui-dialog-titlebar-close {
     display: none;
 }
