@@ -211,13 +211,13 @@ def _log_response(usuario, sessionid, response):
             'datahora': datetime.now(),
             'sessionid': sessionid,
             'resposta': response.json(),
-            'ip': response.remote_addr
+            'ip': request.remote_addr
         }
     )
 
 
-def _log_login(usuario, motivo, sucesso, response):
-    _LOG_ACESSO.insert(
+def _log_login(usuario, motivo, sucesso):
+    _LOG_LOGIN.insert(
             {
                 "usuario": usuario,
                 "motivo": motivo,
@@ -237,18 +237,18 @@ def _autenticar(usuario, senha):
             'password': senha
         })
     if response.status_code == 200:
-        _log_login(usuario, 'senhaok', True, response)
+        _log_login(usuario, 'senhaok', True)
         response = sessao.get(url=_USERINFO_MPRJ)
         permissoes = json.loads(
             response.content.decode('utf-8'))['permissions']
 
         if 'ROLE_Conexao' in permissoes and permissoes['ROLE_Conexao']:
-            _log_login(usuario, 'roleok', True, response)
+            _log_login(usuario, 'roleok', True)
             return usuario
         else:
-            _log_login(usuario, 'rolenok', False, response)
+            _log_login(usuario, 'rolenok', False)
     else:
-        _log_login(usuario, 'senhanok', False, response)
+        _log_login(usuario, 'senhanok', False)
 
     return None
 
