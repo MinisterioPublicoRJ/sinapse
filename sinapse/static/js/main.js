@@ -531,6 +531,7 @@ const hideSidebarRight = () => {
     document.getElementById('sidebarRight').style.display = "none"
     sidebarRight.style.display = "none"
     document.getElementsByTagName('body')[0].className = ''
+    $('#sidebarRight').dialog('close')
 }
 
 /** Full/Hide the Right Sidebar. */
