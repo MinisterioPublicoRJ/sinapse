@@ -55,7 +55,7 @@
         height: 100%;
         height: calc(100% - 5px);
         position: relative;
-        top: 5px;
+        top: -2px;
         right: 0;
         color: #848484;
     }
@@ -251,10 +251,6 @@
 /*
 ** Jquery UI override
 */
-
-.grey-title {
-    background: #ccc !important;
-}
 
 .ui-dialog .ui-dialog-content {
     padding: 0;

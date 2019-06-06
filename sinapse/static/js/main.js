@@ -499,7 +499,6 @@ const populateSidebarRight = node => {
         <span class="sidebarRight-data color-${nodeType}">${formatKeyString(property, node.properties[property])}</span>`
     });
     html += `</div>
-        <button id="closeSidebarRight" class="color-${nodeType}" onclick="hideSidebarRight()"></button>
         <button id="fullSidebarRight" onclick="fullSidebarRight()"></button>
     </div>`
 
@@ -514,7 +513,7 @@ const showSidebarRight = () => {
     document.getElementsByTagName('body')[0].className = 'showingSidebarRight'
     $(() => $("#sidebarRight").dialog({
         classes: {
-            "ui-dialog-titlebar": "grey-title",
+            "ui-dialog-titlebar": `bgcolor-${$("#sidebarRight")[0].className}`,
         },
         height: 600,
         position: {
