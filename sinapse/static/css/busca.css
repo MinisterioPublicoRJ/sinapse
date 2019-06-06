@@ -734,3 +734,8 @@ span.tooltip:after {
     left: 5.5vw;
     position: relative;
 }
+
+#bond-search-result .tab-content{
+    height: 60vh;
+    overflow: scroll;
+}
