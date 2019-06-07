@@ -135,15 +135,16 @@ div.vis-network div.vis-manipulation div.vis-button.vis-delete {
 }
 
 .logout {
+    background-image: url('/static/img/icon-logout.svg');
+    background-size: contain;
+    border: none;
+    font-size: 0;
     position: fixed;
     bottom: 20px;
     right: 20px;
     width: 32px;
     height: 32px;
-    font-size: 0;
-    border: none;
-    background-image: url('/static/img/icon-logout.svg');
-    background-size: contain;
+    z-index: 2;
 }
 
 #compliance {
