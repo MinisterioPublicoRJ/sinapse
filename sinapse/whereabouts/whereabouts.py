@@ -95,16 +95,14 @@ def extract_addresses_from_credilink(response):
 
     #Remove duplicate addresses
     addresses = [ast.literal_eval(s) for s in set([str(d) for d in addresses])]
-    
+
     return addresses
 
 
 def get_whereabouts_credilink(num_cpf):
     response = get_data_from_credilink(num_cpf)
-    print(response)
 
     addresses = extract_addresses_from_credilink(response)
-    print(addresses)
 
     whereabouts = {'type': 'credilink'}
     whereabouts['formatted_addresses'] = addresses
