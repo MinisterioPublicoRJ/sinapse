@@ -3,6 +3,7 @@ from decouple import config
 from zeep import Client
 
 import xml.etree.ElementTree as ET
+import ast
 
 IMPALA_HOST = config('BDA_URL')
 IMPALA_PORT = config('IMPALA_PORT', default=21050, cast=int)
@@ -91,13 +92,19 @@ def extract_addresses_from_credilink(response):
             'telefone': tel.find('telefone').text
         }
         addresses.append(address)
+
+    #Remove duplicate addresses
+    addresses = [ast.literal_eval(s) for s in set([str(d) for d in addresses])]
+    
     return addresses
 
 
 def get_whereabouts_credilink(num_cpf):
     response = get_data_from_credilink(num_cpf)
+    print(response)
 
     addresses = extract_addresses_from_credilink(response)
+    print(addresses)
 
     whereabouts = {'type': 'credilink'}
     whereabouts['formatted_addresses'] = addresses
