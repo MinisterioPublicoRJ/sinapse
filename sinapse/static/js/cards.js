@@ -63,19 +63,19 @@ export const entityCard = (entity, key, data, isSearchDetailStep, bondSearchUuid
                 </div> <!-- title-col -->`
     switch(key) {
         case 'documento_personagem':
-            ret += documentoCard(entity, data, isSearchDetailStep)
+            ret += documentoCard(entity, data[key].highlighting, isSearchDetailStep)
             break
         case 'embarcacao':
-            ret += embarcacaoCard(entity, data, isSearchDetailStep)
+            ret += embarcacaoCard(entity, data[key].highlighting, isSearchDetailStep)
             break
         case 'pessoa_juridica':
-            ret += empresaCard(entity, data, isSearchDetailStep)
+            ret += empresaCard(entity, data[key].highlighting, isSearchDetailStep)
             break
         case 'pessoa':
-            ret += pessoaCard(entity, data, isSearchDetailStep)
+            ret += pessoaCard(entity, data[key].highlighting, isSearchDetailStep)
             break
         case 'veiculo':
-            ret += veiculoCard(entity, data, isSearchDetailStep)
+            ret += veiculoCard(entity, data[key].highlighting, isSearchDetailStep)
             break
         default:
             // just spit it out
@@ -97,24 +97,22 @@ export const entityCard = (entity, key, data, isSearchDetailStep, bondSearchUuid
  * @param {String} doc.dt_cadastro Date of creation
  * @param {String} doc.nr_externo External Number
  * @param {String} doc.nr_mp MP Number
- * @param {Object} data data from API
- * @param {Object} data.documento_personagem
- * @param {Object} data.documento_personagem.highlighting highlighted terms returned by search
- * @param {Object} data.documento_personagem.highlighting.uuid a object that has a highlighted term
- * @param {String[]} data.documento_personagem.highlighting.uuid.prop the terms that matches the searched term
+ * @param {Object} highlighting highlighted terms returned by search
+ * @param {Object} highlighting.uuid a object that has a highlighted term
+ * @param {String[]} highlighting.uuid.prop the terms that matches the searched term
  */
-const documentoCard = (doc, data) => {
+const documentoCard = (doc, highlighting) => {
     return `
         <div class="body col-md-12">
             <div class="row">
                 <dl>
                     <div class="col-md-6">
                         <dt>Classe</dt>
-                        <dd class="color-documento">${returnHighlightedProperty(doc, 'cldc_ds_hierarquia', data.documento_personagem.highlighting, formatDocumentHierarchy)}</dd>
+                        <dd class="color-documento">${returnHighlightedProperty(doc, 'cldc_ds_hierarquia', highlighting, formatDocumentHierarchy)}</dd>
                     </div>
                     <div class="col-md-3">
                         <dt>Número Externo</dt>
-                        <dd class="color-documento">${returnHighlightedProperty(doc, 'nr_externo', data.documento_personagem.highlighting)}</dd>
+                        <dd class="color-documento">${returnHighlightedProperty(doc, 'nr_externo', highlighting)}</dd>
                     </div>
                     <div class="col-md-3">
                         <dt>Data do Cadastro</dt>
@@ -122,7 +120,7 @@ const documentoCard = (doc, data) => {
                     </div>
                     <div class="col-md-12">
                         <dt><br>Personagens</dt>
-                        <dd class="color-documento">${returnHighlightedProperty(doc, 'ds_info_personagem', data.documento_personagem.highlighting).join('<br>')}</dd>
+                        <dd class="color-documento">${returnHighlightedProperty(doc, 'ds_info_personagem', highlighting).join('<br>')}</dd>
                     </div>
                 </dl>
             </div>
@@ -137,20 +135,18 @@ const documentoCard = (doc, data) => {
  * @param {String} doc.cpf_cnpj Ship owner document
  * @param {String} doc.nome_embarcacao Ship name
  * @param {String} doc.tipo_embarcacao Ship type
- * @param {Object} data data from API
- * @param {Object} data.embarcacao
- * @param {Object} data.embarcacao.highlighting highlighted terms returned by search
- * @param {Object} data.embarcacao.highlighting.uuid a object that has a highlighted term
- * @param {String[]} data.embarcacao.highlighting.uuid.prop the terms that matches the searched term
+ * @param {Object} highlighting highlighted terms returned by search
+ * @param {Object} highlighting.uuid a object that has a highlighted term
+ * @param {String[]} highlighting.uuid.prop the terms that matches the searched term
  */
-const embarcacaoCard = (doc, data) => {
+const embarcacaoCard = (doc, highlighting) => {
     return `
         <div class="body col-md-12">
             <div class="row">
                 <dl>
                     <div class="col-md-4">
                         <dt>CPF/CNPJ do Proprietário</dt>
-                        <dd class="color-embarcacao">${returnHighlightedProperty(doc, 'cpf_cnpj', data.embarcacao.highlighting, formatCPFOrCNPJ)}</dd>
+                        <dd class="color-embarcacao">${returnHighlightedProperty(doc, 'cpf_cnpj', highlighting, formatCPFOrCNPJ)}</dd>
                     </div>
                     <div class="col-md-4">
                         <dt>Tipo da Embarcação</dt>
@@ -175,28 +171,26 @@ const embarcacaoCard = (doc, data) => {
  * @param {String} doc.razao_social Company Full Name
  * @param {String} doc.responsavel Company Responsible Person
  * @param {String} doc.uf Company UF
- * @param {Object} data data from API
- * @param {Object} data.empresa
- * @param {Object} data.empresa.highlighting highlighted terms returned by search
- * @param {Object} data.empresa.highlighting.uuid a object that has a highlighted term
- * @param {String[]} data.empresa.highlighting.uuid.prop the terms that matches the searched term
+ * @param {Object} highlighting highlighted terms returned by search
+ * @param {Object} highlighting.uuid a object that has a highlighted term
+ * @param {String[]} highlighting.uuid.prop the terms that matches the searched term
  */
-const empresaCard = (doc, data) => {
+const empresaCard = (doc, highlighting) => {
     return `
         <div class="body col-md-12">
             <div class="row">
                 <dl>
                     <div class="col-md-3">
                         <dt>CNPJ</dt>
-                        <dd class="color-empresa">${returnHighlightedProperty(doc, 'cnpj', data.pessoa_juridica.highlighting, formatCNPJ)}</dd>
+                        <dd class="color-empresa">${returnHighlightedProperty(doc, 'cnpj', highlighting, formatCNPJ)}</dd>
                     </div>
                     <div class="col-md-3">
                         <dt>Nome do Responsável</dt>
-                        <dd class="color-empresa">${returnHighlightedProperty(doc, 'responsavel', data.pessoa_juridica.highlighting)}</dd>
+                        <dd class="color-empresa">${returnHighlightedProperty(doc, 'responsavel', highlighting)}</dd>
                     </div>
                     <div class="col-md-3">
                         <dt>CPF do Proprietário</dt>
-                        <dd class="color-empresa">${returnHighlightedProperty(doc, 'cpf_responsavel', data.pessoa_juridica.highlighting, formatCPF)}</dd>
+                        <dd class="color-empresa">${returnHighlightedProperty(doc, 'cpf_responsavel', highlighting, formatCPF)}</dd>
                     </div>
                     <div class="col-md-3">
                         <dt>Município / UF</dt>
@@ -215,13 +209,11 @@ const empresaCard = (doc, data) => {
  * @param {Number} doc.cpf Person's CPF number, as a Number (so without leading zero)
  * @param {String} doc.nome_mae Person's mother's name
  * @param {String} doc.dt_nasc Person's born date, as a string on the format: YYYY-MM-DD
- * @param {Object} data data from API
- * @param {Object} data.pessoa 
- * @param {Object} data.pessoa.highlighting highlighted terms returned by search
- * @param {Object} data.pessoa.highlighting.uuid a object that has a highlighted term
- * @param {String[]} data.pessoa.highlighting.uuid.prop the terms that matches the searched term
+ * @param {Object} highlighting highlighted terms returned by search
+ * @param {Object} highlighting.uuid a object that has a highlighted term
+ * @param {String[]} highlighting.uuid.prop the terms that matches the searched term
  */
-const pessoaCard = (doc, data, isSearchDetailStep) => {
+const pessoaCard = (doc, highlighting) => {
     return `
         <div class="body col-md-12">
             <div class="row">
@@ -232,7 +224,7 @@ const pessoaCard = (doc, data, isSearchDetailStep) => {
                     </div>
                     <div class="col-md-6">
                         <dt>Nome da mãe</dt>
-                        <dd class="color-pessoa">${returnHighlightedProperty(doc, 'nome_mae', data.pessoa.highlighting)}</dd>
+                        <dd class="color-pessoa">${returnHighlightedProperty(doc, 'nome_mae', highlighting)}</dd>
                     </div>
                     <div class="col-md-3">
                         <dt>Data de nascimento</dt>
@@ -251,13 +243,11 @@ const pessoaCard = (doc, data, isSearchDetailStep) => {
  * @param {Number} doc.chassi Vehicle unique chassi number
  * @param {String} doc.renavam Vehicle unique Renavam number
  * @param {String} doc.descricao Vehicle description, with brand, model, year and color
- * @param {Object} data data from API
- * @param {Object} data.veiculo 
- * @param {Object} data.veiculo.highlighting highlighted terms returned by search
- * @param {Object} data.veiculo.highlighting.uuid a object that has a highlighted term
- * @param {String[]} data.veiculo.highlighting.uuid.prop the terms that matches the searched term
+ * @param {Object} highlighting highlighted terms returned by search
+ * @param {Object} highlighting.uuid a object that has a highlighted term
+ * @param {String[]} highlighting.uuid.prop the terms that matches the searched term
  */
-const veiculoCard = (doc, data) => {
+const veiculoCard = (doc, highlighting) => {
     // const caracteristicaVeiculo = `${doc.marca_modelo.trim()} ${doc.ano_modelo} ${doc.cor.trim()}`
     // get(`/api/foto-veiculo?caracteristicas=${caracteristicaVeiculo}`, addVeiculoFoto)
     // <img data-caracteristica="${caracteristicaVeiculo}" src="/static/img/icon/veiculo.svg" />
@@ -265,15 +255,15 @@ const veiculoCard = (doc, data) => {
         <dl>
             <div class="col-md-3">
                 <dt>Chassis</dt>
-                <dd class="color-veiculo">${returnHighlightedProperty(doc, 'chassi', data.veiculo.highlighting)}</dd>
+                <dd class="color-veiculo">${returnHighlightedProperty(doc, 'chassi', highlighting)}</dd>
             </div>
             <div class="col-md-2">
                 <dt>Renavam</dt>
-                <dd class="color-veiculo">${returnHighlightedProperty(doc, 'renavam', data.veiculo.highlighting)}</dd>
+                <dd class="color-veiculo">${returnHighlightedProperty(doc, 'renavam', highlighting)}</dd>
             </div>
             <div class="col-md-7">
                 <dt>Proprietário</dt>
-                <dd class="color-veiculo">${returnHighlightedProperty(doc, 'proprietario', data.veiculo.highlighting)}</dd>
+                <dd class="color-veiculo">${returnHighlightedProperty(doc, 'proprietario', highlighting)}</dd>
             </div>
         </dl>
     `
