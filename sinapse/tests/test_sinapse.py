@@ -24,6 +24,7 @@ from sinapse.start import (
     _monta_query_filtro_opcional,
     _USERINFO_MPRJ,
     parse_json_to_visjs,
+    get_path
 )
 
 from .fixtures import (
@@ -55,13 +56,19 @@ from .fixtures import (
     resposta_relationships_ok,
     query_dinamica,
     parser_test_input,
-    parser_test_output
+    parser_test_output,
+    get_path_input,
+    get_path_output
 )
 
 
 def test_parser_visjs():
     saida = parse_json_to_visjs(parser_test_input)
     assert saida == parser_test_output
+
+def test_get_path():
+    saida = get_path(get_path_input)
+    assert saida == get_path_output
 
 
 def test_monta_query_filtro_opcional():
@@ -294,8 +301,10 @@ class MetodosConsulta(unittest.TestCase):
         response = self.app.get(
             'api/findShortestPath',
             query_string={
-                "node_id1": 140885160,
-                "node_id2": 328898991
+                "label1": 'Pessoa',
+                "label2": 'Pessoa',
+                "node_uuid1": '123abc',
+                "node_uuid2": '234bcd'
             }
         )
 

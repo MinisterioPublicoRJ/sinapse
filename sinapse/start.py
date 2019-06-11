@@ -95,18 +95,37 @@ def respostajson(response, **kwargs):
 
     return jsonify(dados)
 
+def get_path(resposta):
+    paths = []
+    for path in resposta['results'][0]['data']:
+        ordered_path = []
+        path_meta = path['meta'][0]
+        path_graph = path['graph']
 
-def respostajson_visjs(response, **kwargs):
+        for element in path_meta:
+            if element['type'] == 'node':
+                for node in path_graph['nodes']:
+                    if int(node['id']) == element['id']:
+                        ordered_path.append(node)
+            if element['type'] == 'relationship':
+                for rel in path_graph['relationships']:
+                    if int(rel['id']) == element['id']:
+                        ordered_path.append(rel)
+
+        paths.append(ordered_path)
+    return {'paths': paths}
+
+def respostajson_visjs(response, return_path=False, **kwargs):
     usuario = session.get('usuario', "dummy")
     sessionid = request.cookies.get('session')
     _log_response(usuario, sessionid, response)
     dados = response.json()
     if isinstance(dados, dict):
         dados.update(kwargs)
-
     if resposta_sensivel(dados):
-        return jsonify(parse_json_to_visjs(
-            remove_info_sensiveis(dados), **kwargs))
+        dados = remove_info_sensiveis(dados)
+    if return_path:
+        kwargs.update(get_path(dados))
 
     return jsonify(parse_json_to_visjs(dados, **kwargs))
 
@@ -394,7 +413,7 @@ def api_findShortestPath():
         auth=_AUTH,
         headers=_HEADERS)
 
-    return respostajson_visjs(response)
+    return respostajson_visjs(response, return_path=True)
 
 
 def _monta_query_filtro_opcional(label, prop, val, letra):

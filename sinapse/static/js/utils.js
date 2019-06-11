@@ -568,6 +568,10 @@ export const getCardTitle = (nodeType) => {
             return 'nome'
         case 'veiculo':
             return 'descricao'
+        case 'pessoa_juridica':
+            return 'razao_social'
+        case 'embarcacao':
+            return 'nome_embarcacao'
         default:
             return null
     }

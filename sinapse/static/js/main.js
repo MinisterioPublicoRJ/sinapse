@@ -620,7 +620,7 @@ const bondAnalysis = (nodeUuid1, nodeType1, nodeTitle1) => {
     console.log(`bondAnalysis(${nodeUuid1}, ${nodeType1}, ${nodeTitle1})`)
     let template = `
     <div class="row">
-        <div class="col-lg-5 ${nodeType1} entity">
+        <div class="col-lg-5 color-${nodeType1.toLowerCase()} entity">
             <img src="/static/img/icon/${nodeType1}.svg"/>
             <input class="color-${nodeType1}" disabled value="${nodeTitle1}">
         </div>
