@@ -617,10 +617,14 @@ span.tooltip:after {
     width: 184px;
 }
 
-#search-details .card-resultado .foto-pessoa {
+.container-foto {
     border-radius: 50%;
-    height: 100px;
-    margin: 0;
+    height: 105px;
+    overflow: hidden;
+}
+
+.pessoa-foto {
+    margin: 0 !important;
     width: 100%;
 }
 
