@@ -2,12 +2,13 @@ import json
 import responses
 import unittest
 
+from freezegun import freeze_time
 from copy import deepcopy
 from functools import wraps
 from unittest import mock
+from datetime import datetime
 
 from flask_testing import TestCase as FlaskTestCase
-from freezegun import freeze_time
 from freezegun.api import FakeDatetime
 from sinapse.start import (
     app,
@@ -202,7 +203,8 @@ class LoginUsuario(unittest.TestCase):
             "/login",
             data={
                 "usuario": "usuario",
-                "senha": "senha"})
+                "senha": "senha"
+                })
 
         assert retorno.status_code == 302
 
@@ -213,6 +215,7 @@ class LoginUsuario(unittest.TestCase):
         )
 
         resposta = self.app.get("/api/node?node_id=10")
+
         assert resposta.get_json() == retorno_esperado
         assert _log_response.call_count == 1
 
@@ -251,7 +254,7 @@ class MetodosConsulta(unittest.TestCase):
         _conta_nos.return_value = 10
         _gpa.__name__ = 'Response'
         query_string = {
-            'label': 'pessoa,personagem',
+            'label': 'Pessoa,Personagem',
             'prop': 'nome,pess_dk',
             'val': 'DANIEL CARVALHO BELCHIOR,24728287'
         }
@@ -328,7 +331,7 @@ class MetodosConsulta(unittest.TestCase):
             query_string={
                 "node_id1": 140885160,
                 "node_id2": 328898991,
-                "rel_types": "trabalha"
+                "rel_types": "TRABALHA"
             }
         )
 
@@ -352,7 +355,7 @@ class MetodosConsulta(unittest.TestCase):
             query_string={
                 "node_id1": 140885160,
                 "node_id2": 328898991,
-                "rel_types": "filho,personagem"
+                "rel_types": "FILHO,Personagem"
             }
         )
 
@@ -409,7 +412,7 @@ class MetodosConsulta(unittest.TestCase):
             'api/nextNodes',
             query_string={
                 'node_id': 395989945,
-                'rel_types': 'filho'
+                'rel_types': 'FILHO'
             }
         )
 
@@ -441,7 +444,7 @@ class MetodosConsulta(unittest.TestCase):
             'api/nextNodes',
             query_string={
                 'node_id': 395989945,
-                'rel_types': 'filho,trabalha'
+                'rel_types': 'FILHO,TRABALHA'
             }
         )
 
@@ -466,7 +469,7 @@ class MetodosConsulta(unittest.TestCase):
         response = self.app.get(
             'api/nodeProperties',
             query_string={
-                'label': 'pessoa'
+                'label': 'Pessoa'
             }
         )
 
@@ -490,7 +493,7 @@ class MetodosConsulta(unittest.TestCase):
         response = self.app.get(
             'api/labels',
             query_string={
-                'label': 'pessoa'
+                'label': 'Pessoa'
             }
         )
 
@@ -510,7 +513,7 @@ class MetodosConsulta(unittest.TestCase):
         response = self.app.get(
             'api/relationships',
             query_string={
-                'label': 'pessoa'
+                'label': 'Pessoa'
             }
         )
 
@@ -543,7 +546,7 @@ class MetodosConsulta(unittest.TestCase):
         )
 
         query_string = {
-            'label': 'pessoa',
+            'label': 'Pessoa',
             'prop': 'nome',
             'val': 'DANIEL CARVALHO BELCHIOR'
         }
@@ -574,7 +577,7 @@ class MetodosConsulta(unittest.TestCase):
 
         numero_nos = conta_nos(
             _monta_query_filtro_opcional(
-                'pessoa',
+                'Pessoa',
                 'nome',
                 'Qualque',
                 'a'
@@ -605,7 +608,7 @@ class MetodosConsulta(unittest.TestCase):
             json=resposta_filterNodes_ok
         )
         query_string = {
-            'label': 'pessoa',
+            'label': 'Pessoa',
             'prop': 'nome',
             'val': 'Qualquer'
         }
@@ -620,7 +623,7 @@ class MetodosConsulta(unittest.TestCase):
         )
 
         _conta_nos.assert_called_once_with(
-            ["optional match (a:pessoa {nome:toUpper('Qualquer')})"],
+            ["optional match (a:Pessoa {nome:toUpper('Qualquer')})"],
             'a'
         )
         self.assertEqual(resposta.json['numero_de_nos'], 101)

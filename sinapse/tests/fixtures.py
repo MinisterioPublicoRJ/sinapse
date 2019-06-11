@@ -75,7 +75,7 @@ resposta_node_sensivel_ok = {
                                     'cpf': '11452244740',
                                     'nome': 'DANIEL CARVALHO BELCHIOR',
                                     'pess_dk': 15535503,
-                                    'sensivel': True,
+                                    'sensivel': '1',
                                 }
                             }],
                         'relationships': []
@@ -101,7 +101,7 @@ relacoes_sensiveis = [{
     'type': 'filho',
     'startNode': '12075099',
     'endNode': '10844320',
-    'properties': {'sensivel': True},
+    'properties': {'sensivel': '1'},
     }]
 
 relacoes_sensiveis_esp = [{
@@ -307,7 +307,7 @@ resposta_sensivel_mista = {
                         'cpf': '005',
                         'nome_mae': 'H M P',
                         'nome': 'M H P R',
-                        'sensivel': True,
+                        'sensivel': '1',
                         'sexo': '2',
                         'dt_nasc': '20180709',
                         }}], 'relationships': [{
@@ -326,7 +326,7 @@ resposta_sensivel_mista = {
     'filho_rel_status_pai': 8,
     'nome_mae': 'M H P R',
     'nome': 'A P R',
-    'sensivel': True,
+    'sensivel': '1',
     'sexo': '1',
     'uuid': 'aabbcc',
     'nome_rg': 'A P R',
@@ -336,7 +336,7 @@ resposta_sensivel_mista = {
     'cpf': '020',
     'nome_mae': 'H M P',
     'nome': 'M H P R',
-    'sensivel': True,
+    'sensivel': '1',
     'sexo': '2',
     'dt_nasc': '20180709',
     }}], 'relationships': [{
@@ -344,7 +344,7 @@ resposta_sensivel_mista = {
     'type': 'filho',
     'startNode': '12075099',
     'endNode': '10844320',
-    'properties': {'sensivel': True},
+    'properties': {'sensivel': '1'},
     }]}}, 
         {'graph': {'nodes': [{'id': '57161336', 'labels': ['pessoa'],
                   'properties': {
@@ -365,7 +365,7 @@ resposta_sensivel_mista = {
     'cpf': '020',
     'nome_mae': 'H M P',
     'nome': 'M H P R',
-    'sensivel': True,
+    'sensivel': '1',
     'sexo': '2',
     'dt_nasc': '20180709',
     }}], 'relationships': [{
@@ -381,7 +381,7 @@ resposta_sensivel_mista = {
     'cpf': '015',
     'nome_mae': 'H M P',
     'nome': 'M H P R',
-    'sensivel': True,
+    'sensivel': '1',
     'sexo': '2',
     'dt_nasc': '20180709',
     }}, {'id': '116929750', 'labels': ['pessoa'], 'properties': {
@@ -1393,9 +1393,9 @@ get_path_output = {'paths': [
 request_get_node_from_id = {
     'statements': [
         {
-            'statement': 'MATCH (n:pessoa) WHERE id(n) = 140885160' 
-            ' RETURN n',
-            'resultDataContents': ['graph']
+            'statement': "MATCH (p:Pessoa) WHERE p.uuid = '140885160'" 
+            " RETURN p",
+            'resultDataContents': ['row', 'graph']
         }
     ]
 }
@@ -1420,7 +1420,7 @@ resposta_get_node_from_id_ok = {
                                     'uf': 'RJ', 
                                     'rg': '131242950', 
                                     'visitado': False, 
-                                    'cpf': '11452244740', 
+                                    'num_cpf': '11452244740', 
                                     'filho_rel_status': 1, 
                                     'nome_mae': 'MARTA CARVALHO BELCHIOR', 
                                     'sexo': '1', 
@@ -1458,13 +1458,13 @@ resposta_get_node_from_id_sensivel_ok = {
                                     'uf': 'RJ', 
                                     'rg': '131242950', 
                                     'visitado': False, 
-                                    'cpf': '11452244740', 
+                                    'num_cpf': '11452244740', 
                                     'filho_rel_status': 1, 
                                     'nome_mae': 'MARTA CARVALHO BELCHIOR', 
                                     'sexo': '1', 
                                     'nome_rg': 'DANIEL CARVALHO BELCHIOR', 
                                     'dt_nasc': '19850522',
-                                    'sensivel': True
+                                    'sensivel': '1'
                                 }
                             }
                         ],

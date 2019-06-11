@@ -41,7 +41,8 @@ def test_extract_addresses_from_credilink():
 
 
 class BuscaDeParadeiro(unittest.TestCase):
-    def setUp(self):
+    @mock.patch("sinapse.start._LOG_ACESSO")
+    def setUp(self, _LOG_ACESSO):
         self.app = app.test_client()
         with mock.patch("sinapse.start._autenticar") as _autenticar:
             _autenticar.side_effect = ["usuario"]
@@ -49,7 +50,14 @@ class BuscaDeParadeiro(unittest.TestCase):
                 "/login",
                 data={
                     "usuario": "usuario",
-                    "senha": "senha"})
+                    "senha": "senha"
+                })
+            self.app.post("/compliance",
+                data={
+                    "tipoacesso": 1,
+                    "numeroprocedimento": 1,
+                    "descricao": 1
+                })
 
     @mock.patch('sinapse.whereabouts.whereabouts.get_data_from_receita')
     @responses.activate
@@ -66,17 +74,19 @@ class BuscaDeParadeiro(unittest.TestCase):
         _get_data_from_credilink.return_value = input_whereabouts_addresses_credilink
 
         saida = get_whereabouts_credilink(11452244740)
+        
+        assert saida['type'] == resposta_whereabouts_credilink_ok['type']
+        assert resposta_whereabouts_credilink_ok['formatted_addresses'][0] in saida['formatted_addresses']
+        assert resposta_whereabouts_credilink_ok['formatted_addresses'][1] in saida['formatted_addresses']
 
-        assert saida == resposta_whereabouts_credilink_ok
-
-    @mock.patch('sinapse.whereabouts.whereabouts.get_data_from_receita')
-    @mock.patch('sinapse.whereabouts.whereabouts.get_data_from_credilink')
+    @mock.patch('sinapse.start.get_whereabouts_receita')
+    @mock.patch('sinapse.start.get_whereabouts_credilink')
     @responses.activate
-    def test_whereabouts(self, _get_data_from_credilink, _get_data_from_receita):
-        _get_data_from_credilink.return_value = input_whereabouts_addresses_credilink
-        _get_data_from_receita.return_value = input_whereabouts_addresses_receita
+    def test_whereabouts(self, _get_whereabouts_credilink, _get_whereabouts_receita):
+        _get_whereabouts_credilink.return_value = resposta_whereabouts_credilink_ok
+        _get_whereabouts_receita.return_value = resposta_whereabouts_receita_ok
         query_string = {
-            'node_id': 140885160
+            'uuid': 140885160
         }
 
         responses.add(
@@ -89,8 +99,10 @@ class BuscaDeParadeiro(unittest.TestCase):
             '/api/whereabouts',
             query_string=query_string
         )
-
-        assert resposta.get_json() == resposta_whereabouts_ok
+        saida = resposta.get_json()
+        
+        assert resposta_whereabouts_ok[0] in saida
+        assert resposta_whereabouts_ok[1] in saida
 
         request = json.loads(responses.calls[-1].request.body)
         assert request == request_get_node_from_id

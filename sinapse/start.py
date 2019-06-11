@@ -284,7 +284,6 @@ def naocompleia(funcao):
         return funcao(*args, **kwargs)
     return wrapper
 
-
 def login_necessario(funcao):
     @wraps(funcao)
     def funcao_decorada(*args, **kwargs):
@@ -560,7 +559,7 @@ def api_whereabouts():
     uuid = request.args.get('uuid')
 
     query = {"statements": [{
-        "statement": "MATCH (p:Pessoa) where p.uuid = '%s' return p"
+        "statement": "MATCH (p:Pessoa) WHERE p.uuid = '%s' RETURN p"
         % (uuid),
         "resultDataContents": ["row", "graph"]
     }]}
