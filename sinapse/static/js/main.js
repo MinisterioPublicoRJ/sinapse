@@ -717,6 +717,7 @@ const displayWhereabouts = (data, nome, rg) => {
             <div class="col-md-2" id="whereabouts_photo_container"></div>
             <div class="col-md-5">
                 <h3>Credilink</h3>
+                <p>Atenção: Informações da base de dados do Credilink não podem ser incluídos nos autos.</p>
                 ${formatAddresses(credilinkAddresses[0].formatted_addresses)}
             </div>
             <div class="col-md-5">
