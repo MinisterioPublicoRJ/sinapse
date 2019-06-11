@@ -28,20 +28,6 @@
         box-shadow: -5px 0px 10px #f1f1f1;
         background: rgb(255, 255, 255);
     }
-
-    #closeSidebarRight {
-        /* padding: 50px; */
-        font-size: 30px;
-        position: absolute;
-        bottom: 0;
-        box-sizing: border-box;
-        width: 100%;
-        right: 0;
-        border: none;
-        background: none;
-        background-position: center;
-        background-repeat: no-repeat;
-    }  
 }
 
 /* computer */
@@ -58,19 +44,6 @@
         top: -2px;
         right: 0;
         color: #848484;
-    }
-
-    #closeSidebarRight {
-        padding: 30px;
-        font-size: 0;
-        position: absolute;
-        top: -54px;
-        box-sizing: border-box;
-        right: 0;
-        border: none;
-        background: none;
-        background-position: center;
-        background-repeat: no-repeat;
     }
 }
 
@@ -160,88 +133,44 @@
     background-image: url("/static/img/icon/veiculo-fundobranco.svg")
 }
 
-.documento #closeSidebarRight {
-    background-image: url("/static/img/icon/documento-x.svg")
-}
-
 .documento #fullSidebarRight {
     background-image: url("/static/img/icon/documento-inf.svg")
-}
-
-.embarcacao #closeSidebarRight {
-    background-image: url("/static/img/icon/embarcacao-x.svg")
 }
 
 .embarcacao #fullSidebarRight {
     background-image: url("/static/img/icon/embarcacao-inf.svg")
 }
 
-.empresa #closeSidebarRight {
-    background-image: url("/static/img/icon/empresa-x.svg")
-}
-
 .empresa #fullSidebarRight {
     background-image: url("/static/img/icon/empresa-inf.svg")
-}
-
-.mgp #closeSidebarRight{
-    background-image: url("/static/img/icon/mgp-x.svg")
 }
 
 .mgp #fullSidebarRight {
     background-image: url("/static/img/icon/mgp-inf.svg")
 }
 
-.multa #closeSidebarRight {
-    background-image: url("/static/img/icon/multa-x.svg")
-}
-
 .multa #fullSidebarRight {
     background-image: url("/static/img/icon/pessoa-inf.svg")
-}
-
-.orgao #closeSidebarRight {
-    background-image: url("/static/img/icon/orgao-x.svg")
 }
 
 .orgao #fullSidebarRight {
     background-image: url("/static/img/icon/orgao-inf.svg")
 }
 
-.personagem #closeSidebarRight {
-    background-image: url("/static/img/icon/personagem-x.svg")
-}
-
 .personagem #fullSidebarRight {
     background-image: url("/static/img/icon/personagem-inf.svg")
-}
-
-.pessoa #closeSidebarRight {
-    background-image: url("/static/img/icon/pessoa-x.svg")
 }
 
 .pessoa #fullSidebarRight {
     background-image: url("/static/img/icon/pessoa-inf.svg")
 }
 
-.sigiloso #closeSidebarRight {
-    background-image: url("/static/img/icon/sigiloso-x.svg")
-}
-
 .sigiloso #fullSidebarRight {
     background-image: url("/static/img/icon/sigiloso-inf.svg")
 }
 
-.telefone #closeSidebarRight {
-    background-image: url("/static/img/icon/telefone-x.svg")
-}
-
 .telefone #fullSidebarRight {
     background-image: url("/static/img/icon/telefone-inf.svg")
-}
-
-.veiculo #closeSidebarRight {
-    background-image: url("/static/img/icon/veiculo-x.svg")
 }
 
 .veiculo #fullSidebarRight {
