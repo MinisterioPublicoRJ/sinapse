@@ -154,19 +154,21 @@
         <script type="module" src="/static/js/main.js"></script>
         {% if filtroinicial is defined %}
             <script>
-                window.filtroInicial = {
-                    label: '{{ filtroinicial.label }}',
-                    prop: '{{ filtroinicial.prop }}',
-                    val: '{{ filtroinicial.val }}'
-                }
-                
-                document.getElementById('loading').className = 'hidden'
-                
-                findNodes(
-                    filtroInicial.label,
-                    filtroInicial.prop,
-                    filtroInicial.val
-                )
+                setTimeout(() => {
+                    console.log("Veio do Domínio")
+
+                    window.filtroInicial = {
+                        label: '{{ filtroinicial.label }}',
+                        prop: '{{ filtroinicial.prop }}',
+                        val: '{{ filtroinicial.val }}'
+                    }
+                    
+                    findNodes(
+                        filtroInicial.label,
+                        filtroInicial.prop,
+                        filtroInicial.val
+                    )
+                }, 1000)
             </script>
         {% endif %}
     </body>
