@@ -30,7 +30,7 @@ const init = () => {
     initVersion()
 }
 
-const VERSION = '20190528'
+const VERSION = '20190611'
 let SEARCH_TAB_OPENED = 2
 const EDGES_DICT = {
     'orgao_responsavel': 'órgão responsável',
@@ -604,7 +604,9 @@ const updateFilteredEntityTypes = () => {
  * Shows build information
  */
 const initVersion = () => {
-    document.getElementById('version_number').innerHTML = `Versão: ${VERSION}-${btoa(document.getElementById('version_username').innerHTML)}`
+    let version = `${VERSION}-${btoa(document.getElementById('version_username').innerHTML)}`
+    document.getElementById('version_number').innerHTML = `Versão: ${version}`
+    document.title = `Conexão - Versão ${version}`
 }
 
 const showEntity = (entityType, uuid) => {
