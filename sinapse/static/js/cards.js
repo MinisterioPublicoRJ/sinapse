@@ -227,6 +227,18 @@ const empresaCard = (doc, data, isExtended) => {
         </div>
     `
 }
+/**
+ * 
+ * @param {*} rg 
+ */
+const pessoaFoto = rg => {
+    get(`/api/foto?rg=${rg}`, data => {
+        if (data.uuid && data.imagem) {
+            document.querySelector(`img[data-rg="${rg}"]`).setAttribute("src", `data:image/jpeg;base64,${data.imagem}`)
+            // return `<img src="data:image/jpeg;base64,${data.imagem}" />`
+        }
+    })
+}
 
 /**
  * Creates a card for a given person
@@ -251,9 +263,11 @@ const pessoaCard = (doc, data, isExtended) => {
         bodyClass = 'col-md-12'
         backFn = 'onclick="backToSearch()"'
     }
+
+    pessoaFoto(doc.rg)
     return `
         <div class="${titleClass}">
-            <img src="/static/img/icon/pessoa.svg" />
+            <img class="pessoa-foto" data-rg="${doc.rg}" src="/static/img/icon/pessoa.svg" />
         </div>
         <div class="${bodyClass}">
             <div class="row">

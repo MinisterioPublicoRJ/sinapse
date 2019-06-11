@@ -617,6 +617,13 @@ span.tooltip:after {
     width: 184px;
 }
 
+#search-details .card-resultado .foto-pessoa {
+    border-radius: 50%;
+    height: 100px;
+    margin: 0;
+    width: 100%;
+}
+
 #search-details .card-resultado h3 {
     cursor: pointer;
     font-size: 32px;
