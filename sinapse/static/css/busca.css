@@ -629,7 +629,6 @@ span.tooltip:after {
 }
 
 #search-details .card-resultado h3 {
-    cursor: pointer;
     font-size: 32px;
     font-weight: 300;
     margin: 20px 0;

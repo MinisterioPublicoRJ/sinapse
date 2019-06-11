@@ -500,9 +500,11 @@ const post = (url, params, callback) => {
     xmlhttp.send(params)
 }
 
-const showCompliance = () => {
+export const showCompliance = () => {
     hideLoading()
     document.querySelector('#compliance').style.display = 'block'
+    document.querySelector('#compliance-buttons').style.display = 'block'
+    document.querySelector('#compliance-form').style.display = 'none'
 }
 
 export const showComplianceForm = () => {

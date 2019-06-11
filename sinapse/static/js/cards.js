@@ -57,7 +57,7 @@ export const entityCard = (entity, key, data, isSearchDetailStep, bondSearchUuid
     if (isSearchDetailStep) {
         ret += `
                 <div class="col-md-1">
-                    <h3 onclick="backToSearch()">⬅️</h3>
+                    <h3 onclick="backToSearch()" style="cursor:pointer">⬅️</h3>
                 </div>
                 <div class="col-md-10">`
     } else {
