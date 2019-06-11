@@ -25,7 +25,6 @@ import { updateLeftSidebar, filterEntityList } from '/static/js/entitylist.js'
 const init = () => {
     getLabels()
     initSearch()
-    initFilter()
     initVisjs()
     initVersion()
 }
@@ -440,6 +439,21 @@ const updateNodes = (data, nodeId) => {
     document.getElementById('step4').className = ''
 
     updateLeftSidebar(labels, nodesData)
+
+    document.querySelectorAll('#entitylist .entity').forEach(filter => {
+        console.log("eye filter, ", filter)
+        filter.onclick = e => {
+            let entityType = filter.classList[1]
+            if (filter.classList.contains('fa-eye-slash')) {
+                filter.classList.remove('fa-eye-slash')
+                filteredEntityTypes.splice(filteredEntityTypes.indexOf(entityType), 1)
+            } else {
+                filter.classList.add('fa-eye-slash')
+                filteredEntityTypes.push(entityType)
+            }
+            updateFilteredEntityTypes()
+        }
+    })
 }
 
 /**
@@ -545,36 +559,6 @@ const fullSidebarRight = () => {
     } else {
         x.style.width = "0%";
     }
-}
-
-/**
- * Initialize filter events
- */
-const initFilter = () => {
-    const filterExpanded = document.getElementById('filter-expanded')
-
-    // Show/hide filter
-    document.getElementById('filter-call').onclick = e => {
-        if (filterExpanded.className) {
-            filterExpanded.className = ''
-        } else {
-            filterExpanded.className = 'hidden'
-        }
-    }
-    // Each filter
-    document.querySelectorAll('.filter .entity').forEach(filter => {
-        filter.onclick = e => {
-            let entityType = filter.classList[1]
-            if (filter.classList.contains('disabled')) {
-                filter.classList.remove('disabled')
-                filteredEntityTypes.splice(filteredEntityTypes.indexOf(entityType), 1)
-            } else {
-                filter.classList.add('disabled')
-                filteredEntityTypes.push(entityType)
-            }
-            updateFilteredEntityTypes()
-        }
-    })
 }
 
 /**
