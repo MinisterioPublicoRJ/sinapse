@@ -617,6 +617,17 @@ span.tooltip:after {
     width: 184px;
 }
 
+.container-foto {
+    border-radius: 50%;
+    height: 105px;
+    overflow: hidden;
+}
+
+.pessoa-foto {
+    margin: 0 !important;
+    width: 100%;
+}
+
 #search-details .card-resultado h3 {
     font-size: 32px;
     font-weight: 300;

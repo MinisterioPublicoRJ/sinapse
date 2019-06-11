@@ -30,7 +30,7 @@ const titleProperty = {
 */
 export const entityCard = (entity, key, data, isSearchDetailStep, bondSearchUuid, bondSearchType) => {
     let onclickFn = `onclick="searchDetailStep('${entity.uuid}', '${key}')"`
-    let titleClass = 'col-md-2 text-center'
+    let titleClass = 'col-md-2 text-center container-foto'
     let bodyClass = 'col-md-10'
     let title = `<h3 class="color-${key}">${returnHighlightedProperty(entity, titleProperty[key], data[key].highlighting, titleProperty[key+'Fn'] || null)}</h3>`
 
@@ -44,9 +44,14 @@ export const entityCard = (entity, key, data, isSearchDetailStep, bondSearchUuid
     }
 
     let ret = `<div class="card-resultado clearfix" ${onclickFn}>
-        <div class="${titleClass}">
-            <img src="/static/img/icon/${key}.svg" />
-        </div>
+        <div class="${titleClass}">`
+    if (key === 'pessoa') {
+        pessoaFoto(entity.rg)
+        ret += `<img class="pessoa-foto" data-rg="${entity.rg}" src="/static/img/icon/pessoa.svg" />`
+    } else {
+        ret += `<img src="/static/img/icon/${key}.svg" />`
+    }
+    ret += `</div>
         <div class="${bodyClass}">
             <div class="row">`
     if (isSearchDetailStep) {
@@ -200,6 +205,18 @@ const empresaCard = (doc, highlighting) => {
             </div>
         </div>
     `
+}
+/**
+ * 
+ * @param {*} rg 
+ */
+const pessoaFoto = rg => {
+    get(`/api/foto?rg=${rg}`, data => {
+        if (data.uuid && data.imagem) {
+            document.querySelector(`img[data-rg="${rg}"]`).setAttribute("src", `data:image/jpeg;base64,${data.imagem}`)
+            // return `<img src="data:image/jpeg;base64,${data.imagem}" />`
+        }
+    })
 }
 
 /**
