@@ -9,6 +9,7 @@ import {
     getCardTitle,
     getNodeType,
     sanitizeQuery,
+    showCompliance,
     showComplianceForm,
     showLoading,
     hideLoading,
@@ -752,6 +753,7 @@ window.hideSidebarRight = hideSidebarRight
 window.logout = logout
 window.searchDetailStep = searchDetailStep
 window.searchWhereabouts = searchWhereabouts
+window.showCompliance = showCompliance
 window.showComplianceForm = showComplianceForm
 window.showEntity = showEntity
 window.zoomToNodeId = zoomToNodeId
