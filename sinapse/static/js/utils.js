@@ -1,5 +1,6 @@
 const DOMINIO = 'http://apps.mprj.mp.br/sistema/dominio'
 const COMPLIANCE_URL = '/compliance'
+let complianceNumberMandatory = true
 
 /**
  * Returns a document type name with diacritics.
@@ -512,7 +513,7 @@ export const showComplianceForm = () => {
 export const complianceProcedure = () => {
     let procedureNumber = document.querySelector('#procedure-number').value
     let queryObjective = document.querySelector('#query-objective').value
-    if (!procedureNumber) {
+    if (complianceNumberMandatory && !procedureNumber) {
         return alert('O número do procedimento é de preenchimento obrigatório.')
     }
     if (!queryObjective) {
@@ -522,7 +523,10 @@ export const complianceProcedure = () => {
 }
 
 export const complianceNoProcedure = () => {
-    post(COMPLIANCE_URL, 'tipoacesso=semprocedimento&numeroprocedimento=&descricao=', () => { location.reload() })
+    document.querySelector('#procedure-form-group').style.display = 'none'
+    complianceNumberMandatory = false
+    showComplianceForm()
+    // post(COMPLIANCE_URL, 'tipoacesso=semprocedimento&numeroprocedimento=&descricao=', () => { location.reload() })
 }
 
 /**
