@@ -37,7 +37,8 @@ def test_extract_addresses_from_credilink():
     saida = extract_addresses_from_credilink(
         input_whereabouts_addresses_credilink
     )
-    assert saida == output_whereabouts_addresses_credilink
+    for s in saida:
+        assert s in output_whereabouts_addresses_credilink
 
 
 class BuscaDeParadeiro(unittest.TestCase):
