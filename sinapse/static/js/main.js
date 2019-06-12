@@ -464,6 +464,11 @@ const updateNodes = (data, nodeId) => {
             // delete them
             network.selectNodes(nodesFromType);
             network.deleteSelected();
+
+            // delete the labels from the sidebar
+            const updatedLabels = labels.filter(label => label.toLowerCase() !== entityType)
+            console.log('updatedLabels', updatedLabels);
+            updateLeftSidebar(updatedLabels, nodesData)
         }
     })
 }
