@@ -22,7 +22,7 @@ resposta_node_ok = {
                         'nodes': [
                             {
                                 'id': '140885160',
-                                'labels': ['pessoa'],
+                                'labels': ['Pessoa'],
                                 'properties': {
                                     'nome_pai': 'FRANCISCO IVAN FONTELE BELCHIOR',
                                     'filho_rel_status_pai': 1,
@@ -70,7 +70,7 @@ resposta_node_sensivel_ok = {
                         'nodes': [
                             {
                                 'id': '395989945',
-                                'labels': ['personagem'],
+                                'labels': ['Personagem'],
                                 'properties': {
                                     'cpf': '11452244740',
                                     'nome': 'DANIEL CARVALHO BELCHIOR',
@@ -138,7 +138,7 @@ resposta_node_sensivel_esp = {
 
 request_filterNodes_ok = {
     'statements': [
-        {'statement': "MATCH (n: pessoa { "
+        {'statement': "MATCH (n: Pessoa { "
          "nome:toUpper('DANIEL CARVALHO BELCHIOR')}) return n limit 100",
          'resultDataContents': [
              'row',
@@ -157,7 +157,7 @@ resposta_filterNodes_ok = {
     'graph': {
         'nodes': [{
             'id': '140885160',
-            'type': ['pessoa'],
+            'type': ['Pessoa'],
             'properties': {
                 'cpf': '11452244740',
                 'dt_nasc': '19850522',
@@ -194,6 +194,73 @@ request_nextNodes_ok = {
     ]
 }
 
+resposta_nextNodes_neo4j = {'results': [
+        {
+            'columns': ['r', 'n', 'x'], 
+'data': [{
+    'graph': {
+    'nodes': [
+        {
+            'id': '395989945',
+            'labels': ['Personagem'],
+            'properties': {
+                'cpf': '11452244740',
+                'nome': 'DANIEL CARVALHO BELCHIOR',
+                'pess_dk': 15535503
+            }
+        },
+        {
+            'id': '359754850',
+            'labels': ['Documento'],
+            'properties': {
+                'cdorgao': 400749,
+                'classe': 'Notícia de Fato',
+                'docu_dk': 17430731,
+                'dt_cadastro': '12/01/2018 15:46:42',
+                'nr_mprj': 201800032105
+            }
+        },
+        {
+            'id': '140885160',
+            'labels': ['Pessoa'],
+            'properties': {
+                'cpf': '11452244740',
+                'dt_nasc': '19850522',
+                'filho_rel_status': 1,
+                'filho_rel_status_pai': 1,
+                'nome': 'DANIEL CARVALHO BELCHIOR',
+                'nome_mae': 'MARTA CARVALHO BELCHIOR',
+                'nome_pai': 'FRANCISCO IVAN FONTELE BELCHIOR',
+                'nome_rg': 'DANIEL CARVALHO BELCHIOR',
+                'rg': '131242950',
+                'sexo': '1',
+                'uf': 'RJ',
+                'visitado': False
+            }
+        }
+    ],
+    'relationships': [
+        {
+            'endNode': '359754850',
+            'id': '256806410',
+            'properties': {
+                'papel': 'NOTICIANTE'
+            },
+            'startNode': '395989945',
+            'type': 'PERSONAGEM'
+        },
+        {
+            'endNode': '395989945',
+            'id': '277481565',
+            'properties': {
+                'papel': 'NOTICIANTE'
+            },
+            'startNode': '140885160',
+            'type': 'Personagem'
+        }
+    ],
+    }}]}]}
+
 resposta_nextNodes_ok = {'results': [
         {
             'columns': ['r', 'n', 'x'], 
@@ -202,7 +269,7 @@ resposta_nextNodes_ok = {'results': [
     'nodes': [
         {
             'id': '395989945',
-            'type': ['personagem'],
+            'type': ['Personagem'],
             'properties': {
                 'cpf': '11452244740',
                 'nome': 'DANIEL CARVALHO BELCHIOR',
@@ -226,7 +293,7 @@ resposta_nextNodes_ok = {'results': [
         },
         {
             'id': '140885160',
-            'type': ['pessoa'],
+            'type': ['Pessoa'],
             'properties': {
                 'cpf': '11452244740',
                 'dt_nasc': '19850522',
@@ -255,7 +322,7 @@ resposta_nextNodes_ok = {'results': [
             'from': '395989945',
             'arrows': 'to',
             'dashes': False,
-            'label': 'personagem'
+            'label': 'Personagem'
         },
         {
             'to': '395989945',
@@ -266,7 +333,7 @@ resposta_nextNodes_ok = {'results': [
             'from': '140885160',
             'arrows': 'to',
             'dashes': False,
-            'label': 'personagem'
+            'label': 'Personagem'
         }
     ],
         'relationships': [
@@ -288,7 +355,7 @@ resposta_sensivel_mista = {
             'columns': ['r', 'n', 'x'], 
             'data': [{
                 'graph': {
-                    'nodes': [{'id': '85604696', 'labels': ['pessoa'],
+                    'nodes': [{'id': '85604696', 'labels': ['Pessoa'],
                     'properties': {
                         'uf': 'RJ',
                         'nome_pai': 'E P R',
@@ -302,7 +369,7 @@ resposta_sensivel_mista = {
                         'uuid': 'abde',
                         'nome_rg': 'N R P',
                         'dt_nasc': '20180709',
-                        }}, {'id': '10844320', 'labels': ['pessoa'], 'properties': {
+                        }}, {'id': '10844320', 'labels': ['Pessoa'], 'properties': {
                         'uf': 'RJ',
                         'cpf': '005',
                         'nome_mae': 'H M P',
@@ -316,7 +383,7 @@ resposta_sensivel_mista = {
                         'startNode': '85604696',
                         'endNode': '10844320',
                         'properties': {},
-    }]}}, {'graph': {'nodes': [{'id': '12075099', 'labels': ['pessoa'],
+    }]}}, {'graph': {'nodes': [{'id': '12075099', 'labels': ['Pessoa'],
                   'properties': {
     'uf': 'RJ',
     'nome_pai': 'E P R',
@@ -331,7 +398,7 @@ resposta_sensivel_mista = {
     'uuid': 'aabbcc',
     'nome_rg': 'A P R',
     'dt_nasc': '20180709',
-    }}, {'id': '10844320', 'labels': ['pessoa'], 'properties': {
+    }}, {'id': '10844320', 'labels': ['Pessoa'], 'properties': {
     'uf': 'RJ',
     'cpf': '020',
     'nome_mae': 'H M P',
@@ -346,7 +413,7 @@ resposta_sensivel_mista = {
     'endNode': '10844320',
     'properties': {'sensivel': '1'},
     }]}}, 
-        {'graph': {'nodes': [{'id': '57161336', 'labels': ['pessoa'],
+        {'graph': {'nodes': [{'id': '57161336', 'labels': ['Pessoa'],
                   'properties': {
     'uf': 'RJ',
     'nome_pai': 'E P R',
@@ -360,7 +427,7 @@ resposta_sensivel_mista = {
     'uuid': 'efe3',
     'nome_rg': 'S P R',
     'dt_nasc': '20180709',
-    }}, {'id': '10844320', 'labels': ['pessoa'], 'properties': {
+    }}, {'id': '10844320', 'labels': ['Pessoa'], 'properties': {
     'uf': 'RJ',
     'cpf': '020',
     'nome_mae': 'H M P',
@@ -375,7 +442,7 @@ resposta_sensivel_mista = {
     'endNode': '10844320',
     'properties': {},
     }]}}, 
-        {'graph': {'nodes': [{'id': '10844320', 'labels': ['pessoa'],
+        {'graph': {'nodes': [{'id': '10844320', 'labels': ['Pessoa'],
                   'properties': {
     'uf': 'RJ',
     'cpf': '015',
@@ -384,7 +451,7 @@ resposta_sensivel_mista = {
     'sensivel': '1',
     'sexo': '2',
     'dt_nasc': '20180709',
-    }}, {'id': '116929750', 'labels': ['pessoa'], 'properties': {
+    }}, {'id': '116929750', 'labels': ['Pessoa'], 'properties': {
     'uf': 'RJ',
     'nome_pai': 'E P R',
     'rg': '016',
@@ -407,7 +474,7 @@ resposta_sensivel_mista = {
 
 resposta_sensivel_mista_esp = {
     'results': [{'columns': ['r', 'n', 'x'], 'data': [{
-        'graph': {'nodes': [{'id': '85604696', 'labels': ['pessoa'],
+        'graph': {'nodes': [{'id': '85604696', 'labels': ['Pessoa'],
                   'properties': {
     'uf': 'RJ',
     'nome_pai': 'E P R',
@@ -439,7 +506,7 @@ resposta_sensivel_mista_esp = {
     'endNode': '10844320',
     'properties': {},
     }]}}, {
-        'graph': {'nodes': [{'id': '57161336', 'labels': ['pessoa'],
+        'graph': {'nodes': [{'id': '57161336', 'labels': ['Pessoa'],
                   'properties': {
     'uf': 'RJ',
     'nome_pai': 'E P R',
@@ -463,7 +530,7 @@ resposta_sensivel_mista_esp = {
     }]}}, {
         'graph': {'nodes': [{'id': '10844320', 'labels': ['sigiloso'],
                   'properties': {
-    }}, {'id': '116929750', 'labels': ['pessoa'], 'properties': {
+    }}, {'id': '116929750', 'labels': ['Pessoa'], 'properties': {
     'uf': 'RJ',
     'nome_pai': 'E P R',
     'rg': '016',
@@ -485,7 +552,7 @@ resposta_sensivel_mista_esp = {
     }]}}]}], 'errors': []}
 
 request_nodeproperties_ok = {
-    'query': 'MATCH (n:pessoa)  RETURN  keys(n) limit 1'
+    'query': 'MATCH (n:Pessoa)  RETURN  keys(n) limit 1'
 }
 
 resposta_nodeproperties_ok = {
@@ -496,14 +563,14 @@ resposta_nodeproperties_ok = {
 }
 
 resposta_label_ok = [
-    'multa',
-    'veiculo',
-    'personagem',
-    'telefone',
+    'Multa',
+    'Veiculo',
+    'Personagem',
+    'Telefone',
     'mgp',
     'empresa',
     'orgao',
-    'pessoa'
+    'Pessoa'
 ]
 
 resposta_relationships_ok = [
@@ -515,15 +582,15 @@ resposta_relationships_ok = [
     'membro_inativo',
     'servidor_mprj',
     'responsavel',
-    'personagem',
+    'Personagem',
     'orgao_responsavel',
-    'telefonema'
+    'Telefonema'
 ]
 
 request_nextNodes_doisfiltros_ok = {
     'statements': [
         {
-            'statement': 'MATCH r = (n)-[:filho|:trabalha*..1]-(x) '
+            'statement': 'MATCH r = (n)-[:FILHO|:TRABALHA*..1]-(x) '
             'where id(n) = 395989945 return r,n,x limit 100',
             'resultDataContents': ['row', 'graph']}
     ]
@@ -622,7 +689,7 @@ resposta_nextNodes_doisfiltros_ok = {
                 "uf":"RJ",
                 "visitado":False
             },
-            "type":["pessoa"]
+            "type":["Pessoa"]
         },
         {
             "id":"205537878",
@@ -639,7 +706,7 @@ resposta_nextNodes_doisfiltros_ok = {
                 "sexo":"2",
                 "uf":"RJ"
             },
-            "type":["pessoa"]
+            "type":["Pessoa"]
         },
         {
             "id":"205176041",
@@ -656,7 +723,7 @@ resposta_nextNodes_doisfiltros_ok = {
                 "sexo":"1",
                 "uf":"RJ"
             },
-            "type":["pessoa"]
+            "type":["Pessoa"]
         },
         {
             "id":"411356688",
@@ -672,7 +739,7 @@ resposta_nextNodes_doisfiltros_ok = {
                 "rg":"332462886",
                 "uf":"RJ"
             },
-            "type":["pessoa"]
+            "type":["Pessoa"]
         },
         {
             "id":"119932160",
@@ -689,7 +756,7 @@ resposta_nextNodes_doisfiltros_ok = {
                 "sexo":"2",
                 "uf":"RJ"
             },
-            "type":["pessoa"]
+            "type":["Pessoa"]
         },
         {
             "id":"107380408",
@@ -706,7 +773,7 @@ resposta_nextNodes_doisfiltros_ok = {
                 "sexo":"1",
                 "uf":"RJ"
             },
-            "type":["pessoa"]
+            "type":["Pessoa"]
         }
     ],
     'numero_de_expansoes': [73, 73, 73]
@@ -715,7 +782,7 @@ resposta_nextNodes_doisfiltros_ok = {
 request_nextNodes_umfiltro_ok = {
     'statements': [
         {
-            'statement': 'MATCH r = (n)-[:filho*..1]-(x) '
+            'statement': 'MATCH r = (n)-[:FILHO*..1]-(x) '
             'where id(n) = 395989945 return r,n,x limit 100',
             'resultDataContents': ['row', 'graph']}
     ]
@@ -785,7 +852,7 @@ resposta_nextNodes_umfiltro_ok = {
                 "sexo":"2",
                 "uf":"RJ"
             },
-            "type":["pessoa"]
+            "type":["Pessoa"]
         },
         {
             "id":"140885160",
@@ -803,7 +870,7 @@ resposta_nextNodes_umfiltro_ok = {
                 "uf":"RJ",
                 "visitado":False
             },
-            "type":["pessoa"]
+            "type":["Pessoa"]
         },
         {
             "id":"205176041",
@@ -820,7 +887,7 @@ resposta_nextNodes_umfiltro_ok = {
                 "sexo":"1",
                 "uf":"RJ"
             },
-            "type":["pessoa"]
+            "type":["Pessoa"]
         },
         {
             "id":"411356688",
@@ -836,7 +903,7 @@ resposta_nextNodes_umfiltro_ok = {
                 "rg":"332462886",
                 "uf":"RJ"
             },
-            "type":["pessoa"]
+            "type":["Pessoa"]
         },
         {
             "id":"119932160",
@@ -853,7 +920,7 @@ resposta_nextNodes_umfiltro_ok = {
                 "sexo":"2",
                 "uf":"RJ"
             },
-            "type":["pessoa"]
+            "type":["Pessoa"]
         },
         {
             "id":"107380408",
@@ -870,7 +937,7 @@ resposta_nextNodes_umfiltro_ok = {
                 "sexo":"1",
                 "uf":"RJ"
             },
-            "type":["pessoa"]
+            "type":["Pessoa"]
         }
     ],
     'numero_de_expansoes': [73, 73, 73]
@@ -879,8 +946,8 @@ resposta_nextNodes_umfiltro_ok = {
 request_findShortestPath_doisfiltros_ok = {
     "statements": [
         {
-        "statement": "MATCH p = allShortestPaths((a)-[:filho|:personagem*]-(b)) "
-            "WHERE id(a) = 140885160 AND id(b) = 328898991 RETURN p",
+        "statement": "MATCH p = allShortestPaths((a:Pessoa)-[:FILHO|:PERSONAGEM*]-(b:Pessoa)) "
+            "WHERE a.uuid = '140885160' AND b.uuid = '328898991' RETURN p",
         "resultDataContents": ["row", "graph"]
         }
     ]
@@ -894,8 +961,8 @@ resposta_findShortestPath_doisfiltros_ok = {
 request_findShortestPath_umfiltro_ok = {
     "statements": [
         {
-        "statement": "MATCH p = allShortestPaths((a)-[:trabalha*]-(b)) "
-            "WHERE id(a) = 140885160 AND id(b) = 328898991 RETURN p",
+        "statement": "MATCH p = allShortestPaths((a:Pessoa)-[:TRABALHA*]-(b:Pessoa)) "
+            "WHERE a.uuid = '140885160' AND b.uuid = '328898991' RETURN p",
         "resultDataContents": ["row", "graph"]
         }
     ]
@@ -977,7 +1044,7 @@ resposta_findShortestPath_umfiltro_ok = {
                 "sexo":"2",
                 "uf":"RJ"
             },
-            "type":["pessoa"]
+            "type":["Pessoa"]
         },
         {
             "id":"329437779",
@@ -1009,7 +1076,7 @@ resposta_findShortestPath_umfiltro_ok = {
                 "sexo":"1",
                 "uf":"RJ"
             },
-            "type":["pessoa"]
+            "type":["Pessoa"]
         },
         {
             "id":"328898991",
@@ -1032,7 +1099,7 @@ resposta_findShortestPath_umfiltro_ok = {
                 "uf":"RJ",
                 "visitado":False
             },
-            "type":["pessoa"]
+            "type":["Pessoa"]
         },
         {
             "id":"304029249",
@@ -1063,88 +1130,111 @@ request_findShortestPath_ok = {
     ]
 }
 
+resposta_findShortestPath_neo4j = {'results': [{'columns': ['p'],
+   'data': [{'row': [[{'nome': 'DANIEL CARVALHO BELCHIOR'},
+       {'parentesco': 'PAI'},
+       {'nome': 'MARCOS CESAR LIMA DE ALMEIDA BELCHIOR'},
+       {'parentesco': 'MAE'},
+       {'nome': 'SILVIA LIMA DE ALMEIDA'}]],
+     'meta': [[{'id': 199297536, 'type': 'node', 'deleted': False},
+       {'id': 285879991, 'type': 'relationship', 'deleted': False},
+       {'id': 168635844, 'type': 'node', 'deleted': False},
+       {'id': 125465326, 'type': 'relationship', 'deleted': False},
+       {'id': 156065417, 'type': 'node', 'deleted': False}]],
+     'graph': {'nodes': [{'id': '199297536',
+        'labels': ['Pessoa'],
+        'properties': {'nome': 'DANIEL CARVALHO BELCHIOR'}},
+       {'id': '156065417',
+        'labels': ['Pessoa'],
+        'properties': {'nome': 'SILVIA LIMA DE ALMEIDA'}},
+       {'id': '168635844',
+        'labels': ['Pessoa'],
+        'properties': {'nome': 'MARCOS CESAR LIMA DE ALMEIDA BELCHIOR'}}],
+      'relationships': [{'id': '125465326',
+        'type': 'FILHO',
+        'startNode': '168635844',
+        'endNode': '156065417',
+        'properties': {'parentesco': 'MAE'}},
+       {'id': '285879991',
+        'type': 'FILHO',
+        'startNode': '168635844',
+        'endNode': '199297536',
+        'properties': {'parentesco': 'PAI'}}]}},
+    {'row': [[{'nome': 'DANIEL CARVALHO BELCHIOR'},
+       {'parentesco': 'PAI'},
+       {'nome': 'JULIA LIMA DE ALMEIDA BELCHIOR'},
+       {'parentesco': 'MAE'},
+       {'nome': 'SILVIA LIMA DE ALMEIDA'}]],
+     'meta': [[{'id': 199297536, 'type': 'node', 'deleted': False},
+       {'id': 290766384, 'type': 'relationship', 'deleted': False},
+       {'id': 347604003, 'type': 'node', 'deleted': False},
+       {'id': 83849891, 'type': 'relationship', 'deleted': False},
+       {'id': 156065417, 'type': 'node', 'deleted': False}]],
+     'graph': {'nodes': [{'id': '199297536',
+        'labels': ['Pessoa'],
+        'properties': {'nome': 'DANIEL CARVALHO BELCHIOR'}},
+       {'id': '156065417',
+        'labels': ['Pessoa'],
+        'properties': {'nome': 'SILVIA LIMA DE ALMEIDA'}},
+       {'id': '347604003',
+        'labels': ['Pessoa'],
+        'properties': {'nome': 'JULIA LIMA DE ALMEIDA BELCHIOR'}}],
+      'relationships': [{'id': '290766384',
+        'type': 'FILHO',
+        'startNode': '347604003',
+        'endNode': '199297536',
+        'properties': {'parentesco': 'PAI'}},
+       {'id': '83849891',
+        'type': 'FILHO',
+        'startNode': '347604003',
+        'endNode': '156065417',
+        'properties': {'parentesco': 'MAE'}}]}},
+    {'row': [[{'nome': 'DANIEL CARVALHO BELCHIOR'},
+       {'parentesco': 'PAI'},
+       {'nome': 'LUIZA LIMA DE ALMEIDA BELCHIOR'},
+       {'parentesco': 'MAE'},
+       {'nome': 'SILVIA LIMA DE ALMEIDA'}]],
+     'meta': [[{'id': 199297536, 'type': 'node', 'deleted': False},
+       {'id': 285885199, 'type': 'relationship', 'deleted': False},
+       {'id': 227706061, 'type': 'node', 'deleted': False},
+       {'id': 58074695, 'type': 'relationship', 'deleted': False},
+       {'id': 156065417, 'type': 'node', 'deleted': False}]],
+     'graph': {'nodes': [{'id': '199297536',
+        'labels': ['Pessoa'],
+        'properties': {'nome': 'DANIEL CARVALHO BELCHIOR'}},
+       {'id': '156065417',
+        'labels': ['Pessoa'],
+        'properties': {'nome': 'SILVIA LIMA DE ALMEIDA'}},
+       {'id': '227706061',
+        'labels': ['Pessoa'],
+        'properties': {'nome': 'LUIZA LIMA DE ALMEIDA BELCHIOR'}}],
+      'relationships': [{'id': '58074695',
+        'type': 'FILHO',
+        'startNode': '227706061',
+        'endNode': '156065417',
+        'properties': {'parentesco': 'MAE'}},
+       {'id': '285885199',
+        'type': 'FILHO',
+        'startNode': '227706061',
+        'endNode': '199297536',
+        'properties': {'parentesco': 'PAI'}}]}}]}],
+ 'errors': []}
+
 resposta_findShortestPath_ok = {
     "edges": [
-        {
-            "arrows":"to",
-            "dashes":False,
-            "from":"81208568",
-            "id":"384945543",
-            "label":"trabalha",
-            "properties":{
-                "dt_admissao":"20180601"
-                },
-            "to":"328898991"
-        },
-        {
-            "arrows":"to",
-            "dashes":False,
-            "from":"205537878",
-            "id":"304651477",
-            "label":"filho",
-            "properties":{},
-            "to":"81208568"
-        },
-        {
-            "arrows":"to",
-            "dashes":False,
-            "from":"205537878",
-            "id":"288234032",
-            "label":"filho",
-            "properties":{},
-            "to":"140885160"
-        }
+        {'id': '285885199', 'arrows': 'to', 'dashes': False, 'label': 'FILHO', 'from': '227706061', 'to': '199297536', 'properties': {'parentesco': 'PAI'}},
+        {'id': '58074695', 'arrows': 'to', 'dashes': False, 'label': 'FILHO', 'from': '227706061', 'to': '156065417', 'properties': {'parentesco': 'MAE'}},
+        {'id': '83849891', 'arrows': 'to', 'dashes': False, 'label': 'FILHO', 'from': '347604003', 'to': '156065417', 'properties': {'parentesco': 'MAE'}},
+        {'id': '290766384', 'arrows': 'to', 'dashes': False, 'label': 'FILHO', 'from': '347604003', 'to': '199297536', 'properties': {'parentesco': 'PAI'}},
+        {'id': '125465326', 'arrows': 'to', 'dashes': False, 'label': 'FILHO', 'from': '168635844', 'to': '156065417', 'properties': {'parentesco': 'MAE'}},
+        {'id': '285879991', 'arrows': 'to', 'dashes': False, 'label': 'FILHO', 'from': '168635844', 'to': '199297536', 'properties': {'parentesco': 'PAI'}},
     ],
     "nodes":[
-        {
-            "id":"205537878",
-            "properties":{
-                "cpf":"17937488700",
-                "dt_nasc":"20120924",
-                "filho_rel_status":7,
-                "filho_rel_status_pai":1,
-                "nome":"LUIZA LIMA DE ALMEIDA BELCHIOR",
-                "nome_mae":"SILVIA LIMA DE ALMEIDA",
-                "nome_pai":"DANIEL CARVALHO BELCHIOR",
-                "nome_rg":"LUIZA LIMA DE ALMEIDA BELCHIOR",
-                "rg":"298572447",
-                "sexo":"2",
-                "uf":"RJ"},
-            "type":["pessoa"]
-        },
-        {
-            "id":"140885160",
-            "properties":{
-                "cpf":"11452244740",
-                "dt_nasc":"19850522",
-                "filho_rel_status":1,
-                "filho_rel_status_pai":1,
-                "nome":"DANIEL CARVALHO BELCHIOR",
-                "nome_mae":"MARTA CARVALHO BELCHIOR",
-                "nome_pai":"FRANCISCO IVAN FONTELE BELCHIOR",
-                "nome_rg":"DANIEL CARVALHO BELCHIOR",
-                "rg":"131242950",
-                "sexo":"1",
-                "uf":"RJ",
-                "visitado":False},
-            "type":["pessoa"]
-        },
-        {
-            "id":"81208568",
-            "properties":{
-                "cpf":"10069222703",
-                "dt_nasc":"19820723",
-                "filho_rel_status":3,
-                "filho_rel_status_pai":1,
-                "nome":"SILVIA LIMA DE ALMEIDA",
-                "nome_mae":"MARIA FREITAS DE LIMA",
-                "nome_pai":"AMARO JOSE DE ALMEIDA PINHEIRO",
-                "nome_rg":"SILVIA LIMA DE ALMEIDA",
-                "rg":"203556378",
-                "sexo":"2",
-                "uf":"RJ"},
-            "type":["pessoa"]
-        }
+        {'id': '156065417', 'type': ['Pessoa'], 'properties': {'nome': 'SILVIA LIMA DE ALMEIDA'}},
+        {'id': '227706061', 'type': ['Pessoa'], 'properties': {'nome': 'LUIZA LIMA DE ALMEIDA BELCHIOR'}},
+        {'id': '199297536', 'type': ['Pessoa'], 'properties': {'nome': 'DANIEL CARVALHO BELCHIOR'}},
+        {'id': '347604003', 'type': ['Pessoa'], 'properties': {'nome': 'JULIA LIMA DE ALMEIDA BELCHIOR'}},
+        {'id': '168635844', 'type': ['Pessoa'], 'properties': {'nome': 'MARCOS CESAR LIMA DE ALMEIDA BELCHIOR'}}
     ]
 }
 
@@ -1161,8 +1251,8 @@ casos_servicos = [
 ]
 
 query_dinamica = [
-    {'statement': "optional match (a:pessoa {nome:toUpper('DANIEL CARVALHO BELCHIOR')}) "
-                  "optional match (b:personagem {pess_dk:24728287}) return a,b limit 100",
+    {'statement': "optional match (a:Pessoa {nome:toUpper('DANIEL CARVALHO BELCHIOR')}) "
+                  "optional match (b:Personagem {pess_dk:24728287}) return a,b limit 100",
                   'resultDataContents': ['graph']}] 
 
 # Vis.js Parser
@@ -1286,23 +1376,27 @@ get_path_input = {'results': [{'columns': ['p'],
        {'id': 125465326, 'type': 'relationship', 'deleted': False},
        {'id': 156065417, 'type': 'node', 'deleted': False}]],
      'graph': {'nodes': [{'id': '199297536',
-        'labels': ['Pessoa'],
+        'type': ['Pessoa'],
         'properties': {'nome': 'DANIEL CARVALHO BELCHIOR'}},
        {'id': '156065417',
-        'labels': ['Pessoa'],
+        'type': ['Pessoa'],
         'properties': {'nome': 'SILVIA LIMA DE ALMEIDA'}},
        {'id': '168635844',
-        'labels': ['Pessoa'],
+        'type': ['Pessoa'],
         'properties': {'nome': 'MARCOS CESAR LIMA DE ALMEIDA BELCHIOR'}}],
       'relationships': [{'id': '125465326',
-        'type': 'FILHO',
-        'startNode': '168635844',
-        'endNode': '156065417',
+        'label': 'FILHO',
+        'from': '168635844',
+        'to': '156065417',
+        'arrows': 'to',
+        'dashes': False,
         'properties': {'parentesco': 'MAE'}},
        {'id': '285879991',
-        'type': 'FILHO',
-        'startNode': '168635844',
-        'endNode': '199297536',
+        'label': 'FILHO',
+        'from': '168635844',
+        'to': '199297536',
+        'arrows': 'to',
+        'dashes': False,
         'properties': {'parentesco': 'PAI'}}]}},
     {'row': [[{'nome': 'DANIEL CARVALHO BELCHIOR'},
        {'parentesco': 'PAI'},
@@ -1315,23 +1409,27 @@ get_path_input = {'results': [{'columns': ['p'],
        {'id': 83849891, 'type': 'relationship', 'deleted': False},
        {'id': 156065417, 'type': 'node', 'deleted': False}]],
      'graph': {'nodes': [{'id': '199297536',
-        'labels': ['Pessoa'],
+        'type': ['Pessoa'],
         'properties': {'nome': 'DANIEL CARVALHO BELCHIOR'}},
        {'id': '156065417',
-        'labels': ['Pessoa'],
+        'type': ['Pessoa'],
         'properties': {'nome': 'SILVIA LIMA DE ALMEIDA'}},
        {'id': '347604003',
-        'labels': ['Pessoa'],
+        'type': ['Pessoa'],
         'properties': {'nome': 'JULIA LIMA DE ALMEIDA BELCHIOR'}}],
       'relationships': [{'id': '290766384',
-        'type': 'FILHO',
-        'startNode': '347604003',
-        'endNode': '199297536',
+        'label': 'FILHO',
+        'from': '347604003',
+        'to': '199297536',
+        'arrows': 'to',
+        'dashes': False,
         'properties': {'parentesco': 'PAI'}},
        {'id': '83849891',
-        'type': 'FILHO',
-        'startNode': '347604003',
-        'endNode': '156065417',
+        'label': 'FILHO',
+        'from': '347604003',
+        'to': '156065417',
+        'arrows': 'to',
+        'dashes': False,
         'properties': {'parentesco': 'MAE'}}]}},
     {'row': [[{'nome': 'DANIEL CARVALHO BELCHIOR'},
        {'parentesco': 'PAI'},
@@ -1344,47 +1442,51 @@ get_path_input = {'results': [{'columns': ['p'],
        {'id': 58074695, 'type': 'relationship', 'deleted': False},
        {'id': 156065417, 'type': 'node', 'deleted': False}]],
      'graph': {'nodes': [{'id': '199297536',
-        'labels': ['Pessoa'],
+        'type': ['Pessoa'],
         'properties': {'nome': 'DANIEL CARVALHO BELCHIOR'}},
        {'id': '156065417',
-        'labels': ['Pessoa'],
+        'type': ['Pessoa'],
         'properties': {'nome': 'SILVIA LIMA DE ALMEIDA'}},
        {'id': '227706061',
-        'labels': ['Pessoa'],
+        'type': ['Pessoa'],
         'properties': {'nome': 'LUIZA LIMA DE ALMEIDA BELCHIOR'}}],
       'relationships': [{'id': '58074695',
-        'type': 'FILHO',
-        'startNode': '227706061',
-        'endNode': '156065417',
+        'label': 'FILHO',
+        'from': '227706061',
+        'to': '156065417',
+        'arrows': 'to',
+        'dashes': False,
         'properties': {'parentesco': 'MAE'}},
        {'id': '285885199',
-        'type': 'FILHO',
-        'startNode': '227706061',
-        'endNode': '199297536',
+        'label': 'FILHO',
+        'from': '227706061',
+        'to': '199297536',
+        'arrows': 'to',
+        'dashes': False,
         'properties': {'parentesco': 'PAI'}}]}}]}],
  'errors': []}
 
 get_path_output = {'paths': [
     [
-        {'id': '199297536', 'labels': ['Pessoa'], 'properties': {'nome': 'DANIEL CARVALHO BELCHIOR'}},
-        {'id': '285879991', 'type': 'FILHO', 'startNode': '168635844', 'endNode': '199297536', 'properties': {'parentesco': 'PAI'}},
-        {'id': '168635844', 'labels': ['Pessoa'], 'properties': {'nome': 'MARCOS CESAR LIMA DE ALMEIDA BELCHIOR'}},
-        {'id': '125465326', 'type': 'FILHO', 'startNode': '168635844', 'endNode': '156065417', 'properties': {'parentesco': 'MAE'}},
-        {'id': '156065417', 'labels': ['Pessoa'], 'properties': {'nome': 'SILVIA LIMA DE ALMEIDA'}}
+        {'id': '199297536', 'type': ['Pessoa'], 'properties': {'nome': 'DANIEL CARVALHO BELCHIOR'}},
+        {'id': '285879991', 'label': 'FILHO', 'from': '168635844', 'to': '199297536', 'arrows': 'to', 'dashes': False, 'properties': {'parentesco': 'PAI'}},
+        {'id': '168635844', 'type': ['Pessoa'], 'properties': {'nome': 'MARCOS CESAR LIMA DE ALMEIDA BELCHIOR'}},
+        {'id': '125465326', 'label': 'FILHO', 'from': '168635844', 'to': '156065417', 'arrows': 'to', 'dashes': False, 'properties': {'parentesco': 'MAE'}},
+        {'id': '156065417', 'type': ['Pessoa'], 'properties': {'nome': 'SILVIA LIMA DE ALMEIDA'}}
     ],
     [
-        {'id': '199297536', 'labels': ['Pessoa'], 'properties': {'nome': 'DANIEL CARVALHO BELCHIOR'}},
-        {'id': '290766384', 'type': 'FILHO', 'startNode': '347604003', 'endNode': '199297536', 'properties': {'parentesco': 'PAI'}},
-        {'id': '347604003', 'labels': ['Pessoa'], 'properties': {'nome': 'JULIA LIMA DE ALMEIDA BELCHIOR'}},
-        {'id': '83849891', 'type': 'FILHO', 'startNode': '347604003', 'endNode': '156065417', 'properties': {'parentesco': 'MAE'}},
-        {'id': '156065417', 'labels': ['Pessoa'], 'properties': {'nome': 'SILVIA LIMA DE ALMEIDA'}}
+        {'id': '199297536', 'type': ['Pessoa'], 'properties': {'nome': 'DANIEL CARVALHO BELCHIOR'}},
+        {'id': '290766384', 'label': 'FILHO', 'from': '347604003', 'to': '199297536', 'arrows': 'to', 'dashes': False, 'properties': {'parentesco': 'PAI'}},
+        {'id': '347604003', 'type': ['Pessoa'], 'properties': {'nome': 'JULIA LIMA DE ALMEIDA BELCHIOR'}},
+        {'id': '83849891', 'label': 'FILHO', 'from': '347604003', 'to': '156065417', 'arrows': 'to', 'dashes': False, 'properties': {'parentesco': 'MAE'}},
+        {'id': '156065417', 'type': ['Pessoa'], 'properties': {'nome': 'SILVIA LIMA DE ALMEIDA'}}
     ],
     [
-        {'id': '199297536', 'labels': ['Pessoa'], 'properties': {'nome': 'DANIEL CARVALHO BELCHIOR'}},
-        {'id': '285885199', 'type': 'FILHO', 'startNode': '227706061', 'endNode': '199297536', 'properties': {'parentesco': 'PAI'}},
-        {'id': '227706061', 'labels': ['Pessoa'], 'properties': {'nome': 'LUIZA LIMA DE ALMEIDA BELCHIOR'}},
-        {'id': '58074695', 'type': 'FILHO', 'startNode': '227706061', 'endNode': '156065417', 'properties': {'parentesco': 'MAE'}},
-        {'id': '156065417', 'labels': ['Pessoa'], 'properties': {'nome': 'SILVIA LIMA DE ALMEIDA'}}
+        {'id': '199297536', 'type': ['Pessoa'], 'properties': {'nome': 'DANIEL CARVALHO BELCHIOR'}},
+        {'id': '285885199', 'label': 'FILHO', 'from': '227706061', 'to': '199297536', 'arrows': 'to', 'dashes': False, 'properties': {'parentesco': 'PAI'}},
+        {'id': '227706061', 'type': ['Pessoa'], 'properties': {'nome': 'LUIZA LIMA DE ALMEIDA BELCHIOR'}},
+        {'id': '58074695', 'label': 'FILHO', 'from': '227706061', 'to': '156065417', 'arrows': 'to', 'dashes': False, 'properties': {'parentesco': 'MAE'}},
+        {'id': '156065417', 'type': ['Pessoa'], 'properties': {'nome': 'SILVIA LIMA DE ALMEIDA'}}
     ]
 ]}
 
@@ -1410,7 +1512,7 @@ resposta_get_node_from_id_ok = {
                         'nodes': [
                             {
                                 'id': '140885160', 
-                                'labels': ['pessoa'], 
+                                'labels': ['Pessoa'], 
                                 'properties': {
                                     'nome_pai': 'FRANCISCO IVAN FONTELE BELCHIOR', 
                                     'filho_rel_status_pai': 1, 
@@ -1448,7 +1550,7 @@ resposta_get_node_from_id_sensivel_ok = {
                         'nodes': [
                             {
                                 'id': '140885160', 
-                                'labels': ['pessoa'], 
+                                'labels': ['Pessoa'], 
                                 'properties': {
                                     'nome_pai': 'FRANCISCO IVAN FONTELE BELCHIOR', 
                                     'filho_rel_status_pai': 1, 
