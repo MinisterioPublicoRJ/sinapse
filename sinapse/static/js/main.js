@@ -596,6 +596,18 @@ const initVersion = () => {
 
 const showEntity = (entityType, uuid) => {
     console.log(`showEntity(${entityType}, ${uuid})`)
+    // remove logo href link
+    document.querySelector('#conexaologo').removeAttribute('href')
+    // add a click function to
+    document.querySelector('#conexaologo').onclick = () => {
+        // show search again
+        document.querySelector('.busca').style.display = 'block'
+        // hide graph
+        document.querySelector('#graph').className = 'graphhidden'
+        // hide sidebars
+        $('#sidebarRight').dialog('close')
+        $('.entitylist').dialog('close')
+    }
     document.querySelector('.busca').style.display = 'none'
     findNodes(entityType, 'uuid', uuid)
 }
