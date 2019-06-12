@@ -119,6 +119,7 @@ export const updateLeftSidebar = (labels, nodesData) => {
                 <h2>
                     <a data-toggle='collapse' href='#collapse-${type}' role='button' class='color-${type} collapsed'>> ${nodesForThisType.length > 1 ? typeNamePlural(type) : typeNameSingular(type)}</a>
                     <a class="color-${type} ${type} entity fa fa-eye" role="button"></a>
+                    <a class="color-${type} ${type} entity-trash fa fa-trash" role="button"></a>
                 </h2>
                 <dl class='collapse' id='collapse-${type}'>
             `

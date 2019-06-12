@@ -87,9 +87,7 @@ const initVisjs = () => {
             },
         },
         manipulation: {
-            addEdge: false,
-            addNode: false,
-            enabled: true,
+            enabled: false,
         },
         nodes: {
             chosen: {
@@ -109,7 +107,7 @@ const initVisjs = () => {
         },
     }
     network = new vis.Network(container, data, options)
-    
+
     // Don't change to arrow function (`this` wouldn't work)
     network.on('click', function(params) {
         const selectedNodeId = this.getNodeAt(params.pointer.DOM)
@@ -135,7 +133,7 @@ const initVisjs = () => {
 }
 
 /**
- * Gets 
+ * Gets
  * @param {Number} nodeId A Node ID to fetch from API
  */
 const getNextNodes = nodeId => {
@@ -336,7 +334,7 @@ const findNodes = (label, prop, val) => {
 
 /**
  * Call getNextNodes on node returned by findNodes, so the graph comes already expanded on first level (instead of a single node)
- * @param {Object} data 
+ * @param {Object} data
  * @param {Object[]} data.nodes
  * @param {String} data.nodes[].id
  */
@@ -442,7 +440,6 @@ const updateNodes = (data, nodeId) => {
     updateLeftSidebar(labels, nodesData)
 
     document.querySelectorAll('#entitylist .entity').forEach(filter => {
-        console.log("eye filter, ", filter)
         filter.onclick = e => {
             let entityType = filter.classList[1]
             if (filter.classList.contains('fa-eye-slash')) {
@@ -453,6 +450,20 @@ const updateNodes = (data, nodeId) => {
                 filteredEntityTypes.push(entityType)
             }
             updateFilteredEntityTypes()
+        }
+    })
+
+    document.querySelectorAll('#entitylist .entity-trash').forEach(filter => {
+        filter.onclick = e => {
+          // find all the nodes from that category
+            const entityType = filter.classList[1];
+            const nodesFromType = nodesData
+            .filter(node => node.type[0].toLowerCase() === entityType)
+            .map(node => node.id);
+
+            // delete them
+            network.selectNodes(nodesFromType);
+            network.deleteSelected();
         }
     })
 }
