@@ -118,6 +118,7 @@ export const updateLeftSidebar = (labels, nodesData) => {
             entityListToWrite += `
                 <h2>
                     <a data-toggle='collapse' href='#collapse-${type}' role='button' class='color-${type} collapsed'>> ${nodesForThisType.length > 1 ? typeNamePlural(type) : typeNameSingular(type)}</a>
+                    <a class="color-${type} ${type} entity fa fa-eye" role="button"></a>
                 </h2>
                 <dl class='collapse' id='collapse-${type}'>
             `
