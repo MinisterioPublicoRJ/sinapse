@@ -30,7 +30,7 @@ const titleProperty = {
 */
 export const entityCard = (entity, key, data, isSearchDetailStep, bondSearchUuid, bondSearchType) => {
     let onclickFn = `onclick="searchDetailStep('${entity.uuid}', '${key}')"`
-    let titleClass = 'col-md-2 text-center container-foto'
+    let titleClass = 'col-md-2 text-center'
     let bodyClass = 'col-md-10'
     let title = `<h3 class="color-${key}">${returnHighlightedProperty(entity, titleProperty[key], data[key].highlighting, titleProperty[key+'Fn'] || null)}</h3>`
 
