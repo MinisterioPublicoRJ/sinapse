@@ -605,7 +605,10 @@ const showEntity = (entityType, uuid) => {
         // hide graph
         document.querySelector('#graph').className = 'graphhidden'
         // hide sidebars
-        $('#sidebarRight').dialog('close')
+        if ($('#sidebarRight').hasClass('ui-dialog-content') && $('#sidebarRight').dialog('isOpen')) {
+            // we have to test if it has been initialized first, so it doesn't error when trying to close
+            $('#sidebarRight').dialog('close')
+        }
         $('.entitylist').dialog('close')
     }
     document.querySelector('.busca').style.display = 'none'
