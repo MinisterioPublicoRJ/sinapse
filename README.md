@@ -1,5 +1,5 @@
 [![Build Status](https://travis-ci.org/MinisterioPublicoRJ/sinapse.svg?branch=master)](https://travis-ci.org/MinisterioPublicoRJ/sinapse)
-[![Coverage Status](https://codecov.io/gh/MinisterioPublicoRJ/sinapse/branch/master/graph/badge.svg)](https://codecov.io/gh/MinisterioPublicoRJ/sinapse) 
+[![Coverage Status](https://codecov.io/gh/MinisterioPublicoRJ/sinapse/branch/master/graph/badge.svg)](https://codecov.io/gh/MinisterioPublicoRJ/sinapse)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/664b2e55beb940bea57b853d61fab391)](https://www.codacy.com/app/SamambaMan/sinapse?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=MinisterioPublicoRJ/sinapse&amp;utm_campaign=Badge_Grade)
 
 # Sinapse
@@ -42,6 +42,7 @@ Para instalação das dependências do projeto é necessário instalar os pacote
 ### Configurando ambiente no Linux
 
     sudo apt-get install redis-server
+    pip install virtualenv
     virtualenv venv
     source venv/bin/activate
     pip install -r dev-requirements.txt
