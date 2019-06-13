@@ -38,20 +38,15 @@ from .fixtures import (
     resposta_sensivel_mista_esp,
     relacoes_sensiveis,
     relacoes_sensiveis_esp,
+    request_filterNodes_ok,
     resposta_filterNodes_ok,
-    resposta_nextNodes_neo4j,
     resposta_nextNodes_ok,
     request_nextNodes_ok,
-    resposta_nextNodes_umfiltro_ok,
     request_nextNodes_umfiltro_ok,
-    resposta_nextNodes_doisfiltros_ok,
     request_nextNodes_doisfiltros_ok,
-    resposta_findShortestPath_neo4j,
     resposta_findShortestPath_ok,
     request_findShortestPath_umfiltro_ok,
-    resposta_findShortestPath_umfiltro_ok,
     request_findShortestPath_doisfiltros_ok,
-    resposta_findShortestPath_doisfiltros_ok,
     request_findShortestPath_ok,
     resposta_nodeproperties_ok,
     request_nodeproperties_ok,
@@ -68,6 +63,7 @@ from .fixtures import (
 def test_parser_visjs():
     saida = parse_json_to_visjs(parser_test_input)
     assert saida == parser_test_output
+
 
 def test_get_path():
     saida = get_path(get_path_input)
@@ -320,7 +316,7 @@ class MetodosConsulta(unittest.TestCase):
         responses.add(
             responses.POST,
             _ENDERECO_NEO4J % '/db/data/transaction/commit',
-            json=resposta_findShortestPath_neo4j
+            json=resposta_findShortestPath_ok
         )
         response = self.app.get(
             'api/findShortestPath',
@@ -331,9 +327,9 @@ class MetodosConsulta(unittest.TestCase):
                 "node_uuid2": '234bcd'
             }
         )
-        expected_response = deepcopy(resposta_findShortestPath_ok)
+        expected_response = deepcopy(
+            parse_json_to_visjs(resposta_findShortestPath_ok))
         expected_response.update(get_path_output)
-        #import ipdb; ipdb.set_trace()
 
         for edge in response.get_json()['edges']:
             assert edge in expected_response['edges']
@@ -407,7 +403,7 @@ class MetodosConsulta(unittest.TestCase):
         responses.add(
             responses.POST,
             _ENDERECO_NEO4J % '/db/data/transaction/commit',
-            json=resposta_nextNodes_neo4j
+            json=resposta_nextNodes_ok
         )
         response = self.app.get(
             'api/nextNodes',
@@ -417,7 +413,7 @@ class MetodosConsulta(unittest.TestCase):
         )
 
         expected_response = parse_json_to_visjs(
-            deepcopy(resposta_nextNodes_neo4j)
+            deepcopy(resposta_nextNodes_ok)
         )
         expected_response['numero_de_expansoes'] = [73, 73, 73]
 
@@ -442,7 +438,7 @@ class MetodosConsulta(unittest.TestCase):
         responses.add(
             responses.POST,
             _ENDERECO_NEO4J % '/db/data/transaction/commit',
-            json=resposta_nextNodes_neo4j
+            json=resposta_nextNodes_ok
         )
     
         self.app.get(
@@ -471,9 +467,9 @@ class MetodosConsulta(unittest.TestCase):
         responses.add(
             responses.POST,
             _ENDERECO_NEO4J % '/db/data/transaction/commit',
-            json=resposta_nextNodes_doisfiltros_ok
+            json=[]
         )
-        response = self.app.get(
+        self.app.get(
             'api/nextNodes',
             query_string={
                 'node_id': 395989945,
@@ -481,12 +477,6 @@ class MetodosConsulta(unittest.TestCase):
             }
         )
 
-        expected_response = parse_json_to_visjs(
-            deepcopy(resposta_nextNodes_doisfiltros_ok)
-        )
-        expected_response['numero_de_expansoes'] = [73, 73, 73]
-
-        self.assertEqual(response.get_json(), expected_response)
         self.assertEqual(
             json.loads(responses.calls[-1].request.body),
             request_nextNodes_doisfiltros_ok
@@ -506,9 +496,7 @@ class MetodosConsulta(unittest.TestCase):
             }
         )
 
-        expected_response = parse_json_to_visjs(
-            deepcopy(resposta_nodeproperties_ok)
-        )
+        expected_response = resposta_nodeproperties_ok
 
         self.assertEqual(response.get_json(), expected_response)
         self.assertEqual(
@@ -524,15 +512,9 @@ class MetodosConsulta(unittest.TestCase):
             json=resposta_label_ok
         )
         response = self.app.get(
-            'api/labels',
-            query_string={
-                'label': 'Pessoa'
-            }
+            'api/labels'
         )
-
-        expected_response = parse_json_to_visjs(
-            deepcopy(resposta_label_ok)
-        )
+        expected_response = resposta_label_ok
 
         self.assertEqual(response.get_json(), expected_response)
 
@@ -544,15 +526,10 @@ class MetodosConsulta(unittest.TestCase):
             json=resposta_relationships_ok
         )
         response = self.app.get(
-            'api/relationships',
-            query_string={
-                'label': 'Pessoa'
-            }
+            'api/relationships'
         )
 
-        expected_response = parse_json_to_visjs(
-            deepcopy(resposta_relationships_ok)
-        )
+        expected_response = resposta_relationships_ok
 
         self.assertEqual(response.get_json(), expected_response)
 
@@ -571,7 +548,6 @@ class MetodosConsulta(unittest.TestCase):
         resposta_count = {
             'results': [{'data': [{'row': [1]}]}]
         }
-
         responses.add(
             responses.POST,
             _ENDERECO_NEO4J % '/db/data/transaction/commit',
@@ -594,6 +570,10 @@ class MetodosConsulta(unittest.TestCase):
         resposta_esperada['numero_de_nos'] = 1
 
         self.assertEqual(resposta.get_json(), resposta_esperada)
+        self.assertEqual(
+            json.loads(responses.calls[-2].request.body),
+            request_filterNodes_ok
+        )
 
     @responses.activate
     def test_conta_numero_de_nos(self):
@@ -612,7 +592,7 @@ class MetodosConsulta(unittest.TestCase):
             _monta_query_filtro_opcional(
                 'Pessoa',
                 'nome',
-                'Qualque',
+                'Qualquer',
                 'a'
             ),
             'a'
@@ -646,9 +626,9 @@ class MetodosConsulta(unittest.TestCase):
             'val': 'Qualquer'
         }
 
-        resposta_espereda = deepcopy(resposta_filterNodes_ok)
-        resposta_espereda['numero_de_nos'] = 101
-        mock_resposta.json.return_value = resposta_espereda
+        resposta_esperada = deepcopy(resposta_filterNodes_ok)
+        resposta_esperada['numero_de_nos'] = 101
+        mock_resposta.json.return_value = resposta_esperada
 
         resposta = self.app.get(
             '/api/findNodes',
