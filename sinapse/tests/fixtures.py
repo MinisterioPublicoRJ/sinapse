@@ -775,27 +775,23 @@ get_path_input = {'results': [{'columns': ['p'],
        {'id': 125465326, 'type': 'relationship', 'deleted': False},
        {'id': 156065417, 'type': 'node', 'deleted': False}]],
      'graph': {'nodes': [{'id': '199297536',
-        'type': ['Pessoa'],
+        'labels': ['Pessoa'],
         'properties': {'nome': 'DANIEL CARVALHO BELCHIOR'}},
        {'id': '156065417',
-        'type': ['Pessoa'],
+        'labels': ['Pessoa'],
         'properties': {'nome': 'SILVIA LIMA DE ALMEIDA'}},
        {'id': '168635844',
-        'type': ['Pessoa'],
+        'labels': ['Pessoa'],
         'properties': {'nome': 'MARCOS CESAR LIMA DE ALMEIDA BELCHIOR'}}],
       'relationships': [{'id': '125465326',
-        'label': 'FILHO',
-        'from': '168635844',
-        'to': '156065417',
-        'arrows': 'to',
-        'dashes': False,
+        'type': 'FILHO',
+        'startNode': '168635844',
+        'endNode': '156065417',
         'properties': {'parentesco': 'MAE'}},
        {'id': '285879991',
-        'label': 'FILHO',
-        'from': '168635844',
-        'to': '199297536',
-        'arrows': 'to',
-        'dashes': False,
+        'type': 'FILHO',
+        'startNode': '168635844',
+        'endNode': '199297536',
         'properties': {'parentesco': 'PAI'}}]}},
     {'row': [[{'nome': 'DANIEL CARVALHO BELCHIOR'},
        {'parentesco': 'PAI'},
@@ -808,27 +804,23 @@ get_path_input = {'results': [{'columns': ['p'],
        {'id': 83849891, 'type': 'relationship', 'deleted': False},
        {'id': 156065417, 'type': 'node', 'deleted': False}]],
      'graph': {'nodes': [{'id': '199297536',
-        'type': ['Pessoa'],
+        'labels': ['Pessoa'],
         'properties': {'nome': 'DANIEL CARVALHO BELCHIOR'}},
        {'id': '156065417',
-        'type': ['Pessoa'],
+        'labels': ['Pessoa'],
         'properties': {'nome': 'SILVIA LIMA DE ALMEIDA'}},
        {'id': '347604003',
-        'type': ['Pessoa'],
+        'labels': ['Pessoa'],
         'properties': {'nome': 'JULIA LIMA DE ALMEIDA BELCHIOR'}}],
       'relationships': [{'id': '290766384',
-        'label': 'FILHO',
-        'from': '347604003',
-        'to': '199297536',
-        'arrows': 'to',
-        'dashes': False,
+        'type': 'FILHO',
+        'startNode': '347604003',
+        'endNode': '199297536',
         'properties': {'parentesco': 'PAI'}},
        {'id': '83849891',
-        'label': 'FILHO',
-        'from': '347604003',
-        'to': '156065417',
-        'arrows': 'to',
-        'dashes': False,
+        'type': 'FILHO',
+        'startNode': '347604003',
+        'endNode': '156065417',
         'properties': {'parentesco': 'MAE'}}]}},
     {'row': [[{'nome': 'DANIEL CARVALHO BELCHIOR'},
        {'parentesco': 'PAI'},
@@ -841,31 +833,55 @@ get_path_input = {'results': [{'columns': ['p'],
        {'id': 58074695, 'type': 'relationship', 'deleted': False},
        {'id': 156065417, 'type': 'node', 'deleted': False}]],
      'graph': {'nodes': [{'id': '199297536',
-        'type': ['Pessoa'],
+        'labels': ['Pessoa'],
         'properties': {'nome': 'DANIEL CARVALHO BELCHIOR'}},
        {'id': '156065417',
-        'type': ['Pessoa'],
+        'labels': ['Pessoa'],
         'properties': {'nome': 'SILVIA LIMA DE ALMEIDA'}},
        {'id': '227706061',
-        'type': ['Pessoa'],
+        'labels': ['Pessoa'],
         'properties': {'nome': 'LUIZA LIMA DE ALMEIDA BELCHIOR'}}],
       'relationships': [{'id': '58074695',
-        'label': 'FILHO',
-        'from': '227706061',
-        'to': '156065417',
-        'arrows': 'to',
-        'dashes': False,
+        'type': 'FILHO',
+        'startNode': '227706061',
+        'endNode': '156065417',
         'properties': {'parentesco': 'MAE'}},
        {'id': '285885199',
-        'label': 'FILHO',
-        'from': '227706061',
-        'to': '199297536',
-        'arrows': 'to',
-        'dashes': False,
+        'type': 'FILHO',
+        'startNode': '227706061',
+        'endNode': '199297536',
         'properties': {'parentesco': 'PAI'}}]}}]}],
  'errors': []}
 
 get_path_output = {'paths': [
+    [
+        {'id': '199297536', 'labels': ['Pessoa'], 'properties': {'nome': 'DANIEL CARVALHO BELCHIOR'}},
+        {'id': '285879991', 'type': 'FILHO', 'startNode': '168635844', 'endNode': '199297536', 'properties': {'parentesco': 'PAI'}},
+        {'id': '168635844', 'labels': ['Pessoa'], 'properties': {'nome': 'MARCOS CESAR LIMA DE ALMEIDA BELCHIOR'}},
+        {'id': '125465326', 'type': 'FILHO', 'startNode': '168635844', 'endNode': '156065417', 'properties': {'parentesco': 'MAE'}},
+        {'id': '156065417', 'labels': ['Pessoa'], 'properties': {'nome': 'SILVIA LIMA DE ALMEIDA'}}
+    ],
+    [
+        {'id': '199297536', 'labels': ['Pessoa'], 'properties': {'nome': 'DANIEL CARVALHO BELCHIOR'}},
+        {'id': '290766384', 'type': 'FILHO', 'startNode': '347604003', 'endNode': '199297536', 'properties': {'parentesco': 'PAI'}},
+        {'id': '347604003', 'labels': ['Pessoa'], 'properties': {'nome': 'JULIA LIMA DE ALMEIDA BELCHIOR'}},
+        {'id': '83849891', 'type': 'FILHO', 'startNode': '347604003', 'endNode': '156065417', 'properties': {'parentesco': 'MAE'}},
+        {'id': '156065417', 'labels': ['Pessoa'], 'properties': {'nome': 'SILVIA LIMA DE ALMEIDA'}}
+    ],
+    [
+        {'id': '199297536', 'labels': ['Pessoa'], 'properties': {'nome': 'DANIEL CARVALHO BELCHIOR'}},
+        {'id': '285885199', 'type': 'FILHO', 'startNode': '227706061', 'endNode': '199297536', 'properties': {'parentesco': 'PAI'}},
+        {'id': '227706061', 'labels': ['Pessoa'], 'properties': {'nome': 'LUIZA LIMA DE ALMEIDA BELCHIOR'}},
+        {'id': '58074695', 'type': 'FILHO', 'startNode': '227706061', 'endNode': '156065417', 'properties': {'parentesco': 'MAE'}},
+        {'id': '156065417', 'labels': ['Pessoa'], 'properties': {'nome': 'SILVIA LIMA DE ALMEIDA'}}
+    ]
+]}
+
+# TODO: Test for parser of paths
+
+parse_path_input = get_path_output
+
+parse_path_output = {'paths': [
     [
         {'id': '199297536', 'type': ['Pessoa'], 'properties': {'nome': 'DANIEL CARVALHO BELCHIOR'}},
         {'id': '285879991', 'label': 'FILHO', 'from': '168635844', 'to': '199297536', 'arrows': 'to', 'dashes': False, 'properties': {'parentesco': 'PAI'}},
@@ -888,12 +904,6 @@ get_path_output = {'paths': [
         {'id': '156065417', 'type': ['Pessoa'], 'properties': {'nome': 'SILVIA LIMA DE ALMEIDA'}}
     ]
 ]}
-
-# TODO: Test for parser of paths
-
-parse_path_input = []
-
-parse_path_output = []
 
 # Whereabouts
 

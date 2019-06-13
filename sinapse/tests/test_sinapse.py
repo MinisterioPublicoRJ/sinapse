@@ -25,7 +25,8 @@ from sinapse.start import (
     _monta_query_filtro_opcional,
     _USERINFO_MPRJ,
     parse_json_to_visjs,
-    get_path
+    get_path,
+    parse_paths
 )
 
 from .fixtures import (
@@ -56,7 +57,9 @@ from .fixtures import (
     parser_test_input,
     parser_test_output,
     get_path_input,
-    get_path_output
+    get_path_output,
+    parse_path_input,
+    parse_path_output
 )
 
 
@@ -68,6 +71,11 @@ def test_parser_visjs():
 def test_get_path():
     saida = get_path(get_path_input)
     assert saida == get_path_output
+
+def test_parse_path():
+    input_copy = deepcopy(parse_path_input)
+    parse_paths(input_copy)
+    assert input_copy == parse_path_output
 
 
 def test_monta_query_filtro_opcional():
@@ -330,6 +338,7 @@ class MetodosConsulta(unittest.TestCase):
         expected_response = deepcopy(
             parse_json_to_visjs(resposta_findShortestPath_ok))
         expected_response.update(get_path_output)
+        parse_paths(expected_response)
 
         for edge in response.get_json()['edges']:
             assert edge in expected_response['edges']
