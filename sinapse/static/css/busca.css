@@ -688,6 +688,13 @@ span.tooltip:after {
     margin-bottom: 10px;
 }
 
+#whereabouts .back {
+    background: none;
+    border: none;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
 #bond-analysis .entity > img {
     width: 120px;
     height: 120px;

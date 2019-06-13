@@ -47,6 +47,7 @@ main {
     background-position: top center;
     background-repeat: no-repeat;
     border-radius: 50px;
+    cursor: pointer;
     display: block;
     margin: 0 auto;
     width: 200px;

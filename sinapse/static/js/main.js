@@ -594,8 +594,27 @@ const initVersion = () => {
     document.title = `Conexão - Versão ${version}`
 }
 
+const makeLogoGoBackToSearch = () => {
+    // remove logo href link
+    document.querySelector('#conexaologo').removeAttribute('href')
+    // add a click function to
+    document.querySelector('#conexaologo').onclick = () => {
+        // show search again
+        document.querySelector('.busca').style.display = 'block'
+        // hide graph
+        document.querySelector('#graph').className = 'graphhidden'
+        // hide sidebars
+        if ($('#sidebarRight').hasClass('ui-dialog-content') && $('#sidebarRight').dialog('isOpen')) {
+            // we have to test if it has been initialized first, so it doesn't error when trying to close
+            $('#sidebarRight').dialog('close')
+        }
+        $('.entitylist').dialog('close')
+    }
+}
+
 const showEntity = (entityType, uuid) => {
     console.log(`showEntity(${entityType}, ${uuid})`)
+    makeLogoGoBackToSearch()
     document.querySelector('.busca').style.display = 'none'
     findNodes(entityType, 'uuid', uuid)
 }
@@ -655,6 +674,7 @@ const doBondSearch = (nodeUuid1, nodeType1, nodeUuid2, nodeType2) => {
 
 const getShortestPath = (nodeUuid1, nodeType1, nodeUuid2, nodeType2) => {
     get(`/api/findShortestPath?node_uuid1=${nodeUuid1}&label1=${nodeType1}&node_uuid2=${nodeUuid2}&label2=${nodeType2}`, updateNodes)
+    makeLogoGoBackToSearch()
 }
 
 /**
@@ -699,7 +719,10 @@ const displayWhereabouts = (data, nome, rg) => {
                 <h2>Busca de Paradeiros</h2>
                 <h3>${nome}</h3>
             </div>
-            <div class="col-md-2" id="whereabouts_photo_container"></div>
+            <div class="col-md-2 text-center">
+                <div id="whereabouts_photo_container"></div>
+                <button onclick="hideWhereabouts()" class="back">⬅️ Voltar</button>
+            </div>
             <div class="col-md-5">
                 <h3>Credilink</h3>
                 <p>Atenção: Informações da base de dados do Credilink não podem ser incluídos nos autos.</p>
@@ -719,6 +742,11 @@ const displayWhereabouts = (data, nome, rg) => {
     })
 }
 
+const hideWhereabouts = () => {
+    document.querySelector('#search-details').style.display = 'block'
+    document.querySelector('#whereabouts').innerHTML = ''
+}
+
 const logout = () => {
     get('/logout', () => { location.reload() }, true)
 }
@@ -734,6 +762,7 @@ window.filterEntityList = filterEntityList
 window.findNodes = findNodes
 window.fullSidebarRight = fullSidebarRight
 window.hideSidebarRight = hideSidebarRight
+window.hideWhereabouts = hideWhereabouts
 window.logout = logout
 window.searchDetailStep = searchDetailStep
 window.searchWhereabouts = searchWhereabouts
