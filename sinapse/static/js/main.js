@@ -453,6 +453,25 @@ const updateNodes = (data, nodeId) => {
         }
     })
 
+    document.querySelectorAll('#entitylist .entity-item').forEach(itemLabel => {
+        itemLabel.onclick = e => {
+            const nodeId = itemLabel.dataset.node;
+            if (itemLabel.classList.contains('fa-eye-slash')) {
+                itemLabel.classList.remove('fa-eye-slash');
+
+                const updatedNodes = [];
+                updatedNodes.push({id: nodeId, hidden: true});
+                nodes.update(updatedNodes);
+            } else {
+                itemLabel.classList.add('fa-eye-slash');
+
+                const updatedNodes = [];
+                updatedNodes.push({id: nodeId, hidden: false});
+                nodes.update(updatedNodes);
+            }
+        }
+    })
+
     document.querySelectorAll('#entitylist .entity-trash').forEach(filter => {
         filter.onclick = e => {
           // find all the nodes from that category
@@ -465,10 +484,7 @@ const updateNodes = (data, nodeId) => {
             network.selectNodes(nodesFromType);
             network.deleteSelected();
 
-            // delete the labels from the sidebar
-            const updatedLabels = labels.filter(label => label.toLowerCase() !== entityType)
-            console.log('updatedLabels', updatedLabels);
-            updateLeftSidebar(updatedLabels, nodesData)
+            e.hide();
         }
     })
 }
@@ -483,6 +499,22 @@ const zoomToNodeId = nodeId => {
     populateSidebarRight(selectedNode)
     showSidebarRight()
     network.selectNodes([nodeId.toString()])
+}
+
+/**
+ * Deletes a single node from the graph
+ * @param  {[string]} id nodeId
+ */
+const deleteSingleNode = (id) => {
+  // delete label for that node
+    const filteredNodes = nodesData
+    .filter(node => node.id !== id.toString());
+    nodesData = filteredNodes;
+    updateLeftSidebar(labels, nodesData);
+
+  // delete
+  network.selectNodes([id]);
+  network.deleteSelected();
 }
 
 const emptySidebarRight = () => {
@@ -757,6 +789,7 @@ window.showCompliance = showCompliance
 window.showComplianceForm = showComplianceForm
 window.showEntity = showEntity
 window.zoomToNodeId = zoomToNodeId
+window.deleteSingleNode = deleteSingleNode
 
 // Finally, declare init function to run when the page loads.
 window.onload = init

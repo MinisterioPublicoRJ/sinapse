@@ -87,6 +87,10 @@ const nodeToDOMString = node => {
                 ret = `<dt onclick="zoomToNodeId(${node.id})">${node.id}</dt>`
         }
     }
+
+    const type = node.type[0].toLowerCase();
+    ret += `<a class="color-${type} ${type} entity-item fa fa-eye" role="button" data-node="${node.id}"></a>`
+    ret +=`<a class="color-${type} ${type} fa fa-trash" onclick="deleteSingleNode(${node.id})"></a>`
     return ret
 }
 
