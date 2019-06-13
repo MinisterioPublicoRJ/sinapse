@@ -115,6 +115,19 @@ def get_path(resposta):
         paths.append(ordered_path)
     return {'paths': paths}
 
+def parse_paths(paths):
+    for path in paths['paths']:
+        for i in range(len(path)):
+            element = path[i]
+            if i % 2 == 0:
+                element['type'] = element.pop('labels')
+            else:
+                element['label'] = element.pop('type')
+                element['from'] = element.pop('startNode')
+                element['to'] = element.pop('endNode')
+                element['arrows'] = "to"
+                element['dashes'] = False
+
 def respostajson_visjs(response, return_path=False, **kwargs):
     usuario = session.get('usuario', "dummy")
     sessionid = request.cookies.get('session')
@@ -125,9 +138,13 @@ def respostajson_visjs(response, return_path=False, **kwargs):
     if resposta_sensivel(dados):
         dados = remove_info_sensiveis(dados)
     if return_path:
-        kwargs.update(get_path(dados))
+        paths = get_path(deepcopy(dados))
+        parse_paths(paths)
+        kwargs.update(paths)
 
-    return jsonify(parse_json_to_visjs(dados, **kwargs))
+    json_visjs = parse_json_to_visjs(dados, **kwargs)
+
+    return jsonify(json_visjs)
 
 
 def limpa_nos(nos):
@@ -283,7 +300,6 @@ def naocompleia(funcao):
         request.check_compliance = False
         return funcao(*args, **kwargs)
     return wrapper
-
 
 def login_necessario(funcao):
     @wraps(funcao)
@@ -560,7 +576,7 @@ def api_whereabouts():
     uuid = request.args.get('uuid')
 
     query = {"statements": [{
-        "statement": "MATCH (p:Pessoa) where p.uuid = '%s' return p"
+        "statement": "MATCH (p:Pessoa) WHERE p.uuid = '%s' RETURN p"
         % (uuid),
         "resultDataContents": ["row", "graph"]
     }]}

@@ -39,7 +39,7 @@ class Autorizacao(unittest.TestCase):
         resposta = self.app.post(
             '/api/autorizar',
             data={
-                'sistema': '1234',
+                'sistema': 'DOMINIO',
                 'usuario': 'ministerio.publico'
             }
         )

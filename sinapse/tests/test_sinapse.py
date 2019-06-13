@@ -2,12 +2,13 @@ import json
 import responses
 import unittest
 
+from freezegun import freeze_time
 from copy import deepcopy
 from functools import wraps
 from unittest import mock
+from datetime import datetime
 
 from flask_testing import TestCase as FlaskTestCase
-from freezegun import freeze_time
 from freezegun.api import FakeDatetime
 from sinapse.start import (
     app,
@@ -24,7 +25,8 @@ from sinapse.start import (
     _monta_query_filtro_opcional,
     _USERINFO_MPRJ,
     parse_json_to_visjs,
-    get_path
+    get_path,
+    parse_paths
 )
 
 from .fixtures import (
@@ -37,18 +39,15 @@ from .fixtures import (
     resposta_sensivel_mista_esp,
     relacoes_sensiveis,
     relacoes_sensiveis_esp,
+    request_filterNodes_ok,
     resposta_filterNodes_ok,
     resposta_nextNodes_ok,
     request_nextNodes_ok,
-    resposta_nextNodes_umfiltro_ok,
     request_nextNodes_umfiltro_ok,
-    resposta_nextNodes_doisfiltros_ok,
     request_nextNodes_doisfiltros_ok,
     resposta_findShortestPath_ok,
     request_findShortestPath_umfiltro_ok,
-    resposta_findShortestPath_umfiltro_ok,
     request_findShortestPath_doisfiltros_ok,
-    resposta_findShortestPath_doisfiltros_ok,
     request_findShortestPath_ok,
     resposta_nodeproperties_ok,
     request_nodeproperties_ok,
@@ -58,7 +57,9 @@ from .fixtures import (
     parser_test_input,
     parser_test_output,
     get_path_input,
-    get_path_output
+    get_path_output,
+    parse_path_input,
+    parse_path_output
 )
 
 
@@ -66,9 +67,15 @@ def test_parser_visjs():
     saida = parse_json_to_visjs(parser_test_input)
     assert saida == parser_test_output
 
+
 def test_get_path():
     saida = get_path(get_path_input)
     assert saida == get_path_output
+
+def test_parse_path():
+    input_copy = deepcopy(parse_path_input)
+    parse_paths(input_copy)
+    assert input_copy == parse_path_output
 
 
 def test_monta_query_filtro_opcional():
@@ -92,9 +99,9 @@ def test_monta_query_filtro_opcional_pessdk():
 
     assert saida == "optional match (a:label {pess_dk:val})"
 
-
+@mock.patch("sinapse.start._log_login")
 @responses.activate
-def test_autenticar_invalido():
+def test_autenticar_invalido(_LOG_LOGIN):
     responses.add(
         responses.POST,
         _AUTH_MPRJ,
@@ -104,9 +111,9 @@ def test_autenticar_invalido():
     retorno = _autenticar("usuario", "senha")
     assert retorno is None
 
-
+@mock.patch("sinapse.start._log_login")
 @responses.activate
-def test_autenticar():
+def test_autenticar(_LOG_LOGIN):
     responses.add(
         responses.POST,
         _AUTH_MPRJ,
@@ -139,9 +146,11 @@ def mock_logresponse(funcao):
 
 
 @mock.patch("sinapse.start._LOG_NEO4J")
-def test_log_response(_log_mongo):
+@mock.patch("sinapse.start.request")
+def test_log_response(request, _log_mongo):
     response = mock.Mock()
     response.json.side_effect = ["response"]
+    request.remote_addr = '192.168.0.1'
 
     with freeze_time("2018-06-28"):
         _log_response("usuario", "1234", response)
@@ -151,7 +160,8 @@ def test_log_response(_log_mongo):
             'usuario': 'usuario',
             'datahora': FakeDatetime(2018, 6, 28, 0, 0),
             'sessionid': '1234',
-            'resposta': 'response'
+            'resposta': 'response',
+            'ip': '192.168.0.1'
         }
     )
 
@@ -192,9 +202,10 @@ class LoginUsuario(unittest.TestCase):
         self.app = app.test_client()
 
     @responses.activate
+    @mock.patch("sinapse.start._LOG_ACESSO")
     @mock.patch("sinapse.start._log_response")
     @mock.patch("sinapse.start._autenticar")
-    def test_login(self, _autenticar, _log_response):
+    def test_login(self, _autenticar, _log_response, _LOG_ACESSO):
         retorno_esperado = {"saida": "dados"}
         _autenticar.side_effect = ["usuario"]
 
@@ -202,9 +213,18 @@ class LoginUsuario(unittest.TestCase):
             "/login",
             data={
                 "usuario": "usuario",
-                "senha": "senha"})
+                "senha": "senha"
+                })
+        retorno_compliance = self.app.post(
+            "/compliance",
+            data={
+                "tipoacesso": 1,
+                "numeroprocedimento": 1,
+                "descricao": 1
+            })
 
         assert retorno.status_code == 302
+        assert retorno_compliance.status_code == 200
 
         responses.add(
             responses.POST,
@@ -213,6 +233,7 @@ class LoginUsuario(unittest.TestCase):
         )
 
         resposta = self.app.get("/api/node?node_id=10")
+
         assert resposta.get_json() == retorno_esperado
         assert _log_response.call_count == 1
 
@@ -231,7 +252,8 @@ class LoginUsuario(unittest.TestCase):
 
 
 class MetodosConsulta(unittest.TestCase):
-    def setUp(self):
+    @mock.patch("sinapse.start._LOG_ACESSO")
+    def setUp(self, _LOG_ACESSO):
         self.app = app.test_client()
         with mock.patch("sinapse.start._autenticar") as _autenticar:
             _autenticar.side_effect = ["usuario"]
@@ -242,6 +264,12 @@ class MetodosConsulta(unittest.TestCase):
                     "senha": "senha"
                 }
             )
+            self.app.post("/compliance",
+                data={
+                    "tipoacesso": 1,
+                    "numeroprocedimento": 1,
+                    "descricao": 1
+                })
 
     @mock.patch('sinapse.start.conta_nos')
     @mock.patch('sinapse.start.get_vehicle_photo_asynch')
@@ -251,7 +279,7 @@ class MetodosConsulta(unittest.TestCase):
         _conta_nos.return_value = 10
         _gpa.__name__ = 'Response'
         query_string = {
-            'label': 'pessoa,personagem',
+            'label': 'Pessoa,Personagem',
             'prop': 'nome,pess_dk',
             'val': 'DANIEL CARVALHO BELCHIOR,24728287'
         }
@@ -307,10 +335,17 @@ class MetodosConsulta(unittest.TestCase):
                 "node_uuid2": '234bcd'
             }
         )
+        expected_response = deepcopy(
+            parse_json_to_visjs(resposta_findShortestPath_ok))
+        expected_response.update(get_path_output)
+        parse_paths(expected_response)
 
-        expected_response = resposta_findShortestPath_ok
-
-        self.assertEqual(response.get_json(), expected_response)
+        for edge in response.get_json()['edges']:
+            assert edge in expected_response['edges']
+        for node in response.get_json()['nodes']:
+            assert node in expected_response['nodes']
+        for path in response.get_json()['paths']:
+            assert path in expected_response['paths']
         self.assertEqual(
             json.loads(responses.calls[-1].request.body),
             request_findShortestPath_ok
@@ -321,20 +356,19 @@ class MetodosConsulta(unittest.TestCase):
         responses.add(
             responses.POST,
             _ENDERECO_NEO4J % '/db/data/transaction/commit',
-            json=resposta_findShortestPath_umfiltro_ok
+            json=[]
         )
-        response = self.app.get(
+        self.app.get(
             'api/findShortestPath',
             query_string={
-                "node_id1": 140885160,
-                "node_id2": 328898991,
-                "rel_types": "trabalha"
+                "label1": "Pessoa",
+                "label2": "Pessoa",
+                "node_uuid1": 140885160,
+                "node_uuid2": 328898991,
+                "rel_types": "TRABALHA"
             }
         )
 
-        expected_response = resposta_findShortestPath_umfiltro_ok
-
-        self.assertEqual(response.get_json(), expected_response)
         self.assertEqual(
             json.loads(responses.calls[-1].request.body),
             request_findShortestPath_umfiltro_ok
@@ -345,31 +379,36 @@ class MetodosConsulta(unittest.TestCase):
         responses.add(
             responses.POST,
             _ENDERECO_NEO4J % '/db/data/transaction/commit',
-            json=resposta_findShortestPath_doisfiltros_ok
+            json=[]
         )
-        response = self.app.get(
+        self.app.get(
             'api/findShortestPath',
             query_string={
-                "node_id1": 140885160,
-                "node_id2": 328898991,
-                "rel_types": "filho,personagem"
+                "label1": "Pessoa",
+                "label2": "Pessoa",
+                "node_uuid1": 140885160,
+                "node_uuid2": 328898991,
+                "rel_types": "FILHO,PERSONAGEM"
             }
         )
-
-        expected_response = resposta_findShortestPath_doisfiltros_ok
-
-        self.assertEqual(response.get_json(), expected_response)
+        self.maxDiff = None
         self.assertEqual(
             json.loads(responses.calls[-1].request.body),
             request_findShortestPath_doisfiltros_ok
         )
 
+    @mock.patch('sinapse.start.get_vehicle_photo_asynch')
+    @mock.patch('sinapse.start.get_person_photo_asynch')
     @mock.patch('sinapse.start.vehicle_info')
     @mock.patch('sinapse.start.person_info')
     @mock.patch('sinapse.start.conta_expansoes')
     @mock_logresponse
-    def test_metodo_consulta_api_next_nodes(self, _conta_expansoes, _pi, _vi):
+    def test_metodo_consulta_api_next_nodes(self, _conta_expansoes, _pi, _vi, _gpa, _gva):
         _conta_expansoes.return_value = [73, 73, 73]
+        _pi.return_value = 1
+        _vi.return_vale = 1
+        _gpa.return_value = None
+        _gva.return_value = None
         responses.add(
             responses.POST,
             _ENDERECO_NEO4J % '/db/data/transaction/commit',
@@ -393,32 +432,32 @@ class MetodosConsulta(unittest.TestCase):
             request_nextNodes_ok
         )
 
+    @mock.patch('sinapse.start.get_vehicle_photo_asynch')
+    @mock.patch('sinapse.start.get_person_photo_asynch')
     @mock.patch('sinapse.start.vehicle_info')
     @mock.patch('sinapse.start.person_info')
     @mock.patch('sinapse.start.conta_expansoes')
     @mock_logresponse
-    def test_metodo_consulta_api_next_nodes_one_filter(self, _conta_expansoes,
-                                                       _pi, _vi):
+    def test_metodo_consulta_api_next_nodes_one_filter(self, _conta_expansoes, _pi, _vi, _gpa, _gva):
         _conta_expansoes.return_value = [73, 73, 73]
+        _pi.return_value = None
+        _vi.return_value = None
+        _gpa.return_value = None
+        _gva.return_value = None
         responses.add(
             responses.POST,
             _ENDERECO_NEO4J % '/db/data/transaction/commit',
-            json=resposta_nextNodes_umfiltro_ok
+            json=resposta_nextNodes_ok
         )
-        response = self.app.get(
+    
+        self.app.get(
             'api/nextNodes',
             query_string={
                 'node_id': 395989945,
-                'rel_types': 'filho'
+                'rel_types': 'FILHO'
             }
         )
-
-        expected_response = parse_json_to_visjs(
-            deepcopy(resposta_nextNodes_umfiltro_ok)
-        )
-        expected_response['numero_de_expansoes'] = [73, 73, 73]
-
-        self.assertEqual(response.get_json(), expected_response)
+        
         self.assertEqual(
             json.loads(responses.calls[-1].request.body),
             request_nextNodes_umfiltro_ok
@@ -431,26 +470,22 @@ class MetodosConsulta(unittest.TestCase):
     def test_metodo_consulta_api_next_nodes_two_filters(self,
                                                         _conta_expansoes,
                                                         _pi, _vi):
+        _pi.return_value = []
+        _vi.return_value = []
         _conta_expansoes.return_value = [73, 73, 73]
         responses.add(
             responses.POST,
             _ENDERECO_NEO4J % '/db/data/transaction/commit',
-            json=resposta_nextNodes_doisfiltros_ok
+            json=[]
         )
-        response = self.app.get(
+        self.app.get(
             'api/nextNodes',
             query_string={
                 'node_id': 395989945,
-                'rel_types': 'filho,trabalha'
+                'rel_types': 'FILHO,TRABALHA'
             }
         )
 
-        expected_response = parse_json_to_visjs(
-            deepcopy(resposta_nextNodes_doisfiltros_ok)
-        )
-        expected_response['numero_de_expansoes'] = [73, 73, 73]
-
-        self.assertEqual(response.get_json(), expected_response)
         self.assertEqual(
             json.loads(responses.calls[-1].request.body),
             request_nextNodes_doisfiltros_ok
@@ -466,13 +501,11 @@ class MetodosConsulta(unittest.TestCase):
         response = self.app.get(
             'api/nodeProperties',
             query_string={
-                'label': 'pessoa'
+                'label': 'Pessoa'
             }
         )
 
-        expected_response = parse_json_to_visjs(
-            deepcopy(resposta_nodeproperties_ok)
-        )
+        expected_response = resposta_nodeproperties_ok
 
         self.assertEqual(response.get_json(), expected_response)
         self.assertEqual(
@@ -488,15 +521,9 @@ class MetodosConsulta(unittest.TestCase):
             json=resposta_label_ok
         )
         response = self.app.get(
-            'api/labels',
-            query_string={
-                'label': 'pessoa'
-            }
+            'api/labels'
         )
-
-        expected_response = parse_json_to_visjs(
-            deepcopy(resposta_label_ok)
-        )
+        expected_response = resposta_label_ok
 
         self.assertEqual(response.get_json(), expected_response)
 
@@ -508,15 +535,10 @@ class MetodosConsulta(unittest.TestCase):
             json=resposta_relationships_ok
         )
         response = self.app.get(
-            'api/relationships',
-            query_string={
-                'label': 'pessoa'
-            }
+            'api/relationships'
         )
 
-        expected_response = parse_json_to_visjs(
-            deepcopy(resposta_relationships_ok)
-        )
+        expected_response = resposta_relationships_ok
 
         self.assertEqual(response.get_json(), expected_response)
 
@@ -535,7 +557,6 @@ class MetodosConsulta(unittest.TestCase):
         resposta_count = {
             'results': [{'data': [{'row': [1]}]}]
         }
-
         responses.add(
             responses.POST,
             _ENDERECO_NEO4J % '/db/data/transaction/commit',
@@ -543,7 +564,7 @@ class MetodosConsulta(unittest.TestCase):
         )
 
         query_string = {
-            'label': 'pessoa',
+            'label': 'Pessoa',
             'prop': 'nome',
             'val': 'DANIEL CARVALHO BELCHIOR'
         }
@@ -558,6 +579,10 @@ class MetodosConsulta(unittest.TestCase):
         resposta_esperada['numero_de_nos'] = 1
 
         self.assertEqual(resposta.get_json(), resposta_esperada)
+        self.assertEqual(
+            json.loads(responses.calls[-2].request.body),
+            request_filterNodes_ok
+        )
 
     @responses.activate
     def test_conta_numero_de_nos(self):
@@ -574,9 +599,9 @@ class MetodosConsulta(unittest.TestCase):
 
         numero_nos = conta_nos(
             _monta_query_filtro_opcional(
-                'pessoa',
+                'Pessoa',
                 'nome',
-                'Qualque',
+                'Qualquer',
                 'a'
             ),
             'a'
@@ -605,14 +630,14 @@ class MetodosConsulta(unittest.TestCase):
             json=resposta_filterNodes_ok
         )
         query_string = {
-            'label': 'pessoa',
+            'label': 'Pessoa',
             'prop': 'nome',
             'val': 'Qualquer'
         }
 
-        resposta_espereda = deepcopy(resposta_filterNodes_ok)
-        resposta_espereda['numero_de_nos'] = 101
-        mock_resposta.json.return_value = resposta_espereda
+        resposta_esperada = deepcopy(resposta_filterNodes_ok)
+        resposta_esperada['numero_de_nos'] = 101
+        mock_resposta.json.return_value = resposta_esperada
 
         resposta = self.app.get(
             '/api/findNodes',
@@ -620,7 +645,7 @@ class MetodosConsulta(unittest.TestCase):
         )
 
         _conta_nos.assert_called_once_with(
-            ["optional match (a:pessoa {nome:toUpper('Qualquer')})"],
+            ["optional match (a:Pessoa {nome:toUpper('Qualquer')})"],
             'a'
         )
         self.assertEqual(resposta.json['numero_de_nos'], 101)
@@ -754,7 +779,8 @@ class LogoutUsuarioFlask(FlaskTestCase):
 
 
 class RemoveInfoSensivel(unittest.TestCase):
-    def setUp(self):
+    @mock.patch("sinapse.start._LOG_ACESSO")
+    def setUp(self, _LOG_ACESSO):
         self.app = app.test_client()
         with mock.patch("sinapse.start._autenticar") as _autenticar:
             _autenticar.side_effect = ["usuario"]
@@ -763,6 +789,12 @@ class RemoveInfoSensivel(unittest.TestCase):
                 data={
                     "usuario": "usuario",
                     "senha": "senha"})
+            self.app.post("/compliance",
+                data={
+                    "tipoacesso": 1,
+                    "numeroprocedimento": 1,
+                    "descricao": 1
+                })
 
     def test_remove_nos_sensiveis(self):
         nos = resposta_node_sensivel_ok['results'][0]['data'][0][
