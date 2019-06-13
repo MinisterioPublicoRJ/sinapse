@@ -213,8 +213,9 @@ const empresaCard = (doc, highlighting) => {
 const pessoaFoto = rg => {
     get(`/api/foto?rg=${rg}`, data => {
         if (data.uuid && data.imagem) {
-            document.querySelector(`img[data-rg="${rg}"]`).setAttribute("src", `data:image/jpeg;base64,${data.imagem}`)
-            // return `<img src="data:image/jpeg;base64,${data.imagem}" />`
+            document.querySelectorAll(`img[data-rg="${rg}"]`).forEach(img => {
+                img.setAttribute("src", `data:image/jpeg;base64,${data.imagem}`)
+            })
         }
     })
 }
