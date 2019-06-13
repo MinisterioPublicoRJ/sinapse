@@ -359,7 +359,10 @@ const updateNodes = (data, nodeId) => {
         for (let node of data.nodes) {
             // check if this node already exists checking its id
             let filteredNode = nodesData.filter(n => n.id === node.id)
-            if (filteredNode.length === 0) {
+            const type = node.type[0].toLowerCase();
+
+            if (filteredNode.length === 0 && (filteredEntityTypes.indexOf(type) === -1)) {
+              //console.log('node: ', node)
                 // doesn't exist, add it
                 let formattedNode = addStyleToNode(node)
                 nodesData.push(formattedNode)
@@ -439,20 +442,6 @@ const updateNodes = (data, nodeId) => {
 
     updateLeftSidebar(labels, nodesData)
 
-    document.querySelectorAll('#entitylist .entity').forEach(filter => {
-        filter.onclick = e => {
-            let entityType = filter.classList[1]
-            if (filter.classList.contains('fa-eye-slash')) {
-                filter.classList.remove('fa-eye-slash')
-                filteredEntityTypes.splice(filteredEntityTypes.indexOf(entityType), 1)
-            } else {
-                filter.classList.add('fa-eye-slash')
-                filteredEntityTypes.push(entityType)
-            }
-            updateFilteredEntityTypes()
-        }
-    })
-
     document.querySelectorAll('#entitylist .entity-item').forEach(itemLabel => {
         itemLabel.onclick = e => {
             const nodeId = itemLabel.dataset.node;
@@ -471,22 +460,44 @@ const updateNodes = (data, nodeId) => {
             }
         }
     })
+}
 
-    document.querySelectorAll('#entitylist .entity-trash').forEach(filter => {
-        filter.onclick = e => {
-          // find all the nodes from that category
-            const entityType = filter.classList[1];
-            const nodesFromType = nodesData
-            .filter(node => node.type[0].toLowerCase() === entityType)
-            .map(node => node.id);
+export const addOnClickListenerHide = () => {
+  document.querySelectorAll('#entitylist .entity').forEach(filter => {
+      filter.onclick = e => {
+          let entityType = filter.classList[1]
+          if (filter.classList.contains('fa-eye-slash')) {
+              filter.classList.remove('fa-eye-slash')
+              filteredEntityTypes.splice(filteredEntityTypes.indexOf(entityType), 1)
+          } else {
+              filter.classList.add('fa-eye-slash')
+              filteredEntityTypes.push(entityType)
+          }
+          updateFilteredEntityTypes()
+      }
+  })
+}
 
-            // delete them
-            network.selectNodes(nodesFromType);
-            network.deleteSelected();
+export const addOnClickListenerDelete = () => {
+  document.querySelectorAll('#entitylist .entity-trash').forEach(filter => {
+    filter.onclick = e => {
+        // find all the nodes from that category
+        const entityType = filter.classList[1];
+        const nodesFromType = nodesData
+        .filter(node => node.type[0].toLowerCase() === entityType)
+        .map(node => node.id);
 
-            e.hide();
-        }
-    })
+        // delete them
+        network.selectNodes(nodesFromType);
+        network.deleteSelected();
+
+        // delete the label from the current list of labels and to the list of ignored labels
+        labels = labels.filter(label => label.toLowerCase() !== entityType)
+        filteredEntityTypes.push(entityType)
+        console.log(filteredEntityTypes);
+        updateLeftSidebar(labels, nodesData)
+    }
+  })
 }
 
 /**

@@ -11,6 +11,8 @@ import {
     typeNamePlural,
 } from '/static/js/utils.js'
 
+import { addOnClickListenerDelete, addOnClickListenerHide } from './main.js'
+
 const sidebarLeft = document.getElementById("entitylist")
 
 /**
@@ -135,6 +137,8 @@ export const updateLeftSidebar = (labels, nodesData) => {
     })
 
     sidebarLeft.innerHTML = entityListToWrite
+    addOnClickListenerDelete();
+    addOnClickListenerHide();
 }
 
 export const filterEntityList = () => {
