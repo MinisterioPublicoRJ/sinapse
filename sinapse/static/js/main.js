@@ -449,13 +449,13 @@ const updateNodes = (data, nodeId) => {
                 itemLabel.classList.remove('fa-eye-slash');
 
                 const updatedNodes = [];
-                updatedNodes.push({id: nodeId, hidden: true});
+                updatedNodes.push({id: nodeId, hidden: false});
                 nodes.update(updatedNodes);
             } else {
                 itemLabel.classList.add('fa-eye-slash');
 
                 const updatedNodes = [];
-                updatedNodes.push({id: nodeId, hidden: false});
+                updatedNodes.push({id: nodeId, hidden: true});
                 nodes.update(updatedNodes);
             }
         }

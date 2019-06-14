@@ -91,8 +91,8 @@ const nodeToDOMString = node => {
     }
 
     const type = node.type[0].toLowerCase();
-    ret += `<a class="color-${type} ${type} entity-item fa fa-eye" role="button" data-node="${node.id}"></a>`
-    ret +=`<a class="color-${type} ${type} fa fa-trash" onclick="deleteSingleNode(${node.id})"></a>`
+    ret += `<a class="${type} entity-item fa fa-eye" role="button" data-node="${node.id}"></a>`
+    ret +=`<a class="${type} fa fa-trash" onclick="deleteSingleNode(${node.id})"></a>`
     return ret
 }
 
