@@ -87,9 +87,7 @@ const initVisjs = () => {
             },
         },
         manipulation: {
-            addEdge: false,
-            addNode: false,
-            enabled: true,
+            enabled: false,
         },
         nodes: {
             chosen: {
@@ -109,7 +107,7 @@ const initVisjs = () => {
         },
     }
     network = new vis.Network(container, data, options)
-    
+
     // Don't change to arrow function (`this` wouldn't work)
     network.on('click', function(params) {
         const selectedNodeId = this.getNodeAt(params.pointer.DOM)
@@ -135,7 +133,7 @@ const initVisjs = () => {
 }
 
 /**
- * Gets 
+ * Gets
  * @param {Number} nodeId A Node ID to fetch from API
  */
 const getNextNodes = nodeId => {
@@ -336,7 +334,7 @@ const findNodes = (label, prop, val) => {
 
 /**
  * Call getNextNodes on node returned by findNodes, so the graph comes already expanded on first level (instead of a single node)
- * @param {Object} data 
+ * @param {Object} data
  * @param {Object[]} data.nodes
  * @param {String} data.nodes[].id
  */
@@ -361,7 +359,10 @@ const updateNodes = (data, nodeId) => {
         for (let node of data.nodes) {
             // check if this node already exists checking its id
             let filteredNode = nodesData.filter(n => n.id === node.id)
-            if (filteredNode.length === 0) {
+            const type = node.type[0].toLowerCase();
+
+            if (filteredNode.length === 0 && (filteredEntityTypes.indexOf(type) === -1)) {
+              //console.log('node: ', node)
                 // doesn't exist, add it
                 let formattedNode = addStyleToNode(node)
                 nodesData.push(formattedNode)
@@ -441,20 +442,62 @@ const updateNodes = (data, nodeId) => {
 
     updateLeftSidebar(labels, nodesData)
 
-    document.querySelectorAll('#entitylist .entity').forEach(filter => {
-        console.log("eye filter, ", filter)
-        filter.onclick = e => {
-            let entityType = filter.classList[1]
-            if (filter.classList.contains('fa-eye-slash')) {
-                filter.classList.remove('fa-eye-slash')
-                filteredEntityTypes.splice(filteredEntityTypes.indexOf(entityType), 1)
+    document.querySelectorAll('#entitylist .entity-item').forEach(itemLabel => {
+        itemLabel.onclick = e => {
+            const nodeId = itemLabel.dataset.node;
+            if (itemLabel.classList.contains('fa-eye-slash')) {
+                itemLabel.classList.remove('fa-eye-slash');
+
+                const updatedNodes = [];
+                updatedNodes.push({id: nodeId, hidden: false});
+                nodes.update(updatedNodes);
             } else {
-                filter.classList.add('fa-eye-slash')
-                filteredEntityTypes.push(entityType)
+                itemLabel.classList.add('fa-eye-slash');
+
+                const updatedNodes = [];
+                updatedNodes.push({id: nodeId, hidden: true});
+                nodes.update(updatedNodes);
             }
-            updateFilteredEntityTypes()
         }
     })
+}
+
+export const addOnClickListenerHide = () => {
+  document.querySelectorAll('#entitylist .entity').forEach(filter => {
+      filter.onclick = e => {
+          let entityType = filter.classList[1]
+          if (filter.classList.contains('fa-eye-slash')) {
+              filter.classList.remove('fa-eye-slash')
+              filteredEntityTypes.splice(filteredEntityTypes.indexOf(entityType), 1)
+          } else {
+              filter.classList.add('fa-eye-slash')
+              filteredEntityTypes.push(entityType)
+          }
+          updateFilteredEntityTypes()
+      }
+  })
+}
+
+export const addOnClickListenerDelete = () => {
+  document.querySelectorAll('#entitylist .entity-trash').forEach(filter => {
+    filter.onclick = e => {
+        // find all the nodes from that category
+        const entityType = filter.classList[1];
+        const nodesFromType = nodesData
+        .filter(node => node.type[0].toLowerCase() === entityType)
+        .map(node => node.id);
+
+        // delete them
+        network.selectNodes(nodesFromType);
+        network.deleteSelected();
+
+        // delete the label from the current list of labels and to the list of ignored labels
+        labels = labels.filter(label => label.toLowerCase() !== entityType)
+        filteredEntityTypes.push(entityType)
+        console.log(filteredEntityTypes);
+        updateLeftSidebar(labels, nodesData)
+    }
+  })
 }
 
 /**
@@ -467,6 +510,22 @@ const zoomToNodeId = nodeId => {
     populateSidebarRight(selectedNode)
     showSidebarRight()
     network.selectNodes([nodeId.toString()])
+}
+
+/**
+ * Deletes a single node from the graph
+ * @param  {[string]} id nodeId
+ */
+const deleteSingleNode = (id) => {
+  // delete label for that node
+    const filteredNodes = nodesData
+    .filter(node => node.id !== id.toString());
+    nodesData = filteredNodes;
+    updateLeftSidebar(labels, nodesData);
+
+  // delete
+  network.selectNodes([id]);
+  network.deleteSelected();
 }
 
 const emptySidebarRight = () => {
@@ -770,6 +829,7 @@ window.showCompliance = showCompliance
 window.showComplianceForm = showComplianceForm
 window.showEntity = showEntity
 window.zoomToNodeId = zoomToNodeId
+window.deleteSingleNode = deleteSingleNode
 
 // Finally, declare init function to run when the page loads.
 window.onload = init
