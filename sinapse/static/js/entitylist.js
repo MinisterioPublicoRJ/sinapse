@@ -55,44 +55,46 @@ const sortByProperty = (nodes, prop) => nodes.sort((a, b) => (a.properties[prop]
  * @param {String[]} node.type
  */
 const nodeToDOMString = node => {
-    let ret = ''
+    let ret = `<dt>`
     if (node) {
+        const type = node.type[0].toLowerCase();
+        const eye = `<a class="${type} entity-item fa fa-eye icon" role="button" data-node="${node.id}"></a>`
+        const trashcan = `<a class="${type} fa fa-trash icon" onclick="deleteSingleNode(${node.id})"></a>`
+        const icons = `<span class="expand-span">${eye}${trashcan}</span>`
         switch (getNodeType(node)) {
             case 'documento':
-                ret = `<dt onclick="zoomToNodeId(${node.id})">${formatMPRJ(node.properties.nr_mp)}</dt><dd>${formatDate(node.properties.dt_cadastro)} - ${formatDocumentHierarchy(node.properties.cldc_ds_hierarquia)}</dd>`
+                ret += `<a class="item-line" onclick="zoomToNodeId(${node.id})">${formatMPRJ(node.properties.nr_mp)}</a>${icons}<dd>${formatDate(node.properties.dt_cadastro)} - ${formatDocumentHierarchy(node.properties.cldc_ds_hierarquia)}</dd>`
                 break
             case 'embarcacao':
-                ret = `<dt onclick="zoomToNodeId(${node.id})">${node.properties.nome_embarcacao}</dt>`
+                ret += `<a class="item-line" onclick="zoomToNodeId(${node.id})">${node.properties.nome_embarcacao}</a>${icons}`
                 break
             case 'empresa':
-                ret = `<dt onclick="zoomToNodeId(${node.id})">${node.properties.nome_fantasia || node.properties.razao_social}</dt><dd>CNPJ: ${formatCNPJ(node.properties.num_cnpj)}</dd>`
+                ret += `<a class="item-line" onclick="zoomToNodeId(${node.id})">${node.properties.nome_fantasia || node.properties.razao_social}</a>${icons}<dd>CNPJ: ${formatCNPJ(node.properties.num_cnpj)}</dd>`
                 break
             case 'multa':
-                ret = `<dt onclick="zoomToNodeId(${node.id})">${formatDate(node.properties.datainfra)} - ${node.properties.descinfra}</dt>`
+                ret += `<a class="item-line" onclick="zoomToNodeId(${node.id})">${formatDate(node.properties.datainfra)} - ${node.properties.descinfra}</a>${icons}`
                 break
             case 'orgao':
-                ret = `<dt onclick="zoomToNodeId(${node.id})">${node.properties.nm_orgao}</dt>`
+                ret += `<a class="item-line" onclick="zoomToNodeId(${node.id})">${node.properties.nm_orgao}</a>${icons}`
                 break
             case 'pessoa':
-                ret = `<dt onclick="zoomToNodeId(${node.id})">${node.properties.nome}</dt>`
+                ret += `<a class="item-line" onclick="zoomToNodeId(${node.id})">${node.properties.nome}</a>${icons}`
                 if (node.properties.cpf) {
                     ret += `<dd>CPF: ${formatCPF(node.properties.num_cpf)}</dd>`
                 }
                 break
             case 'personagem':
-                ret = `<dt onclick="zoomToNodeId(${node.id})">${node.properties.pess_nm_pessoa} - ${node.properties.tppe_descricao}</dt><dd>CPF/CNPJ: ${formatCPFOrCNPJ(node.properties.cpfcnpj)}</dd>`
+                ret += `<a class="item-line" onclick="zoomToNodeId(${node.id})">${node.properties.pess_nm_pessoa} - ${node.properties.tppe_descricao}</a>${icons}<dd>CPF/CNPJ: ${formatCPFOrCNPJ(node.properties.cpfcnpj)}</dd>`
                 break
             case 'veiculo':
-                ret = `<dt onclick="zoomToNodeId(${node.id})">${node.properties.marca_modelo.trim()} ${node.properties.fabric}/${node.properties.modelo} ${node.properties.descricao_cor.trim()} - ${formatVehiclePlate(node.properties.placa)}</dt>`
+                ret += `<a class="item-line" onclick="zoomToNodeId(${node.id})">${node.properties.marca_modelo.trim()} ${node.properties.fabric}/${node.properties.modelo} ${node.properties.descricao_cor.trim()} - ${formatVehiclePlate(node.properties.placa)}</a>${icons}`
                 break
             default:
-                ret = `<dt onclick="zoomToNodeId(${node.id})">${node.id}</dt>`
+                ret += `<a class="item-line" onclick="zoomToNodeId(${node.id})">${node.id}</a>${icons}`
         }
+        ret += `</dt>`
     }
 
-    const type = node.type[0].toLowerCase();
-    ret += `<a class="${type} entity-item fa fa-eye" role="button" data-node="${node.id}"></a>`
-    ret +=`<a class="${type} fa fa-trash" onclick="deleteSingleNode(${node.id})"></a>`
     return ret
 }
 
@@ -124,8 +126,10 @@ export const updateLeftSidebar = (labels, nodesData) => {
             entityListToWrite += `
                 <h2>
                     <a data-toggle='collapse' href='#collapse-${type}' role='button' class='color-${type} collapsed'>> ${nodesForThisType.length > 1 ? typeNamePlural(type) : typeNameSingular(type)}</a>
-                    <a class="color-${type} ${type} entity fa fa-eye" role="button"></a>
-                    <a class="color-${type} ${type} entity-trash fa fa-trash" role="button"></a>
+                    <span class="expand-span">
+                      <a class="color-${type} ${type} entity fa fa-eye icon" role="button"></a>
+                      <a class="color-${type} ${type} entity-trash fa fa-trash icon" role="button"></a>
+                    </span>
                 </h2>
                 <dl class='collapse' id='collapse-${type}'>
             `
