@@ -14,7 +14,7 @@
     </head>
     <body class="container-fluid">
         <header>
-        <div class="col-lg-12">
+        <div class="col-lg-12 not-printable">
             <div class="col-lg-2">
                 <a class="logo" href="/" id="conexaologo">Logo do sistema conexão</a>
             </div>
@@ -32,11 +32,14 @@
                         <span><abbr title="Coordenadoria de Segurança e Inteligência">CSI</abbr></span>
                     </a>
                     <button onclick="logout()" class="logout">Sair</button>
+                    <button onclick="prepareToPrint()" class="print-button">
+                      <i class="fa fa-print"></i>
+                    </button>
                 </div>
             </div>
         </div>
         </header>
-        <div id="compliance" class="row">
+        <div id="compliance" class="row not-printable">
             <div class="col-md-1 col-lg-4"></div>
             <div class="col-md-10 col-lg-4 compliance-main">
                 <div class="row">
@@ -67,14 +70,14 @@
             </div>
             <div class="col-md-1 col-lg-4"></div>
         </div>
-        <div class="entitylist">
+        <div class="entitylist not-printable">
             <p>As entidades exibidas no grafo são exibidas nesta janela lateral.</p>
             <p>Clique em um tipo para exibir ou ocultar as entidades.</p>
             <p>Clique numa entidade para lhe dar destaque.</p>
             <input id="entitylistfilter" placeholder="digite aqui para filtrar" onkeyup="filterEntityList()">
             <div id="entitylist"></div>
         </div>
-        <div class="container-graph">
+        <div class="container-graph not-printable">
             <main>
                 <div class="col-lg-8 col-lg-offset-2 busca">
                     <div id="loading">
@@ -106,7 +109,7 @@
                 </div>
             </footer>
         </div>
-        <aside id="sidebarRight"></aside>
+        <aside id="sidebarRight not-printable"></aside>
         {% assets "js" %}
             <script type="text/javascript" src="{{ ASSET_URL }}"></script>
         {% endassets %}
@@ -121,7 +124,7 @@
                         prop: '{{ filtroinicial.prop }}',
                         val: '{{ filtroinicial.val }}'
                     }
-                    
+
                     findNodes(
                         filtroInicial.label,
                         filtroInicial.prop,
@@ -130,5 +133,10 @@
                 }, 1000)
             </script>
         {% endif %}
+      <div class="printPage container-fluid">
+        <p>
+          I'm doing me a test
+        </p>
+      </div>
     </body>
 </html>

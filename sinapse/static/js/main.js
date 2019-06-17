@@ -55,7 +55,8 @@ let nodes,               // Visjs initialized nodes
     options,             // Object that holds Visjs options
     network,             // Visjs Network, linking container, data and options
     photosData,
-    labels
+    labels,
+    currentGraphData     // current graph state into PNG form
 
 const baseIconsPath = '/static/img/icon/graph/'
 const sidebarRight = document.getElementById("sidebarRight")
@@ -109,7 +110,7 @@ const initVisjs = () => {
         },
     }
     network = new vis.Network(container, data, options)
-    
+
     // Don't change to arrow function (`this` wouldn't work)
     network.on('click', function(params) {
         const selectedNodeId = this.getNodeAt(params.pointer.DOM)
@@ -135,7 +136,7 @@ const initVisjs = () => {
 }
 
 /**
- * Gets 
+ * Gets
  * @param {Number} nodeId A Node ID to fetch from API
  */
 const getNextNodes = nodeId => {
@@ -336,7 +337,7 @@ const findNodes = (label, prop, val) => {
 
 /**
  * Call getNextNodes on node returned by findNodes, so the graph comes already expanded on first level (instead of a single node)
- * @param {Object} data 
+ * @param {Object} data
  * @param {Object[]} data.nodes
  * @param {String} data.nodes[].id
  */
@@ -442,7 +443,6 @@ const updateNodes = (data, nodeId) => {
     updateLeftSidebar(labels, nodesData)
 
     document.querySelectorAll('#entitylist .entity').forEach(filter => {
-        console.log("eye filter, ", filter)
         filter.onclick = e => {
             let entityType = filter.classList[1]
             if (filter.classList.contains('fa-eye-slash')) {
@@ -455,6 +455,12 @@ const updateNodes = (data, nodeId) => {
             updateFilteredEntityTypes()
         }
     })
+
+    // copying the graph to an image I can print later
+    network.on("afterDrawing", function (ctx) {
+      const graphDataURL = ctx.canvas.toDataURL();
+      currentGraphData = graphDataURL;
+    });
 }
 
 /**
@@ -751,6 +757,10 @@ const logout = () => {
     get('/logout', () => { location.reload() }, true)
 }
 
+const prepareToPrint = () => {
+  console.log('i works');
+}
+
 // Attach external functions to window
 window.addVeiculoFoto = addVeiculoFoto
 window.backToSearch = backToSearch
@@ -770,6 +780,7 @@ window.showCompliance = showCompliance
 window.showComplianceForm = showComplianceForm
 window.showEntity = showEntity
 window.zoomToNodeId = zoomToNodeId
+window.prepareToPrint = prepareToPrint;
 
 // Finally, declare init function to run when the page loads.
 window.onload = init
