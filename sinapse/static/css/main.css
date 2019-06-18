@@ -184,3 +184,17 @@
     text-align: justify;
   }
 }
+
+.item-line {
+  display: inline-block;
+  width: calc(90% - 20px);
+  padding-left: 10px;
+}
+
+.icon {
+  padding-left: 10px;
+}
+
+.expand-span {
+  float: right;
+}
