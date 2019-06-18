@@ -2,4 +2,15 @@
   .not-printable {
     display: none;
   }
+
+  div .header-box {
+    align-items: center;
+    justify-content: center;
+  }
+
+  .header-logo {
+    align-self: center;
+    display: inline-block;
+    height: 3cm;
+  }
 }

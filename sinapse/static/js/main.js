@@ -757,8 +757,9 @@ const logout = () => {
     get('/logout', () => { location.reload() }, true)
 }
 
-const prepareToPrint = () => {
+const prepareToPrint = (event) => {
   console.log('i works');
+  document.querySelector('#graph-data').innerHTML = `<img src="${currentGraphData}" />`;
 }
 
 // Attach external functions to window
@@ -781,6 +782,7 @@ window.showComplianceForm = showComplianceForm
 window.showEntity = showEntity
 window.zoomToNodeId = zoomToNodeId
 window.prepareToPrint = prepareToPrint;
+window.addEventListener('beforeprint', (event) => prepareToPrint(event));
 
 // Finally, declare init function to run when the page loads.
 window.onload = init

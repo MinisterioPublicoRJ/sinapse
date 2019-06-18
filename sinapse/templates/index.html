@@ -40,7 +40,7 @@
         </div>
         </header>
         <div id="compliance" class="row not-printable">
-            <div class="col-md-1 col-lg-4"></div>
+            <div class="col-md-1 col-lg-4 not-printable"></div>
             <div class="col-md-10 col-lg-4 compliance-main">
                 <div class="row">
                     <div id="compliance-buttons">
@@ -68,17 +68,17 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-1 col-lg-4"></div>
+            <div class="col-md-1 col-lg-4 not-printable"></div>
         </div>
         <div class="entitylist not-printable">
             <p>As entidades exibidas no grafo são exibidas nesta janela lateral.</p>
             <p>Clique em um tipo para exibir ou ocultar as entidades.</p>
             <p>Clique numa entidade para lhe dar destaque.</p>
             <input id="entitylistfilter" placeholder="digite aqui para filtrar" onkeyup="filterEntityList()">
-            <div id="entitylist"></div>
+            <div id="entitylist" class="not-printable"></div>
         </div>
         <div class="container-graph not-printable">
-            <main>
+            <main class="not-printable">
                 <div class="col-lg-8 col-lg-offset-2 busca">
                     <div id="loading">
                         <img src="/static/img/icon/Loading_icon.gif">
@@ -109,7 +109,7 @@
                 </div>
             </footer>
         </div>
-        <aside id="sidebarRight not-printable"></aside>
+        <aside id="sidebarRight" class="not-printable"></aside>
         {% assets "js" %}
             <script type="text/javascript" src="{{ ASSET_URL }}"></script>
         {% endassets %}
@@ -133,10 +133,22 @@
                 }, 1000)
             </script>
         {% endif %}
+      <!-- This part is only shown in print preview -->
+      <!-- AS LOGOS NÃO ESTÃO ALINHADAS -->
       <div class="printPage container-fluid">
-        <p>
-          I'm doing me a test
-        </p>
+        <div class="row">
+          <div class="col-xs-4 header-box">
+            <img class="img-responsive header-logo" src="/static/img/Logo-mpemmapas.svg"/>
+          </div>
+          <div class="col-xs-4 header-box">
+            <img class="img-responsive header-logo" src="/static/img/logo-conexao.svg"/>
+          </div>
+          <div class="col-xs-4 header-box">
+            <img class="img-responsive header-logo" src="/static/img/CSI-MPRJ-vert-cor.png"/>
+          </div>
+        </div>
+        <div class="container-fluid" id="graph-data" />
+      </div>
       </div>
     </body>
 </html>
