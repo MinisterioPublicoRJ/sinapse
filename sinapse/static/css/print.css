@@ -13,4 +13,27 @@
     display: inline-block;
     height: 3cm;
   }
+
+  .graph-image {
+    border: 2.5px solid;
+    border-color: rgb(114, 216, 242) !important;
+    margin-bottom: 3.5cm;
+    margin-top: 3.5cm;
+    overflow: hidden;
+    position: absolute;
+    width: 100%;
+  }
+
+  .outer-view {
+    align-items: center;
+    height: 100%;
+    justify-content: center;
+    position: absolute;
+    width: 100%;
+  }
+
+  .procedure-footer {
+    bottom: 0;
+    position: absolute;
+  }
 }

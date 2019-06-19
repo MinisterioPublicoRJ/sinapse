@@ -56,7 +56,8 @@ let nodes,               // Visjs initialized nodes
     network,             // Visjs Network, linking container, data and options
     photosData,
     labels,
-    currentGraphData     // current graph state into PNG form
+    currentGraphData,     // current graph state into PNG form
+    complianceData        // compliance data for the printed version
 
 const baseIconsPath = '/static/img/icon/graph/'
 const sidebarRight = document.getElementById("sidebarRight")
@@ -818,8 +819,16 @@ const logout = () => {
 }
 
 const prepareToPrint = (event) => {
-  console.log('i works');
+  // gathering procedure data
+  let procedureNumber = document.querySelector("#procedure-number").value;
+  console.log('i works!: ', procedureNumber);
+  let procedureObjective = document.getElementById('query-objective').value;
+
+  // inserting graph and footer in the print preview
   document.querySelector('#graph-data').innerHTML = `<img src="${currentGraphData}" />`;
+  if (procedureNumber) {
+    document.getElementById('footnotes').innerHTML = `<p>Consulta para o processo ${procedureNumber}, sob a justificativa '${procedureObjective}'</p>`
+  }
 }
 
 // Attach external functions to window

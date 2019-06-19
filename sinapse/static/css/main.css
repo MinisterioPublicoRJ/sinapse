@@ -2,7 +2,7 @@
   .printPage {
     display: none;
   }
-  
+
   * {
     font-family: 'Open Sans', sans-serif;
   }
@@ -154,7 +154,6 @@
   }
 
   .print-button {
-    /* background-image: url('/static/img/icon-logout.svg'); */
     background: rgb(114, 216, 242);
     background-size: contain;
     border: none;
