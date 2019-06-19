@@ -821,7 +821,6 @@ const logout = () => {
 const prepareToPrint = (event) => {
   // gathering procedure data
   let procedureNumber = document.querySelector("#procedure-number").value;
-  console.log('i works!: ', procedureNumber);
   let procedureObjective = document.getElementById('query-objective').value;
 
   // inserting graph and footer in the print preview
