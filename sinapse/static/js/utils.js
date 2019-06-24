@@ -521,6 +521,8 @@ export const complianceProcedure = () => {
     if (!queryObjective) {
         return alert('O objetivo da consulta é de preenchimento obrigatório.')
     }
+    sessionStorage.setItem('procNum', procedureNumber)
+    sessionStorage.setItem('procObj', queryObjective)
     post(COMPLIANCE_URL, `tipoacesso=comprocedimento&numeroprocedimento=${procedureNumber}&descricao=${queryObjective}`, () => { location.reload() })
 }
 
@@ -534,7 +536,7 @@ export const complianceNoProcedure = () => {
 /**
  * Returns a node type.
  *
- * @param {*} node 
+ * @param {*} node
  */
 export const getNodeType = node => {
     return node.type[0].toLowerCase()

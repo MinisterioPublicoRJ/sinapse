@@ -820,13 +820,19 @@ const logout = () => {
 
 const prepareToPrint = (event) => {
   // gathering procedure data
-  let procedureNumber = document.querySelector("#procedure-number").value;
-  let procedureObjective = document.getElementById('query-objective').value;
+  let procNum = null
+  let procObj = null
+  try {
+    procNum = sessionStorage.getItem('procNum')
+    procObj = sessionStorage.getItem('procObj')
+  } catch (e) {
+    console.log('problems!')
+  }
 
   // inserting graph and footer in the print preview
   document.querySelector('#graph-data').innerHTML = `<img src="${currentGraphData}" />`;
-  if (procedureNumber) {
-    document.getElementById('footnotes').innerHTML = `<p>Consulta para o processo ${procedureNumber}, sob a justificativa '${procedureObjective}'</p>`
+  if (procNum) {
+    document.getElementById('footnotes').innerHTML = `<p>Consulta para o processo ${procNum}, sob a justificativa '${procObj}'</p>`
   }
 }
 
