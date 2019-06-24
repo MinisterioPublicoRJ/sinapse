@@ -26,6 +26,7 @@ bundles = {
         'css/filter.css',
         'css/entitylist.css',
         'css/colors.css',
+        'css/print.css',
     ),
 }
 

@@ -1,47 +1,52 @@
-* {
-    font-family: 'Open Sans', sans-serif;
-}
+@media screen {
+  .printPage {
+    display: none;
+  }
 
-body,
-html {
+  * {
+    font-family: 'Open Sans', sans-serif;
+  }
+
+  body,
+  html {
     height: 100%;
     overflow: hidden;
-}
+  }
 
-body {
+  body {
     padding-top: 20px;
-}
+  }
 
-#graph {
+  #graph {
     width: 100%;
     height: 100%;
-}
-.graphhidden {
+  }
+  .graphhidden {
     visibility: hidden;
-}
+  }
 
-header {
+  header {
     position: absolute;
     width: 100%;
-}
+  }
 
-header, main {
+  header, main {
     text-align: center
-}
+  }
 
-main {
+  main {
     padding-top: 30px;
-}
+  }
 
-.container-graph, .container-sidebar {
+  .container-graph, .container-sidebar {
     height: 100%;
-}
+  }
 
-.container-graph main {
+  .container-graph main {
     height: 100%;
-}
+  }
 
-.logo {
+  .logo {
     background-color: white;
     background-image: url('/static/img/logo-conexao.svg');
     background-position: top center;
@@ -53,19 +58,19 @@ main {
     width: 200px;
     height: 64px;
     text-indent: -9999px;
-}
+  }
 
-.header-logos-container {
+  .header-logos-container {
     bottom: 20px;
     right: 0;
     z-index: 2;
-}
+  }
 
-.header-logos-container span {
+  .header-logos-container span {
     display: none;
-}
+  }
 
-.csi {
+  .csi {
     background-image: url('/static/img/CSI-MPRJ-vert-cor.png');
     background-position: center;
     background-repeat: no-repeat;
@@ -73,69 +78,69 @@ main {
     display: inline-block;
     width: 60px;
     height: 60px;
-}
+  }
 
-.mprj {
+  .mprj {
     background-color: white;
     background-image: url('/static/img/Logo-mpemmapas.svg');
     background-position: top center;
     background-repeat: no-repeat;
     display: inline-block;
-}
+  }
 
-/* smartphone */
-@media all and (max-width:30em) {
+  /* smartphone */
+  @media all and (max-width:30em) {
     .mprj {
-        width: 120px;
-        height: 40px;
+      width: 120px;
+      height: 40px;
     }
-}
+  }
 
-/* computer */
-@media all and (min-width:30em) {
+  /* computer */
+  @media all and (min-width:30em) {
     .header-logos-container {
-        float: right;
+      float: right;
     }
 
     .mprj {
-        width: 120px;
-        height: 60px;
-        margin-right: 20px;
-        transition: right .2s ease-in-out;
+      width: 120px;
+      height: 60px;
+      margin-right: 20px;
+      transition: right .2s ease-in-out;
     }
-}
+  }
 
 
-/* Vis CSS overload */
+  /* Vis CSS overload */
 
-div.vis-network div.vis-manipulation {
+  div.vis-network div.vis-manipulation {
     background: white;
     border: 0;
-}
+  }
 
-div.vis-network div.vis-edit-mode {
+  div.vis-network div.vis-edit-mode {
     left: 14%;
-}
+  }
 
-div.vis-network div.vis-manipulation div.vis-button.vis-delete {
+  div.vis-network div.vis-manipulation div.vis-button.vis-delete {
     background: none;
     left: 10%;
     position: relative;
-}
+  }
 
-#version {
+  #version {
     color: #999;
     font-size: 10px;
     position: relative;
     width: 100%;
     z-index: 2;
-}
+  }
 
-#version_username {
+  #version_username {
     display: none;
-}
+  }
 
-.logout {
+  .logout {
     background-image: url('/static/img/icon-logout.svg');
     background-size: contain;
     border: none;
@@ -146,22 +151,37 @@ div.vis-network div.vis-manipulation div.vis-button.vis-delete {
     width: 32px;
     height: 32px;
     z-index: 2;
-}
+  }
 
-#compliance {
+  .print-button {
+    background: rgb(114, 216, 242);
+    background-size: contain;
+    border: none;
+    border-radius: 50%;
+    font-size: 0;
+    position: fixed;
+    bottom: 20px;
+    right: 60px;
+    width: 32px;
+    height: 32px;
+    z-index: 2;
+  }
+
+  #compliance {
     display: none;
     padding-top: 100px;
-}
+  }
 
-#compliance-form {
+  #compliance-form {
     display: none;
-}
+  }
 
-#compliance p {
+  #compliance p {
     color: #666;
     font-size: .9em;
     padding-top: 20px;
     text-align: justify;
+  }
 }
 
 .item-line {

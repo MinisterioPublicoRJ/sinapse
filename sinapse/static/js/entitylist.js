@@ -110,6 +110,7 @@ export const updateLeftSidebar = (labels, nodesData) => {
     $(() => $(".entitylist").dialog({
         classes: {
             "ui-dialog-titlebar-close": "graphhidden",
+            "ui-dialog": "not-printable",
         },
         height: 500,
         position: {

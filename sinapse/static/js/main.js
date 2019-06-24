@@ -55,7 +55,9 @@ let nodes,               // Visjs initialized nodes
     options,             // Object that holds Visjs options
     network,             // Visjs Network, linking container, data and options
     photosData,
-    labels
+    labels,
+    currentGraphData,     // current graph state into PNG form
+    complianceData        // compliance data for the printed version
 
 const baseIconsPath = '/static/img/icon/graph/'
 const sidebarRight = document.getElementById("sidebarRight")
@@ -460,6 +462,12 @@ const updateNodes = (data, nodeId) => {
             }
         }
     })
+
+    // copying the graph to an image I can print later
+    network.on("afterDrawing", function (ctx) {
+      const graphDataURL = ctx.canvas.toDataURL();
+      currentGraphData = graphDataURL;
+    });
 }
 
 export const addOnClickListenerHide = () => {
@@ -810,6 +818,24 @@ const logout = () => {
     get('/logout', () => { location.reload() }, true)
 }
 
+const prepareToPrint = (event) => {
+  // gathering procedure data
+  let procNum = null
+  let procObj = null
+  try {
+    procNum = sessionStorage.getItem('procNum')
+    procObj = sessionStorage.getItem('procObj')
+  } catch (e) {
+    console.log('problems!')
+  }
+
+  // inserting graph and footer in the print preview
+  document.querySelector('#graph-data').innerHTML = `<img src="${currentGraphData}" />`;
+  if (procNum) {
+    document.getElementById('footnotes').innerHTML = `<p>Consulta para o processo ${procNum}, sob a justificativa '${procObj}'</p>`
+  }
+}
+
 // Attach external functions to window
 window.addVeiculoFoto = addVeiculoFoto
 window.backToSearch = backToSearch
@@ -830,6 +856,8 @@ window.showComplianceForm = showComplianceForm
 window.showEntity = showEntity
 window.zoomToNodeId = zoomToNodeId
 window.deleteSingleNode = deleteSingleNode
+window.prepareToPrint = prepareToPrint;
+window.addEventListener('beforeprint', (event) => prepareToPrint(event));
 
 // Finally, declare init function to run when the page loads.
 window.onload = init
