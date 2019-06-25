@@ -30,7 +30,7 @@ const init = () => {
     initVersion()
 }
 
-const VERSION = '20190611'
+const VERSION = '20190625'
 let SEARCH_TAB_OPENED = 2
 const EDGES_DICT = {
     'orgao_responsavel': 'órgão responsável',
@@ -56,7 +56,6 @@ let nodes,               // Visjs initialized nodes
     network,             // Visjs Network, linking container, data and options
     photosData,
     labels,
-    currentGraphData,     // current graph state into PNG form
     complianceData        // compliance data for the printed version
 
 const baseIconsPath = '/static/img/icon/graph/'
@@ -462,12 +461,6 @@ const updateNodes = (data, nodeId) => {
             }
         }
     })
-
-    // copying the graph to an image I can print later
-    network.on("afterDrawing", function (ctx) {
-      const graphDataURL = ctx.canvas.toDataURL();
-      currentGraphData = graphDataURL;
-    });
 }
 
 export const addOnClickListenerHide = () => {
@@ -819,21 +812,23 @@ const logout = () => {
 }
 
 const prepareToPrint = (event) => {
-  // gathering procedure data
-  let procNum = null
-  let procObj = null
-  try {
-    procNum = sessionStorage.getItem('procNum')
-    procObj = sessionStorage.getItem('procObj')
-  } catch (e) {
-    console.log('problems!')
-  }
+    // gathering procedure data
+    let procNum = null
+    let procObj = null
+    try {
+        procNum = sessionStorage.getItem('procNum')
+        procObj = sessionStorage.getItem('procObj')
+    } catch (e) {
+        console.log('problems!')
+    }
 
-  // inserting graph and footer in the print preview
-  document.querySelector('#graph-data').innerHTML = `<img src="${currentGraphData}" />`;
-  if (procNum) {
-    document.getElementById('footnotes').innerHTML = `<p>Consulta para o processo ${procNum}, sob a justificativa '${procObj}'</p>`
-  }
+    let currentGraphData = document.querySelector('canvas').toDataURL()
+
+    // inserting graph and footer in the print preview
+    document.querySelector('#graph-data').innerHTML = `<img src="${currentGraphData}" />`;
+    if (procNum) {
+        document.getElementById('footnotes').innerHTML = `<p>Consulta para o processo ${procNum}, sob a justificativa '${procObj}'</p>`
+    }
 }
 
 // Attach external functions to window
