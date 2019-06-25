@@ -877,8 +877,6 @@ get_path_output = {'paths': [
     ]
 ]}
 
-# TODO: Test for parser of paths
-
 parse_path_input = get_path_output
 
 parse_path_output = {'paths': [
@@ -1054,7 +1052,8 @@ output_whereabouts_addresses_credilink = [
         'cep': '20000000',
         'cidade': 'RIO DE JANEIRO',
         'sigla_uf': 'RJ',
-        'telefone': '2125696969'
+        'telefone': '2125696969',
+        'dt_instalacao': '01/01/2000'
     },
     {
         'endereco': 'RUA ALPHA BETA', 
@@ -1064,7 +1063,8 @@ output_whereabouts_addresses_credilink = [
         'cep': '20000000',
         'cidade': 'RIO DE JANEIRO',
         'sigla_uf': 'RJ',
-        'telefone': '2138522500'
+        'telefone': '2138522500',
+        'dt_instalacao': '01/01/2002'
     }
 ]
 

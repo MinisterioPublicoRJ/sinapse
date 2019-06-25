@@ -89,7 +89,8 @@ def extract_addresses_from_credilink(response):
             'cep': tel.find('cep').text,
             'cidade': tel.find('cidade').text,
             'sigla_uf': tel.find('uf').text,
-            'telefone': tel.find('telefone').text
+            'telefone': tel.find('telefone').text,
+            'dt_instalacao': tel.find('dt_istalacao').text
         }
         addresses.append(address)
 
