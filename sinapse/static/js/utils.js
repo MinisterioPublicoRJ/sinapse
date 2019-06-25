@@ -274,8 +274,23 @@ export const formatAddresses = addresses => {
     return addresses.map(address => formatAddress(address)).join('')
 }
 
+/**
+ * Returns a HTML string of an address object
+ * @param {Object} address
+ * @param {string} address.bairro
+ * @param {string} address.cep
+ * @param {string} address.cidade
+ * @param {string} address.complemento complemento do endereço (pode ser null)
+ * @param {string} address.dt_instalacao data de instalação do telefone, somente se endereço credlink
+ * @param {string} address.endereco tipo e nome do logradouro
+ * @param {string} address.numero número do endereço
+ * @param {string} address.sigla_uf
+ * @param {string} address.telefone (pode vir apenas "21")
+ */
 const formatAddress = address => {
     let addressStr = address.endereco
+    let phoneTitle = 'Telefone'
+    let phoneStr = address.telefone && address.telefone.length > 2 ? address.telefone : "(desconhecido)"
     if (address.numero) {
         addressStr += ', ' + address.numero
     }
@@ -291,12 +306,16 @@ const formatAddress = address => {
     if (address.sigla_uf) {
         addressStr += '/' + address.sigla_uf
     }
+    if (address.dt_instalacao) {
+        phoneTitle += ' / Data de Instalação'
+        phoneStr += ` - ${address.dt_instalacao}`
+    }
     if (address)
     return `<dl class="address">
         <dt>Endereço:</dt>
         <dd>${addressStr}</dd>
-        <dt>Telefone:</dt>
-        <dd>${address.telefone}</dd>
+        <dt>${phoneTitle}:</dt>
+        <dd>${phoneStr}</dd>
     </dl>`
 }
 
