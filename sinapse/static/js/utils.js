@@ -289,6 +289,7 @@ export const formatAddresses = addresses => {
  */
 const formatAddress = address => {
     let addressStr = address.endereco
+    let addressStrWithCEP = ''
     let phoneTitle = 'Telefone'
     let phoneStr = address.telefone && address.telefone.length > 2 ? address.telefone : "(desconhecido)"
     if (address.numero) {
@@ -306,6 +307,11 @@ const formatAddress = address => {
     if (address.sigla_uf) {
         addressStr += '/' + address.sigla_uf
     }
+    let googleMapsLink = `https://www.google.com/maps/search/${encodeURI(addressStr)}?hl=pt-BR&source=opensearch`
+    addressStrWithCEP += addressStr
+    if (address.cep) {
+        addressStrWithCEP += '<br>CEP: ' + formatCEP(address.cep)
+    }
     if (address.dt_instalacao) {
         phoneTitle += ' / Data de Instalação'
         phoneStr += ` - ${address.dt_instalacao}`
@@ -313,10 +319,18 @@ const formatAddress = address => {
     if (address)
     return `<dl class="address">
         <dt>Endereço:</dt>
-        <dd>${addressStr}</dd>
+        <dd><a href="${googleMapsLink}" target="_blank">${addressStrWithCEP}</a></dd>
         <dt>${phoneTitle}:</dt>
         <dd>${phoneStr}</dd>
     </dl>`
+}
+
+/**
+ * Format as CEP - xxxxx-xxx
+ * @param {String} cep 
+ */
+export const formatCEP = cep => {
+    return `${cep.substr(0,5)}-${cep.substr(5)}`
 }
 
 /**
