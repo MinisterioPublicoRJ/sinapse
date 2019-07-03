@@ -186,7 +186,8 @@ class CasoGlobal(unittest.TestCase):
         api_nodeProperties = self.app.get('/api/nodeProperties')
         api_relationships = self.app.get('/api/relationships')
         api_findShortestPath = self.app.get('/api/findShortestPath')
-        api_whereabouts = self.app.get('/api/whereabouts')
+        api_whereabouts_credilink = self.app.get('/api/whereaboutsCredilink')
+        api_whereabouts_receita = self.app.get('/api/whereaboutsReceita')
 
         assert api_node.status_code == 403
         assert api_findNodes.status_code == 403
@@ -194,7 +195,8 @@ class CasoGlobal(unittest.TestCase):
         assert api_nodeProperties.status_code == 403
         assert api_relationships.status_code == 403
         assert api_findShortestPath.status_code == 403
-        assert api_whereabouts.status_code == 403
+        assert api_whereabouts_credilink.status_code == 403
+        assert api_whereabouts_receita.status_code == 403
 
 
 class LoginUsuario(unittest.TestCase):

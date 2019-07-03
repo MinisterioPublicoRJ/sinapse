@@ -85,11 +85,34 @@ class BuscaDeParadeiro(unittest.TestCase):
         assert resposta_whereabouts_credilink_ok['formatted_addresses'][0] in saida['formatted_addresses']
         assert resposta_whereabouts_credilink_ok['formatted_addresses'][1] in saida['formatted_addresses']
 
-    @mock.patch('sinapse.start.get_whereabouts_receita')
     @mock.patch('sinapse.start.get_whereabouts_credilink')
     @responses.activate
-    def test_whereabouts(self, _get_whereabouts_credilink, _get_whereabouts_receita):
+    def test_api_whereabouts_credilink(self, _get_whereabouts_credilink):
         _get_whereabouts_credilink.return_value = resposta_whereabouts_credilink_ok
+        query_string = {
+            'uuid': 140885160
+        }
+
+        responses.add(
+            responses.POST,
+            _ENDERECO_NEO4J % '/db/data/transaction/commit',
+            json=resposta_get_node_from_id_ok
+        )
+
+        resposta = self.app.get(
+            '/api/whereaboutsCredilink',
+            query_string=query_string
+        )
+        saida = resposta.get_json()
+        
+        assert resposta_whereabouts_credilink_ok == saida
+
+        request = json.loads(responses.calls[-1].request.body)
+        assert request == request_get_node_from_id
+
+    @mock.patch('sinapse.start.get_whereabouts_receita')
+    @responses.activate
+    def test_api_whereabouts_receita(self, _get_whereabouts_receita):
         _get_whereabouts_receita.return_value = resposta_whereabouts_receita_ok
         query_string = {
             'uuid': 140885160
@@ -102,19 +125,18 @@ class BuscaDeParadeiro(unittest.TestCase):
         )
 
         resposta = self.app.get(
-            '/api/whereabouts',
+            '/api/whereaboutsReceita',
             query_string=query_string
         )
         saida = resposta.get_json()
         
-        assert resposta_whereabouts_receita_ok in saida
-        assert resposta_whereabouts_credilink_ok in saida
+        assert resposta_whereabouts_receita_ok == saida
 
         request = json.loads(responses.calls[-1].request.body)
         assert request == request_get_node_from_id
 
     @responses.activate
-    def test_whereabouts_sensivel(self):
+    def test_whereabouts_credilink_sensivel(self):
         query_string = {
             'node_id': 140885160
         }
@@ -126,8 +148,27 @@ class BuscaDeParadeiro(unittest.TestCase):
         )
 
         resposta = self.app.get(
-            '/api/whereabouts',
+            '/api/whereaboutsCredilink',
             query_string=query_string
         )
 
-        assert resposta.get_json() == []
+        assert resposta.get_json() == {}
+
+    @responses.activate
+    def test_whereabouts_receita_sensivel(self):
+        query_string = {
+            'node_id': 140885160
+        }
+
+        responses.add(
+            responses.POST,
+            _ENDERECO_NEO4J % '/db/data/transaction/commit',
+            json=resposta_get_node_from_id_sensivel_ok
+        )
+
+        resposta = self.app.get(
+            '/api/whereaboutsReceita',
+            query_string=query_string
+        )
+
+        assert resposta.get_json() == {}
