@@ -569,10 +569,9 @@ def api_relationships():
     return respostajson(response)
 
 
-@app.route("/api/whereabouts")
+@app.route("/api/whereaboutsCredilink")
 @login_necessario
-def api_whereabouts():
-    # TODO: Hide sensitive information
+def api_whereabouts_credilink():
     uuid = request.args.get('uuid')
 
     query = {"statements": [{
@@ -595,17 +594,42 @@ def api_whereabouts():
     if node_props:
         num_cpf = node_props['num_cpf']
     else:
-        return jsonify([])
-
-    whereabouts = []
-
-    whereabouts_receita = get_whereabouts_receita(num_cpf)
-    whereabouts.append(whereabouts_receita)
+        return jsonify({})
 
     whereabouts_credilink = get_whereabouts_credilink(num_cpf)
-    whereabouts.append(whereabouts_credilink)
 
-    return jsonify(whereabouts)
+    return jsonify(whereabouts_credilink)
+
+@app.route("/api/whereaboutsReceita")
+@login_necessario
+def api_whereabouts_receita():
+    uuid = request.args.get('uuid')
+
+    query = {"statements": [{
+        "statement": "MATCH (p:Pessoa) WHERE p.uuid = '%s' RETURN p"
+        % (uuid),
+        "resultDataContents": ["row", "graph"]
+    }]}
+
+    response = requests.post(
+        _ENDERECO_NEO4J % '/db/data/transaction/commit',
+        data=json.dumps(query),
+        auth=_AUTH,
+        headers=_HEADERS)
+
+    response = remove_info_sensiveis(response.json())
+
+    node_props = response['results'][0]['data'][0]['graph'][
+        'nodes'][0]['properties']
+    # If information is confidential, properties will be empty
+    if node_props:
+        num_cpf = node_props['num_cpf']
+    else:
+        return jsonify({})
+
+    whereabouts_receita = get_whereabouts_receita(num_cpf)
+
+    return jsonify(whereabouts_receita)
 
 
 @app.context_processor
