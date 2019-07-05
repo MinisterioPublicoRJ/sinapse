@@ -42,8 +42,16 @@ class ParseSolrResponse(TestCase):
             ['uuid', 'marca_modelo', 'ano_modelo', 'cor']
         )
         expected = [
-            info_obj('3ad66', "HONDA/CG 125 FAN ESD", "2014", "PRETA")._asdict(),
-            info_obj('37464', "CITROEN/XSARA PICASSO GX", "2001", "CINZA")._asdict()
+            info_obj(
+                '3ad66',
+                "HONDA/CG 125 FAN ESD",
+                "2014",
+                "PRETA")._asdict(),
+            info_obj(
+                '37464',
+                "CITROEN/XSARA PICASSO GX",
+                "2001",
+                "CINZA")._asdict()
         ]
 
         self.assertEqual(info, expected)

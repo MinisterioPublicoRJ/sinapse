@@ -6,7 +6,6 @@ from freezegun import freeze_time
 from copy import deepcopy
 from functools import wraps
 from unittest import mock
-from datetime import datetime
 
 from flask_testing import TestCase as FlaskTestCase
 from freezegun.api import FakeDatetime
@@ -72,6 +71,7 @@ def test_get_path():
     saida = get_path(get_path_input)
     assert saida == get_path_output
 
+
 def test_parse_path():
     input_copy = deepcopy(parse_path_input)
     parse_paths(input_copy)
@@ -99,6 +99,7 @@ def test_monta_query_filtro_opcional_pessdk():
 
     assert saida == "optional match (a:label {pess_dk:val})"
 
+
 @mock.patch("sinapse.start._log_login")
 @responses.activate
 def test_autenticar_invalido(_LOG_LOGIN):
@@ -110,6 +111,7 @@ def test_autenticar_invalido(_LOG_LOGIN):
 
     retorno = _autenticar("usuario", "senha")
     assert retorno is None
+
 
 @mock.patch("sinapse.start._log_login")
 @responses.activate
@@ -216,7 +218,7 @@ class LoginUsuario(unittest.TestCase):
             data={
                 "usuario": "usuario",
                 "senha": "senha"
-                })
+            })
         retorno_compliance = self.app.post(
             "/compliance",
             data={
@@ -267,11 +269,11 @@ class MetodosConsulta(unittest.TestCase):
                 }
             )
             self.app.post("/compliance",
-                data={
-                    "tipoacesso": 1,
-                    "numeroprocedimento": 1,
-                    "descricao": 1
-                })
+                          data={
+                              "tipoacesso": 1,
+                              "numeroprocedimento": 1,
+                              "descricao": 1
+                          })
 
     @mock.patch('sinapse.start.conta_nos')
     @mock.patch('sinapse.start.get_vehicle_photo_asynch')
@@ -405,7 +407,8 @@ class MetodosConsulta(unittest.TestCase):
     @mock.patch('sinapse.start.person_info')
     @mock.patch('sinapse.start.conta_expansoes')
     @mock_logresponse
-    def test_metodo_consulta_api_next_nodes(self, _conta_expansoes, _pi, _vi, _gpa, _gva):
+    def test_metodo_consulta_api_next_nodes(self, _conta_expansoes,
+                                            _pi, _vi, _gpa, _gva):
         _conta_expansoes.return_value = [73, 73, 73]
         _pi.return_value = 1
         _vi.return_vale = 1
@@ -440,7 +443,8 @@ class MetodosConsulta(unittest.TestCase):
     @mock.patch('sinapse.start.person_info')
     @mock.patch('sinapse.start.conta_expansoes')
     @mock_logresponse
-    def test_metodo_consulta_api_next_nodes_one_filter(self, _conta_expansoes, _pi, _vi, _gpa, _gva):
+    def test_metodo_consulta_api_next_nodes_one_filter(self, _conta_expansoes,
+                                                       _pi, _vi, _gpa, _gva):
         _conta_expansoes.return_value = [73, 73, 73]
         _pi.return_value = None
         _vi.return_value = None
@@ -451,7 +455,7 @@ class MetodosConsulta(unittest.TestCase):
             _ENDERECO_NEO4J % '/db/data/transaction/commit',
             json=resposta_nextNodes_ok
         )
-    
+
         self.app.get(
             'api/nextNodes',
             query_string={
@@ -459,7 +463,7 @@ class MetodosConsulta(unittest.TestCase):
                 'rel_types': 'FILHO'
             }
         )
-        
+
         self.assertEqual(
             json.loads(responses.calls[-1].request.body),
             request_nextNodes_umfiltro_ok
@@ -792,11 +796,11 @@ class RemoveInfoSensivel(unittest.TestCase):
                     "usuario": "usuario",
                     "senha": "senha"})
             self.app.post("/compliance",
-                data={
-                    "tipoacesso": 1,
-                    "numeroprocedimento": 1,
-                    "descricao": 1
-                })
+                          data={
+                              "tipoacesso": 1,
+                              "numeroprocedimento": 1,
+                              "descricao": 1
+                          })
 
     def test_remove_nos_sensiveis(self):
         nos = resposta_node_sensivel_ok['results'][0]['data'][0][

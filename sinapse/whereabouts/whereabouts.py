@@ -94,7 +94,7 @@ def extract_addresses_from_credilink(response):
         }
         addresses.append(address)
 
-    #Remove duplicate addresses
+    # Remove duplicate addresses
     addresses = [ast.literal_eval(s) for s in set([str(d) for d in addresses])]
 
     return addresses
