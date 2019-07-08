@@ -62,9 +62,10 @@ from .fixtures import (
 )
 
 
-def test_parser_visjs():
-    saida = parse_json_to_visjs(parser_test_input)
-    assert saida == parser_test_output
+class VisJs(unittest.TestCase):
+    def test_parser_visjs(self):
+        saida = parse_json_to_visjs(parser_test_input)
+        self.assertEqual(saida, parser_test_output)
 
 
 def test_get_path():
