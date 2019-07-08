@@ -469,13 +469,16 @@ class MetodosConsulta(unittest.TestCase):
             request_nextNodes_umfiltro_ok
         )
 
+    @mock.patch('sinapse.start.get_vehicle_photo_asynch')
+    @mock.patch('sinapse.start.get_person_photo_asynch')
     @mock.patch('sinapse.start.vehicle_info')
     @mock.patch('sinapse.start.person_info')
     @mock.patch('sinapse.start.conta_expansoes')
     @mock_logresponse
-    def test_metodo_consulta_api_next_nodes_two_filters(self,
-                                                        _conta_expansoes,
-                                                        _pi, _vi):
+    def test_metodo_consulta_api_next_nodes_two_filters(
+            self,
+            _conta_expansoes,
+            _pi, _vi, _getp, _getv):
         _pi.return_value = []
         _vi.return_value = []
         _conta_expansoes.return_value = [73, 73, 73]

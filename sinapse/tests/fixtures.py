@@ -992,7 +992,7 @@ resposta_get_node_from_id_sensivel_ok = {
     'errors': []
 }
 
-input_whereabouts_addresses_receita = [(
+in_whereabouts_addresses_receita = [(
     'RUA',
     'DE TESTE',
     '123',
@@ -1016,7 +1016,7 @@ output_whereabouts_addresses_receita = [{
     'telefone': '2125696969'
 }]
 
-input_whereabouts_addresses_credilink = ("<?xml version='1.0' encoding='iso-8859-1'?>"
+in_whereabouts_addresses_credilink = ("<?xml version='1.0' encoding='iso-8859-1'?>"
     "<credilink_webservice>"
     "<consulta_telefone_proprietario>"
     "<telefone>"
@@ -1073,7 +1073,7 @@ resposta_whereabouts_receita_ok = {
     'formatted_addresses': output_whereabouts_addresses_receita
 }
 
-resposta_whereabouts_credilink_ok = {
+resp_whereabouts_credilink_ok = {
     'type': 'credilink',
     'formatted_addresses': output_whereabouts_addresses_credilink
 }

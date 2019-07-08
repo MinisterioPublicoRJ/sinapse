@@ -48,7 +48,7 @@ def search_info(q, solr_queries):
         if query:
             try:
                 resp[label] = _solr_search(f_q, query)
-            except:
+            except BaseException:
                 pass
     return resp
 
