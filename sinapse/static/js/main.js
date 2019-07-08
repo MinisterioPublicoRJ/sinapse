@@ -746,7 +746,10 @@ const getShortestPath = (nodeUuid1, nodeType1, nodeUuid2, nodeType2) => {
 const searchWhereabouts = (nodeUuid, nome, rg) => {
     document.querySelector('#search-details').style.display = 'none'
 
-    get(`/api/whereabouts?uuid=${nodeUuid}`, data => { displayWhereabouts(data, nome, rg) })
+    get(`/api/whereaboutsReceita?uuid=${nodeUuid}`, dataReceita => {
+        displayWhereabouts(dataReceita, nome, rg)
+        get(`/api/whereaboutsCredilink?uuid=${nodeUuid}`, dataCredilink => { displayCredilinkWhereabouts(dataCredilink) })
+    })
 
     showLoading()
 }
@@ -767,11 +770,8 @@ const searchWhereabouts = (nodeUuid, nome, rg) => {
  * @param {String} nome
  * @param {String} rg
  */
-const displayWhereabouts = (data, nome, rg) => {
+const displayWhereabouts = (dataReceita, nome, rg) => {
     hideLoading()
-
-    let credilinkAddresses = data.filter(addresses => addresses.type === 'credilink')
-    let receitaFederalAddresses = data.filter(addresses => addresses.type === 'receita_federal')
 
     document.querySelector('#whereabouts').innerHTML = `
         <div class="row pessoa">
@@ -786,11 +786,11 @@ const displayWhereabouts = (data, nome, rg) => {
             <div class="col-md-5">
                 <h3>Credilink</h3>
                 <p>Atenção: Informações da base de dados do Credilink não podem ser incluídos nos autos.</p>
-                ${formatAddresses(credilinkAddresses[0].formatted_addresses)}
+                <div id="credilink">Carregando endereços Credilink...</div>
             </div>
             <div class="col-md-5">
                 <h3>Receita Federal</h3>
-                ${formatAddresses(receitaFederalAddresses[0].formatted_addresses)}
+                ${formatAddresses(dataReceita.formatted_addresses)}
             </div>
         </div>
     `
@@ -800,6 +800,10 @@ const displayWhereabouts = (data, nome, rg) => {
             document.querySelector('#whereabouts_photo_container').innerHTML = `<img class="whereabouts_photo" src="data:image/png;base64,${data.imagem}">`
         }
     })
+}
+
+const displayCredilinkWhereabouts = dataCredilink => {
+    document.querySelector('#credilink').innerHTML = formatAddresses(dataCredilink.formatted_addresses)
 }
 
 const hideWhereabouts = () => {

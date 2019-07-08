@@ -6,7 +6,6 @@ from freezegun import freeze_time
 from copy import deepcopy
 from functools import wraps
 from unittest import mock
-from datetime import datetime
 
 from flask_testing import TestCase as FlaskTestCase
 from freezegun.api import FakeDatetime
@@ -63,14 +62,16 @@ from .fixtures import (
 )
 
 
-def test_parser_visjs():
-    saida = parse_json_to_visjs(parser_test_input)
-    assert saida == parser_test_output
+class VisJs(unittest.TestCase):
+    def test_parser_visjs(self):
+        saida = parse_json_to_visjs(parser_test_input)
+        self.assertEqual(saida, parser_test_output)
 
 
 def test_get_path():
     saida = get_path(get_path_input)
     assert saida == get_path_output
+
 
 def test_parse_path():
     input_copy = deepcopy(parse_path_input)
@@ -99,6 +100,7 @@ def test_monta_query_filtro_opcional_pessdk():
 
     assert saida == "optional match (a:label {pess_dk:val})"
 
+
 @mock.patch("sinapse.start._log_login")
 @responses.activate
 def test_autenticar_invalido(_LOG_LOGIN):
@@ -110,6 +112,7 @@ def test_autenticar_invalido(_LOG_LOGIN):
 
     retorno = _autenticar("usuario", "senha")
     assert retorno is None
+
 
 @mock.patch("sinapse.start._log_login")
 @responses.activate
@@ -186,7 +189,8 @@ class CasoGlobal(unittest.TestCase):
         api_nodeProperties = self.app.get('/api/nodeProperties')
         api_relationships = self.app.get('/api/relationships')
         api_findShortestPath = self.app.get('/api/findShortestPath')
-        api_whereabouts = self.app.get('/api/whereabouts')
+        api_whereabouts_credilink = self.app.get('/api/whereaboutsCredilink')
+        api_whereabouts_receita = self.app.get('/api/whereaboutsReceita')
 
         assert api_node.status_code == 403
         assert api_findNodes.status_code == 403
@@ -194,7 +198,8 @@ class CasoGlobal(unittest.TestCase):
         assert api_nodeProperties.status_code == 403
         assert api_relationships.status_code == 403
         assert api_findShortestPath.status_code == 403
-        assert api_whereabouts.status_code == 403
+        assert api_whereabouts_credilink.status_code == 403
+        assert api_whereabouts_receita.status_code == 403
 
 
 class LoginUsuario(unittest.TestCase):
@@ -214,7 +219,7 @@ class LoginUsuario(unittest.TestCase):
             data={
                 "usuario": "usuario",
                 "senha": "senha"
-                })
+            })
         retorno_compliance = self.app.post(
             "/compliance",
             data={
@@ -265,11 +270,11 @@ class MetodosConsulta(unittest.TestCase):
                 }
             )
             self.app.post("/compliance",
-                data={
-                    "tipoacesso": 1,
-                    "numeroprocedimento": 1,
-                    "descricao": 1
-                })
+                          data={
+                              "tipoacesso": 1,
+                              "numeroprocedimento": 1,
+                              "descricao": 1
+                          })
 
     @mock.patch('sinapse.start.conta_nos')
     @mock.patch('sinapse.start.get_vehicle_photo_asynch')
@@ -403,7 +408,8 @@ class MetodosConsulta(unittest.TestCase):
     @mock.patch('sinapse.start.person_info')
     @mock.patch('sinapse.start.conta_expansoes')
     @mock_logresponse
-    def test_metodo_consulta_api_next_nodes(self, _conta_expansoes, _pi, _vi, _gpa, _gva):
+    def test_metodo_consulta_api_next_nodes(self, _conta_expansoes,
+                                            _pi, _vi, _gpa, _gva):
         _conta_expansoes.return_value = [73, 73, 73]
         _pi.return_value = 1
         _vi.return_vale = 1
@@ -438,7 +444,8 @@ class MetodosConsulta(unittest.TestCase):
     @mock.patch('sinapse.start.person_info')
     @mock.patch('sinapse.start.conta_expansoes')
     @mock_logresponse
-    def test_metodo_consulta_api_next_nodes_one_filter(self, _conta_expansoes, _pi, _vi, _gpa, _gva):
+    def test_metodo_consulta_api_next_nodes_one_filter(self, _conta_expansoes,
+                                                       _pi, _vi, _gpa, _gva):
         _conta_expansoes.return_value = [73, 73, 73]
         _pi.return_value = None
         _vi.return_value = None
@@ -449,7 +456,7 @@ class MetodosConsulta(unittest.TestCase):
             _ENDERECO_NEO4J % '/db/data/transaction/commit',
             json=resposta_nextNodes_ok
         )
-    
+
         self.app.get(
             'api/nextNodes',
             query_string={
@@ -457,19 +464,22 @@ class MetodosConsulta(unittest.TestCase):
                 'rel_types': 'FILHO'
             }
         )
-        
+
         self.assertEqual(
             json.loads(responses.calls[-1].request.body),
             request_nextNodes_umfiltro_ok
         )
 
+    @mock.patch('sinapse.start.get_vehicle_photo_asynch')
+    @mock.patch('sinapse.start.get_person_photo_asynch')
     @mock.patch('sinapse.start.vehicle_info')
     @mock.patch('sinapse.start.person_info')
     @mock.patch('sinapse.start.conta_expansoes')
     @mock_logresponse
-    def test_metodo_consulta_api_next_nodes_two_filters(self,
-                                                        _conta_expansoes,
-                                                        _pi, _vi):
+    def test_metodo_consulta_api_next_nodes_two_filters(
+            self,
+            _conta_expansoes,
+            _pi, _vi, _getp, _getv):
         _pi.return_value = []
         _vi.return_value = []
         _conta_expansoes.return_value = [73, 73, 73]
@@ -790,11 +800,11 @@ class RemoveInfoSensivel(unittest.TestCase):
                     "usuario": "usuario",
                     "senha": "senha"})
             self.app.post("/compliance",
-                data={
-                    "tipoacesso": 1,
-                    "numeroprocedimento": 1,
-                    "descricao": 1
-                })
+                          data={
+                              "tipoacesso": 1,
+                              "numeroprocedimento": 1,
+                              "descricao": 1
+                          })
 
     def test_remove_nos_sensiveis(self):
         nos = resposta_node_sensivel_ok['results'][0]['data'][0][

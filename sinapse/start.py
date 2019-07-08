@@ -31,10 +31,10 @@ from sinapse.tasks import (get_person_photo_asynch,
                            get_vehicle_photo_asynch)
 from sinapse.detran.utils import get_node_id
 from sinapse.queries import (find_next_nodes,
-                             get_node_from_id,
                              person_info,
                              vehicle_info)
-from sinapse.whereabouts.whereabouts import get_whereabouts_receita, get_whereabouts_credilink
+from sinapse.whereabouts.whereabouts import (get_whereabouts_receita,
+                                             get_whereabouts_credilink)
 
 
 @app.before_request
@@ -95,6 +95,7 @@ def respostajson(response, **kwargs):
 
     return jsonify(dados)
 
+
 def get_path(resposta):
     paths = []
     for path in resposta['results'][0]['data']:
@@ -115,6 +116,7 @@ def get_path(resposta):
         paths.append(ordered_path)
     return {'paths': paths}
 
+
 def parse_paths(paths):
     for path in paths['paths']:
         for i in range(len(path)):
@@ -127,6 +129,7 @@ def parse_paths(paths):
                 element['to'] = element.pop('endNode')
                 element['arrows'] = "to"
                 element['dashes'] = False
+
 
 def respostajson_visjs(response, return_path=False, **kwargs):
     usuario = session.get('usuario', "dummy")
@@ -150,7 +153,8 @@ def respostajson_visjs(response, return_path=False, **kwargs):
 def limpa_nos(nos):
     copia_nos = deepcopy(nos)
     for no in copia_nos:
-        if 'sensivel' in no['properties'].keys() and no['properties']['sensivel'] == '1':
+        if ('sensivel' in no['properties'].keys() and
+                no['properties']['sensivel'] == '1'):
             no['labels'] = ['sigiloso']
             no['properties'] = dict()
 
@@ -175,7 +179,8 @@ def limpa_nos(nos):
 def limpa_relacoes(relacoes):
     copia_relacoes = deepcopy(relacoes)
     for relacao in copia_relacoes:
-        if 'sensivel' in relacao['properties'].keys() and relacao['properties']['sensivel'] == '1':
+        if ('sensivel' in relacao['properties'].keys()
+                and relacao['properties']['sensivel'] == '1'):
             relacao['type'] = 'sigiloso'
             relacao['properties'] = dict()
 
@@ -199,7 +204,7 @@ def conta_nos(opcoes, letras):
         'statement': (
             ' '.join(opcoes) +
             ' return %s' % count_letras
-            ),
+        ),
         'resultDataContents': ['row', 'graph']
     }]}
 
@@ -259,13 +264,14 @@ def _log_response(usuario, sessionid, response):
 
 def _log_login(usuario, motivo, sucesso):
     _LOG_LOGIN.insert(
-            {
-                "usuario": usuario,
-                "motivo": motivo,
-                "sucesso": sucesso,
-                "ip": request.remote_addr
-            }
-        )
+        {
+            "usuario": usuario,
+            "motivo": motivo,
+            "sucesso": sucesso,
+            "ip": request.remote_addr
+        }
+    )
+
 
 def _autenticar(usuario, senha):
     "Autentica o usuário no SCA"
@@ -301,15 +307,16 @@ def naocompleia(funcao):
         return funcao(*args, **kwargs)
     return wrapper
 
+
 def login_necessario(funcao):
     @wraps(funcao)
     def funcao_decorada(*args, **kwargs):
-        _ = lambda item, lista: lista.pop(item) if item in lista else None
+        def _(item, lista): return lista.pop(item) if item in lista else None
         if "usuario" not in session:
             return "Não autorizado", 403
         if request.check_compliance:
             if "ultimoacesso" not in session or\
-                    (datetime.now() - session["ultimoacesso"]).seconds > 60*30: 
+                    (datetime.now() - session["ultimoacesso"]).seconds > 60*30:
                 _("ultimoacesso", session)
                 _("tipoacesso", session)
                 _("numeroprocedimento", session)
@@ -327,7 +334,7 @@ def compliance():
     tipoacesso = request.form.get("tipoacesso")
     numeroprocedimento = request.form.get("numeroprocedimento")
     descricao = request.form.get("descricao")
-    
+
     session["ultimoacesso"] = datetime.now()
     session["numeroprocedimento"] = numeroprocedimento
     session["tipoacesso"] = tipoacesso
@@ -482,7 +489,7 @@ def api_findNodes():
         'statement': (
             ' '.join(opcoes) +
             ' return %s limit 100' % (','.join(letras))
-            ),
+        ),
         'resultDataContents': ['graph']
     }]}
 
@@ -569,10 +576,9 @@ def api_relationships():
     return respostajson(response)
 
 
-@app.route("/api/whereabouts")
+@app.route("/api/whereaboutsCredilink")
 @login_necessario
-def api_whereabouts():
-    # TODO: Hide sensitive information
+def api_whereabouts_credilink():
     uuid = request.args.get('uuid')
 
     query = {"statements": [{
@@ -595,17 +601,43 @@ def api_whereabouts():
     if node_props:
         num_cpf = node_props['num_cpf']
     else:
-        return jsonify([])
-
-    whereabouts = []
-
-    whereabouts_receita = get_whereabouts_receita(num_cpf)
-    whereabouts.append(whereabouts_receita)
+        return jsonify({})
 
     whereabouts_credilink = get_whereabouts_credilink(num_cpf)
-    whereabouts.append(whereabouts_credilink)
 
-    return jsonify(whereabouts)
+    return jsonify(whereabouts_credilink)
+
+
+@app.route("/api/whereaboutsReceita")
+@login_necessario
+def api_whereabouts_receita():
+    uuid = request.args.get('uuid')
+
+    query = {"statements": [{
+        "statement": "MATCH (p:Pessoa) WHERE p.uuid = '%s' RETURN p"
+        % (uuid),
+        "resultDataContents": ["row", "graph"]
+    }]}
+
+    response = requests.post(
+        _ENDERECO_NEO4J % '/db/data/transaction/commit',
+        data=json.dumps(query),
+        auth=_AUTH,
+        headers=_HEADERS)
+
+    response = remove_info_sensiveis(response.json())
+
+    node_props = response['results'][0]['data'][0]['graph'][
+        'nodes'][0]['properties']
+    # If information is confidential, properties will be empty
+    if node_props:
+        num_cpf = node_props['num_cpf']
+    else:
+        return jsonify({})
+
+    whereabouts_receita = get_whereabouts_receita(num_cpf)
+
+    return jsonify(whereabouts_receita)
 
 
 @app.context_processor
