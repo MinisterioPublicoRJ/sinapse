@@ -63,11 +63,11 @@ def api_search():
 @app.route('/api/foto', methods=['GET'])
 @login_necessario
 def api_photo():
-    node_id = request.args.get('node_id', '')
+    uuid = request.args.get('node_id', '')
     rg = request.args.get('rg', '')
 
     photo_doc = _IMAGENS.find_one(
-        {'$or': [{'num_rg': rg}, {'node_id': node_id}], 'tipo': 'Pessoa'},
+        {'$or': [{'num_rg': rg}, {'uuid': uuid}], 'tipo': 'Pessoa'},
         {'_id': 0}
     ) or {}
 
