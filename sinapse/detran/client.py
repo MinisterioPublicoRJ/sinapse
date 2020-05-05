@@ -9,7 +9,12 @@ def busca_foto(rg):
     url_busca = config("URL_BUSCA_FOTO").format(rg=rg)
     token_busca = config("TOKEN_BUSCA_FOTO")
     resp = requests.get(url_busca, params={"proxy-token": token_busca})
-    return resp.json()['photo']
+
+    photo = ""
+    if resp.status_code == 200:
+        photo = resp.json()['photo']
+
+    return photo
 
 
 def get_person_photo(infos, label):

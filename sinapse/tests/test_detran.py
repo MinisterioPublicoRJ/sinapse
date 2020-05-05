@@ -24,6 +24,21 @@ class TestClient(unittest.TestCase):
 
         assert photo == "img_b64"
 
+    @responses.activate
+    def test_consulta_api_fotos_fail(self):
+        rg = "12345"
+        url_busca = config("URL_BUSCA_FOTO")
+        token_busca = config("TOKEN_BUSCA_FOTO")
+        responses.add(
+            responses.GET,
+            url_busca.format(rg=rg) + f"?proxy-token={token_busca}",
+            status=404
+        )
+
+        photo = busca_foto(rg)
+
+        assert photo == ""
+
 
 if __name__ == "__main__":
     unittest.main()
