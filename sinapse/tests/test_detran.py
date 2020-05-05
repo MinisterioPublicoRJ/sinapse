@@ -4,74 +4,25 @@ import responses
 
 from decouple import config
 
-from sinapse.detran.client import send_rg_query, get_processed_rg
-from sinapse.detran.utils import parse_content, get_node_id
-from sinapse.tests.fixtures import (
-    response_rg,
-    response_processado_rg,
-    resposta_node_ok)
+from sinapse.detran.client import busca_foto
 
 
-class Photo(unittest.TestCase):
+class TestClient(unittest.TestCase):
     @responses.activate
-    def test_consulta_rg(self):
+    def test_consulta_api_fotos(self):
+        rg = "12345"
+        url_busca = config("URL_BUSCA_FOTO")
+        token_busca = config("TOKEN_BUSCA_FOTO")
         responses.add(
-            responses.POST,
-            config('URL_CONSULTA_RG'),
-            body=response_rg,
-            status=200,
-            content_type='application/soap+xml; charset=utf-8'
+            responses.GET,
+            url_busca.format(rg=rg) + f"?proxy-token={token_busca}",
+            json={"photo": "img_b64"},
+            status=200
         )
 
-        rg = '1234'
-        status, content = send_rg_query(rg)
+        photo = busca_foto(rg)
 
-        self.assertEqual(status, 200)
-        self.assertEqual(content, response_rg)
-        self.assertIn(b'sucesso', content)
-
-    @responses.activate
-    def test_busca_rg_processado(self):
-        responses.add(
-            responses.POST,
-            config('URL_PROCESSADO_RG'),
-            body=response_processado_rg,
-            status=200,
-            content_type='application/soap+xml; charset=utf-8'
-        )
-
-        rg = '1234'
-        status, content = get_processed_rg(rg)
-
-        self.assertEqual(status, 200)
-        self.assertEqual(content, response_processado_rg)
-        self.assertIn(b'fotoCivil', content)
-
-
-class Utils(unittest.TestCase):
-    def test_paser_xml_content_fotoCivil(self):
-        foto_civil = parse_content(
-            response_processado_rg,
-            tag_name='fotoCivil'
-        )
-        expected = 'abcd'
-
-        self.assertEqual(foto_civil, expected)
-
-    def test_paser_xml_content_NoCidadao(self):
-        foto_civil = parse_content(
-            response_processado_rg,
-            tag_name='NoCidadao'
-        )
-        expected = 'Nome Cidadao'
-
-        self.assertEqual(foto_civil, expected)
-
-    def test_find_node_ids(self):
-        node_id = get_node_id(resposta_node_ok)
-        expected = '140885160'
-
-        self.assertEqual(node_id, expected)
+        assert photo == "img_b64"
 
 
 if __name__ == "__main__":
