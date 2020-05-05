@@ -15,7 +15,7 @@ class TestClient(unittest.TestCase):
         token_busca = config("TOKEN_BUSCA_FOTO")
         responses.add(
             responses.GET,
-            url_busca.format(rg=rg) + f"?proxy-token={token_busca}",
+            url_busca.format(rg=rg) + "?proxy-token={}".format(token_busca),
             json={"photo": "img_b64"},
             status=200
         )
@@ -31,7 +31,7 @@ class TestClient(unittest.TestCase):
         token_busca = config("TOKEN_BUSCA_FOTO")
         responses.add(
             responses.GET,
-            url_busca.format(rg=rg) + f"?proxy-token={token_busca}",
+            url_busca.format(rg=rg) + "?proxy-token={}".format(token_busca),
             status=404
         )
 
