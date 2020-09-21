@@ -9,6 +9,7 @@ from urllib.error import URLError
 from urllib.request import Request, urlopen
 
 from decouple import config
+from requests_kerberos import HTTPKerberosAuth
 
 from sinapse.buildup import (
     _ENDERECO_NEO4J,
@@ -65,7 +66,7 @@ def clean_info(func):
 @clean_info
 def _solr_search(f_q, query):
     query = config('HOST_SOLR') + query.format(f_q=f_q)
-    return requests.get(query)
+    return requests.get(query, auth=HTTPKerberosAuth())
 
 
 def log_solr_response(user, sessionid, query):

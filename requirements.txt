@@ -18,6 +18,7 @@ pymongo==3.6.1
 python-decouple==3.1
 redis==3.2.1
 requests==2.19.1
+requests-kerberos==0.12.0
 urllib3==1.23
 waitress==1.1.0
 webassets==0.12.1
