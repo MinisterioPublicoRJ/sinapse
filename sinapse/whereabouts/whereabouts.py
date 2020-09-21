@@ -7,6 +7,8 @@ import ast
 
 IMPALA_HOST = config('BDA_URL')
 IMPALA_PORT = config('IMPALA_PORT', default=21050, cast=int)
+KERBEROS_SERVICE_NAME = config('KERBEROS_SERVICE_NAME', default='impala')
+KERBEROS_SERVICE_NAME = config('KERBEROS_USER')
 
 CREDILINK_URL = config('CREDILINK_URL')
 CREDILINK_USUARIO = config('CREDILINK_USUARIO')
@@ -15,20 +17,27 @@ CREDILINK_SIGLA = config('CREDILINK_SIGLA')
 
 
 def get_data_from_receita(num_cpf):
-    with connect(host=IMPALA_HOST, port=IMPALA_PORT) as conn:
-        cursor = conn.cursor()
-        cursor.execute("""SELECT tipo_logradouro,
-            descr_logradouro,
-            num_logradouro,
-            descr_complemento_logradouro,
-            nome_bairro,
-            num_cep,
-            nome_municipio,
-            sigla_uf,
-            num_ddd, num_telefone
-            FROM bases.lc_cpf
-            WHERE num_cpf = '{}'""".format(num_cpf))
-        rows = cursor.fetchall()
+    with connect(
+        host=IMPALA_HOST,
+        port=IMPALA_PORT,
+        use_ssl=False,
+        user=KERBEROS_USER,
+        kerberos_service_name=KERBEROS_SERVICE_NAME,
+        auth_mechanism='GSSAPI'
+    ) as conn:
+        with conn.cursor() as cursor:
+            cursor.execute("""SELECT tipo_logradouro,
+                descr_logradouro,
+                num_logradouro,
+                descr_complemento_logradouro,
+                nome_bairro,
+                num_cep,
+                nome_municipio,
+                sigla_uf,
+                num_ddd, num_telefone
+                FROM bases.lc_cpf
+                WHERE num_cpf = '{}'""".format(num_cpf))
+            rows = cursor.fetchall()
     return rows
 
 
