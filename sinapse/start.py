@@ -233,6 +233,7 @@ def conta_expansoes(n_id, rel_types=''):
 
 
 def resposta_sensivel(resposta):
+    return resposta
     def parser_dicionario(dicionario, chave):
         if isinstance(dicionario, dict):
             for k, v in dicionario.items():
