@@ -90,8 +90,8 @@ def respostajson(response, **kwargs):
     if isinstance(dados, dict):
         dados.update(kwargs)
 
-    if resposta_sensivel(dados):
-        return jsonify(remove_info_sensiveis(dados))
+    # if resposta_sensivel(dados):
+    #     return jsonify(remove_info_sensiveis(dados))
 
     return jsonify(dados)
 
@@ -138,8 +138,8 @@ def respostajson_visjs(response, return_path=False, **kwargs):
     dados = response.json()
     if isinstance(dados, dict):
         dados.update(kwargs)
-    if resposta_sensivel(dados):
-        dados = remove_info_sensiveis(dados)
+    # if resposta_sensivel(dados):
+    #     dados = remove_info_sensiveis(dados)
     if return_path:
         paths = get_path(deepcopy(dados))
         parse_paths(paths)
@@ -233,7 +233,6 @@ def conta_expansoes(n_id, rel_types=''):
 
 
 def resposta_sensivel(resposta):
-    return resposta
     def parser_dicionario(dicionario, chave):
         if isinstance(dicionario, dict):
             for k, v in dicionario.items():
@@ -594,7 +593,7 @@ def api_whereabouts_credilink():
         auth=_AUTH,
         headers=_HEADERS)
 
-    response = remove_info_sensiveis(response.json())
+    # response = remove_info_sensiveis(response.json())
 
     node_props = response['results'][0]['data'][0]['graph'][
         'nodes'][0]['properties']
@@ -626,7 +625,7 @@ def api_whereabouts_receita():
         auth=_AUTH,
         headers=_HEADERS)
 
-    response = remove_info_sensiveis(response.json())
+    # response = remove_info_sensiveis(response.json())
 
     node_props = response['results'][0]['data'][0]['graph'][
         'nodes'][0]['properties']
