@@ -593,7 +593,8 @@ def api_whereabouts_credilink():
         auth=_AUTH,
         headers=_HEADERS)
 
-    # response = remove_info_sensiveis(response.json())
+    response = response.json()
+    # response = remove_info_sensiveis(response)
 
     node_props = response['results'][0]['data'][0]['graph'][
         'nodes'][0]['properties']
@@ -625,7 +626,8 @@ def api_whereabouts_receita():
         auth=_AUTH,
         headers=_HEADERS)
 
-    # response = remove_info_sensiveis(response.json())
+    response = response.json()
+    # response = remove_info_sensiveis(response)
 
     node_props = response['results'][0]['data'][0]['graph'][
         'nodes'][0]['properties']
