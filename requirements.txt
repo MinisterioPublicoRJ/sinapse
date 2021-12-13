@@ -9,7 +9,7 @@ gunicorn==19.8.1
 idna==2.7
 itsdangerous==0.24
 Jinja2==2.10
-lxml==4.2.5
+lxml==4.6.5
 MarkupSafe==1.0
 newrelic==3.2.2.94
 PyJWT==1.6.4
