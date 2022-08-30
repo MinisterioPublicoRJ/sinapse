@@ -1,8 +1,7 @@
 from impala.dbapi import connect
 from decouple import config
-from zeep import Client
-
 import xml.etree.ElementTree as ET
+import requests
 import ast
 
 IMPALA_HOST = config('BDA_URL')
@@ -10,11 +9,9 @@ IMPALA_PORT = config('IMPALA_PORT', default=21050, cast=int)
 KERBEROS_SERVICE_NAME = config('KERBEROS_SERVICE_NAME', default='impala')
 KERBEROS_USER = config('KERBEROS_USER')
 
-CREDILINK_URL = config('CREDILINK_URL')
-CREDILINK_USUARIO = config('CREDILINK_USUARIO')
-CREDILINK_SENHA = config('CREDILINK_SENHA')
-CREDILINK_SIGLA = config('CREDILINK_SIGLA')
-
+PREVINITY_URL = config('PREVINITY_URL')
+PREVINITY_USER = config('PREVINITY_USER')
+PREVINITY_PASS = config('PREVINITY_PASS')
 
 def get_data_from_receita(num_cpf):
     with connect(
@@ -40,7 +37,6 @@ def get_data_from_receita(num_cpf):
             rows = cursor.fetchall()
     return rows
 
-
 def extract_addresses_from_receita(rows):
     addresses = []
     for data in rows:
@@ -57,37 +53,20 @@ def extract_addresses_from_receita(rows):
         addresses.append(address)
     return addresses
 
-
 def get_whereabouts_receita(num_cpf):
     rows = get_data_from_receita(num_cpf)
-
     addresses = extract_addresses_from_receita(rows)
-
     whereabouts = {'type': 'receita_federal'}
     whereabouts['formatted_addresses'] = addresses
-
     return whereabouts
 
+def get_data_from_previnity(num_cpf):
+	response = requests.get(f"{PREVINITY_URL}?usuario={PREVINITY_USER}&senha={PREVINITY_PASS}&ws=S&tipocons=pnn006&cpfcnpj={num_cpf}",verify = True)
+	return response.content
 
-def get_data_from_credilink(num_cpf):
-    cliente = Client(CREDILINK_URL)
-
-    response = cliente.service.completo(
-        usuario=CREDILINK_USUARIO,
-        senha=CREDILINK_SENHA,
-        sigla=CREDILINK_SIGLA,
-        cpfcnpj=num_cpf,
-        nome='',
-        telefone=''
-    )
-
-    return response
-
-
-def extract_addresses_from_credilink(response):
+def extract_addresses_from_previnity(response):
     root = ET.fromstring(response)
-    telefones = root.find('consulta_telefone_proprietario').findall('telefone')
-
+    telefones= root.find('telefone_proprietario').findall('informacoes')
     addresses = []
     for tel in telefones:
         address = {
@@ -99,22 +78,17 @@ def extract_addresses_from_credilink(response):
             'cidade': tel.find('cidade').text,
             'sigla_uf': tel.find('uf').text,
             'telefone': tel.find('telefone').text,
-            'dt_instalacao': tel.find('dt_istalacao').text
+            'dt_instalacao': tel.find('istalacao').text
         }
         addresses.append(address)
-
     # Remove duplicate addresses
     addresses = [ast.literal_eval(s) for s in set([str(d) for d in addresses])]
-
     return addresses
 
-
+# Nome deve ser mudado na próxima versão (credilink -> previnity)
 def get_whereabouts_credilink(num_cpf):
-    response = get_data_from_credilink(num_cpf)
-
-    addresses = extract_addresses_from_credilink(response)
-
+    response = get_data_from_previnity(num_cpf)
+    addresses = extract_addresses_from_previnity(response)
     whereabouts = {'type': 'credilink'}
     whereabouts['formatted_addresses'] = addresses
-
     return whereabouts
